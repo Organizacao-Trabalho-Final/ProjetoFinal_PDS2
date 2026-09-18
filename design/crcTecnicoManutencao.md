@@ -1,4 +1,4 @@
-# Cartão CRC - TecnicoManutencao
+# Cartão CRC — TecnicoManutencao
 - Subclasse de Pessoa
 
 ## Responsabilidades
