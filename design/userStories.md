@@ -36,13 +36,13 @@
 - Verificar se a obra pode ser emprestada para o usuário
 - Calcular e registrar data de devolução de acordo com o usuário
 
-# 7 - “Como bibliotecário, quero encaminhar obras danificados para manutenção para impedir que sejam emprestados enquanto estiverem indisponíveis.”
+# 7 - “Como bibliotecário, quero encaminhar obras danificadas para manutenção para impedir que sejam emprestadas enquanto estiverem indisponíveis.”
 - Verificar e registrar estado da obra
-- Associar Manutencao a Obra
+- Associar a manutenção à obra
 - Marcar obra como indisponível
-- Associar Manutencao a um TecnicoManutencao
+- Associar a manutenção a um técnico de manutenção
 
-# 8 - “Como técnico de manutenção, quero consultar e concluir manutenções atribuídas a mim para registrar o estado das obras reparados.”
+# 8 - “Como técnico de manutenção, quero consultar e concluir manutenções atribuídas a mim para registrar o estado das obras reparadas.”
 - Consultar número de manutenções pendentes
 - Identificar a obra associada a cada manutenção
 - Marcar manunteção como concluída
