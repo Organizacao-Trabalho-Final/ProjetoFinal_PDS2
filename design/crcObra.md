@@ -9,7 +9,7 @@
 - Número de identificação único
 - Alterar disponibilidade para empréstimo
 - Registrar e informar estado de preservação
-- Forcener suas informações para o catálogo
+- Fornecer suas informações para o catálogo
 
 ## Colaborações
 - Catalogo

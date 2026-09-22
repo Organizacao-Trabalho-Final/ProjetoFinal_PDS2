@@ -24,5 +24,7 @@ class Emprestimo {
     int getAtraso(int data);
     void renovarEmprestimo(int data);
     bool validarEmprestimo();
+
+    ~Emprestimo() = default;
 };
 #endif
