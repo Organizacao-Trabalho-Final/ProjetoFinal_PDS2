@@ -21,7 +21,7 @@ class Obra {
     bool isDisponivel() const;
     bool isDanificado() const;
 
-    virtual void printObra() const;
+    virtual void printObra() const = 0;
 
     virtual ~Obra() = default;
 };
