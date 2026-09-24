@@ -8,11 +8,11 @@
 
 ## Responsabilidades
 - Registrar informações do usuário (nome, CPF)
-- Mostrar se o usuário tem empréstimos ativos 
-- Mostrar o histórico de empréstimos do usuário
-- Pedir renovação do empréstimo concedido ao usuário
-- Registrar o nome das obras emprestadas
-- Solicitar a devolução antecipada de uma obra
+- Informar se o usuário pode realizar empréstimos
+- Informar se o usuário tem empréstimos ativos
+- Consultar as obras associadas aos seus empréstimos
+- Consultar o histórico de empréstimos
+- Solicitar renovação de empréstimo ativo
 
 ## Colaborações
 - Empréstimo
