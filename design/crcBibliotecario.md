@@ -2,6 +2,7 @@
 - Subclasse de Pessoa
 
 ## Responsabilidades
+- Consultar informações da obra a ser emprestada
 - Conceder empréstimo ao usuário
 - Conceder renovação de empréstimo ativo
 - Marcar obra como indisponível ao ser emprestada

@@ -2,28 +2,30 @@
 #define EMPRESTIMO_H
 
 #include <iostream>
-#include "Obra.hpp"
-#include "Pessoa.hpp"
+#include "Data.hpp"
+
+class Obra;
+class Pessoa;
 
 class Emprestimo {
     private:
         Obra *obra;
         Pessoa *usuario;
-        int retirada, devolucao;
+        Data retirada, devolucao;
         bool ativo;
 
     public:
-        Emprestimo(Obra &o, Pessoa &p, int data);
+        Emprestimo(Obra &o, Pessoa &p, Data d);
 
-        Obra& getObra() const;
-        Pessoa& getUsuario() const;
-        int getRetirada() const;
-        int getDevolucao() const;
+        const Obra& getObra() const;
+        const Pessoa& getUsuario() const;
+        Data getRetirada() const;
+        Data getDevolucao() const;
         bool isAtivo() const;
 
-        int getAtraso(int data);
-        void renovarEmprestimo(int data);
-        bool validarEmprestimo();
+        int getAtraso(Data d) const;
+        bool validarEmprestimo() const;
+        void renovarEmprestimo(Data d);
 
         ~Emprestimo() = default;
 };

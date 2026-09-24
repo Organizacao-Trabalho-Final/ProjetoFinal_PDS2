@@ -10,9 +10,6 @@ class Obra {
         int id;
         bool disponivel, danificado;
 
-    protected:
-        virtual void printObra() const = 0;
-
     public:
         Obra(std::string t, std::string a, int id);
         void setDisponivel(bool d);
@@ -24,6 +21,8 @@ class Obra {
         bool isDisponivel() const;
         bool isDanificado() const;
 
+        virtual void printObra() const = 0;
+        
         virtual ~Obra() = default;
 };
 #endif
