@@ -31,9 +31,10 @@
 - Verificar se a obra está danificada
 
 # 6 - “Como administrador da biblioteca, quero que estudantes e professores tenham regras próprias de empréstimo para representar as diferentes categorias de usuários.”
-- Definir período de empréstimo por subclasse de Pessoa
-- Definir limite de empréstimos ativos por subclasse de Pessoa
+- Períodos de empréstimo distintos por subclasse de Pessoa
+- Limites máximos de empréstimos ativos distintos por subclasse de Pessoa
 - Verificar se a obra pode ser emprestada para o usuário
+- Garantir que apenas professores podem pegar artigos emprestado
 - Calcular e registrar data de devolução de acordo com o usuário
 
 # 7 - “Como bibliotecário, quero encaminhar obras danificadas para manutenção para impedir que sejam emprestadas enquanto estiverem indisponíveis.”
