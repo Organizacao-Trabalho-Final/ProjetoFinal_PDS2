@@ -1,8 +1,10 @@
 #ifndef BIBLIOTECARIO_H
 #define BIBLIOTECARIO_H
 
-#include <iostream>
 #include "Pessoa.hpp"
+class Emprestimo;
+class Obra;
+class Data;
 
 class Bibliotecario : public Pessoa {
     public:

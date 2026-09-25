@@ -8,7 +8,6 @@
 - Verificar disponibilidade da obra
 - Verificar se o tipo de obra pode ser emprestada
 - Verificar se o usuário está apto a realizar o empréstimo
-- Autorizar renovações de empréstimo
 
 ## Colaborações
 - Estudante

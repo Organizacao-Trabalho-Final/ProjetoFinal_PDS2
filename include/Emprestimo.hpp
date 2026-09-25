@@ -1,9 +1,7 @@
 #ifndef EMPRESTIMO_H
 #define EMPRESTIMO_H
 
-#include <iostream>
 #include "Data.hpp"
-
 class Obra;
 class Pessoa;
 

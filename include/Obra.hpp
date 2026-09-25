@@ -1,7 +1,6 @@
 #ifndef OBRA_H
 #define OBRA_H
 
-#include <iostream>
 #include <string>
 
 class Obra {

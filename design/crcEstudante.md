@@ -6,9 +6,9 @@
 - Procurar obras no catálogo
 - Informar se o estudante pode realizar novos empréstimos
 - Solicitar empréstimo de livros
-- Definir período de empréstimo adequado para estudantes
+- Informar período de empréstimo adequado para estudantes
 - Consultar data de devolução
-- Definir máximo de emprestimos ativos simultaneos
+- Informar máximo de emprestimos ativos simultaneos
 
 ## Colaborações
 - Empréstimo
