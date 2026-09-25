@@ -18,6 +18,7 @@ class Pessoa {
         std::string getNome() const;
         std::string getCPF() const;
         virtual int getPrazo() const;
+        virtual int getMaxEmprestimos() const;
 
         virtual bool podeEmprestar(const Obra *o) const;
         Emprestimo** consultarAtivos();

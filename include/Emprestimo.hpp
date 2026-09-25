@@ -16,6 +16,7 @@ class Emprestimo {
 
     public:
         Emprestimo(Obra &o, Pessoa &p, Data d);
+        void setAtivo(bool b);
 
         const Obra& getObra() const;
         const Pessoa& getUsuario() const;
