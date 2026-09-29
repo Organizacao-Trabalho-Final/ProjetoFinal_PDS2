@@ -14,8 +14,8 @@ class Livro : public Obra {
         void setEdicao(int e);
         void setGenero(std::string g);
 
-        std::string getGenero() const;
         int getEdicao() const;
+        std::string getGenero() const;
 
         void printObra() const override;
 };
