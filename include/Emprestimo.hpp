@@ -16,15 +16,14 @@ class Emprestimo {
         Emprestimo(Obra &o, Pessoa &p, Data d);
         void setAtivo(bool b);
 
-        const Obra& getObra() const;
+        Obra& getObra();
         const Pessoa& getUsuario() const;
         Data getRetirada() const;
         Data getDevolucao() const;
-        bool isAtivo() const;
 
         int getAtraso(Data d) const;
-        bool validarEmprestimo() const;
-        void renovarEmprestimo(Data d);
+        void encerrarEmprestimo();
+        void renovarEmprestimo();
 
         ~Emprestimo() = default;
 };

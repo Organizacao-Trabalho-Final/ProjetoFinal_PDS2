@@ -2,6 +2,7 @@
 #define PESSOA_H
 
 #include <string>
+#include <vector>
 class Obra;
 class Emprestimo;
 
@@ -9,6 +10,7 @@ class Pessoa {
     private:
         std::string nome;
         std::string CPF;
+        std::vector<Emprestimo*> emprestimos;
 
     public:
         Pessoa(std::string n, std::string c);
@@ -19,9 +21,9 @@ class Pessoa {
         virtual int getMaxEmprestimos() const;
 
         virtual bool podeEmprestar(const Obra *o) const;
-        Emprestimo** consultarAtivos();
-        Emprestimo** historicoEmprestimos();
-        void pedirRenovacao(Emprestimo *e);
+        std::vector<Emprestimo*> consultarAtivos();
+        std::vector<Emprestimo*> historicoEmprestimos();
+        void registrarEmprestimo(Emprestimo *e);
     
         virtual ~Pessoa() = default;
 };

@@ -3,6 +3,10 @@
 
 #include "Pessoa.hpp"
 class Data;
+class Obra;
+class Emprestimo;
+class Manutencao;
+class TecnicoManutencao;
 
 class Bibliotecario : public Pessoa {
     public:
@@ -12,5 +16,6 @@ class Bibliotecario : public Pessoa {
         bool aprovarRenovacao(Emprestimo *e);
         void registrarDevolucao(Emprestimo *e);
         void avaliarObra(Obra *o);
+        Manutencao* encaminharManutencao(Obra *o, TecnicoManutencao *tm);
 };
 #endif
