@@ -9,7 +9,7 @@ class Professor : public Pessoa {
         std::string area;
 
     public:
-        Estudante(std::string n, std::string c, std::string a);
+        Professor(std::string n, std::string c, std::string a);
 
         std::string getArea() const;
         int getPrazo() const override;
