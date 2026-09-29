@@ -6,7 +6,6 @@
 - Procurar obras no catálogo
 - Informar se o professor pode realizar novos empréstimos
 - Solicitar empréstimo de livros e artigos
-- Solicitar renovação de empréstimo ativo
 - Informar período de empréstimo para professores
 - Consultar data de devolução
 - Informar máximo de emprestimos ativos simultaneos
