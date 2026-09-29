@@ -1,13 +1,14 @@
-# Cartão CRC - Catálogo
+# Cartão CRC — Catálogo
 
 ## Responsabilidades
-- Saber a lista de obras cadastradas 
-- Saber se uma obra já foi cadastrada
-- Buscar uma obra por nome ou autor
+- Armazenar lista de obras cadastradas
+- Cadastrar novas obras
+- Verificar se a obra já foi cadastrada
+- Impedir duplicatas
+- Buscar obras por título ou autor
 - Alterar informações de uma obra
-- retirar uma ja cadastrada 
-- Saber a lista de obras ja cadastradas
-- Impedir cadastro duplicado
+- Remover obras do catálogo 
+- Listar obras cadastradas
 
 ## Colaboradores
 - Obra

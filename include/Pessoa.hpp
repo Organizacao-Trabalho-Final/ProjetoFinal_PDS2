@@ -22,7 +22,7 @@ class Pessoa {
         Emprestimo** consultarAtivos();
         Emprestimo** historicoEmprestimos();
         void pedirRenovacao(Emprestimo *e);
-
+    
         virtual ~Pessoa() = default;
 };
 #endif

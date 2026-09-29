@@ -1,15 +1,14 @@
-# Cartão CRC - Manutenção
+# Cartão CRC — Manutenção
 
 ## Responsabilidades
-- Retirar o livro da lista de busca
-- Retornar o livro para a lista de busca
-- Saber se a manutanção do livro ja foi concluída
-- Alterar informações dos livros
-- Saber o prazo da manutenção
-- Saber qual foi o dano do livro
-- Registrar o dano
+- Associar uma obra a uma manutenção e a um TecnicoManutencao
+- Registrar o dano identificado na obra e os reparos realizados
+- Registrar a data de início da manutenção
+- Informar o prazo previsto para a conclusão
+- Informar o estado da manutenção (pendente, em andamento ou concluída)
+- Modificar disponibilidade da obra
 
 ## Colaboradores
-- Livros
+- Obras
 - Bibliotecário
 - TécnicoManutenção

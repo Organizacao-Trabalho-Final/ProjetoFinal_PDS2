@@ -12,7 +12,6 @@
 - Informar se o usuário tem empréstimos ativos
 - Consultar as obras associadas aos seus empréstimos
 - Consultar o histórico de empréstimos
-- Solicitar renovação de empréstimo ativo
 
 ## Colaborações
 - Empréstimo

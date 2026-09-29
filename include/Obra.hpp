@@ -13,6 +13,8 @@ class Obra {
         Obra(std::string t, std::string a, int id);
         void setDisponivel(bool d);
         void setDanificado(bool d);
+        void setTitulo(std::string t);
+        void setAutor(std::string a);
 
         std::string getTitulo() const;
         std::string getAutor() const;

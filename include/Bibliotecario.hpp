@@ -2,16 +2,14 @@
 #define BIBLIOTECARIO_H
 
 #include "Pessoa.hpp"
-class Emprestimo;
-class Obra;
 class Data;
 
 class Bibliotecario : public Pessoa {
     public:
         Bibliotecario(std::string n, std::string c);
         
-        bool aprovarEmprestimo(Emprestimo *e, Data d);
-        bool aprovarRenovacao(Emprestimo *e, Data d);
+        Emprestimo* aprovarEmprestimo(Pessoa *p, Obra *o, Data d);
+        bool aprovarRenovacao(Emprestimo *e);
         void registrarDevolucao(Emprestimo *e);
         void avaliarObra(Obra *o);
 };
