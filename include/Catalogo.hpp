@@ -1,7 +1,6 @@
 #ifndef CATALOGO_H
 #define CATALOGO_H
 
-#include <string>
 #include <vector>
 #include "Obra.hpp"
 
