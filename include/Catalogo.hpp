@@ -1,6 +1,7 @@
 #ifndef CATALOGO_H
 #define CATALOGO_H
 
+#include <string>
 #include <vector>
 #include "Obra.hpp"
 
@@ -11,15 +12,16 @@ private:
 
 public:
     Catalogo();
-    ~Catalogo();
 
-    bool cadastrarObra(Obra* obra);
-    Obra* buscarPorTitulo(const std::string& titulo) const;
-    Obra* buscarPorAutor(const std::string& autor) const;
-    bool alterarTituloObra(int id, const std::string& novoTitulo);
-    bool alterarAutorObra(int id, const std::string& novoAutor);
+    bool cadastrarObra(Obra *o);
     bool removerObra(int id);
-    std::vector<Obra*> listarObras() const;
-};
+    bool alterarTituloObra(int id, const std::string& t);
+    bool alterarAutorObra(int id, const std::string& a);
 
+    Obra* buscarPorTitulo(const std::string& t) const;
+    std::vector<Obra*> buscarPorAutor(const std::string& a) const;
+    std::vector<Obra*> listarObras() const;
+
+    ~Catalogo() = default;
+};
 #endif

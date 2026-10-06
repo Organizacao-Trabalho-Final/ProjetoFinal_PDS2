@@ -18,40 +18,25 @@ class Manutencao {
     private:
         Obra *obra;
         TecnicoManutencao *tecnico;
-        std::string danoIdentificado;
-        std::string reparosRealizados;
-        Data dataInicio;
-        Data prazoPrevisto;
+        std::string dano;
+        std::string reparo;
+        Data inicio;
         EstadoManutencao estado;
 
     public:
-        Manutencao(Obra *o, TecnicoManutencao *tm, std::string dano, Data inicio, Data prazo);
+        Manutencao(Obra *o, TecnicoManutencao *tm, std::string d, Data i);
 
-        
         Obra* getObra() const;
         TecnicoManutencao* getTecnico() const;
-
-        
-        void registrarDano(std::string dano);
-        void registrarReparo(std::string reparo);
-        std::string getDanoIdentificado() const;
-        std::string getReparosRealizados() const;
-
-        
-        void setDataInicio(Data d);
-        Data getDataInicio() const;
-        void setPrazoPrevisto(Data p);
-        Data getPrazoPrevisto() const;
-
-        
-        void setEstado(EstadoManutencao e);
+        std::string getDano() const;
+        std::string getReparo() const;
+        Data getInicio() const;
         EstadoManutencao getEstado() const;
-        std::string getEstadoString() const;
-        bool isPendente() const;
-        bool isEmAndamento() const;
-        bool isConcluida() const;
 
-    
-        void modificarDisponibilidadeObra(bool disponivel);
+        void registrarReparo(std::string r);
+        void iniciar();
+        void concluir();
+
+        ~Manutencao() = default;
 };
 #endif
