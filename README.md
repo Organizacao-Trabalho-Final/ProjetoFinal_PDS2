@@ -2,16 +2,16 @@
 
 ## Integrantes do Grupo:
 - Daniel Rodrigues de Oliveira
-- Luis Felippe Sousa de Lima
 - Max Arthur Giancoli Jabour
+- Nicolas Ferreira Costa Gomes
 - Santiago Hagenmuller Justo
 
 ## Descrição do Problema:
-Reconhecemos que a biblioteca é um lugar útil para inúmeras pessoas, mas que poderia usar um programa para facilitar seu funcionamento. A biblioteca trabalha com emprestar livros e precisa deixar muitas informações registradas para garantir a segurança de seus principais materiais.
+Bibliotecas são lugares fundamentais para a sociedade e a cultura e, com isso, poderiam utilizar um software para facilitar seu funcionamento. Nesse contexto, muitas informações precisam ser registradas para garantir a segurança dos principais materiais das bibliotecas.
 
 ## Objetivos Principais:
-Queremos criar um sistema de gerenciamento de biblioteca que auxilia a organização das várias funções de uma biblioteca. É um sistema útil não apenas para o bibliotecário, mas também aos próprios clientes, pois principalmente facilita o empréstimo de livros, mas também é bom para guardar informações dos usuários e das obras, além de verificar o estado dos livros para saber se precisam passar pela manutenção ou não.
+Criar um sistema de gerenciamento de biblioteca que auxilia na organização de suas várias funções. Esse deve ser um sistema útil não apenas para o bibliotecário, mas também para os clientes e administradores do local, pois facilita o empréstimo de livros e guarda informações dos usuários e das obras, além de verificar o estado dos livros e encaminha-los para a manutenção caso necessário.
 
 ## Por Que Escolhemos esse Tema:
-O nosso grupo acredita fielmente na importância da leitura e das bibliotecas como um espaço educativo, e isso motivou a escolha de sistema de gerenciamento de biblioteca como tema, pois é um projeto com um propósito muito bom de ajudar a tornar esses lugares mais organizados e melhores geridos. Apesar do conceito de biblioteca ser bastante antigo, acreditamos que modernizar o gerenciamento desse lugar só gera pontos positivos.
-Obviamente, a importância das bilbliotecas não é o único fator, pois enxergamos que existem inúmeras funções que podem ser criadas para cada classe que ajudam no sistema de gerenciar biblioteca. Além de ser um trabalho que contribui para algo importante é, também, um trabalho onde cada integrante tem várias possibilidades de commits que podem ser realizados. Nas fases mais iniciais do trabalho, a maior parte dos commits foi feito por apenas um integrante, mas na produção dos arquivos .cpp, existem infinitas oportunidades para cada integrante contribuir, considerando quantos módulos o nosso trabalho tem e, por isso, acreditamos que a escolha do gerenciamento de bibliotecas como tema foi um enorme acerto.
+O tema foi escolhido porque ele permite a criação de diversas classes que utilizam herança, composição e polimorfismo e que auxiliam na missão de garantir o bom funcionamento de bibliotecas. Como sistema de ferenciamento, a coesão entre as classes é delicada e requer refinamento contínuo do sistema durante o desenvolvimento.
+Ademais, as bibliotecas são locais de incentivo a leitura e cultura e têm funções fundamentais para a educação da população. Assim, um projeto que visa a melhoria desses lugares é importante para o grupo. A modernização de bibliotecas, sendo instituíções antigas e trandicionais na sociedade, ajuda esses locais a se manterem abertos e funcionando com eficiência.

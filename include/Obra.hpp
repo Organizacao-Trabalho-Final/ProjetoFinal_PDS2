@@ -5,11 +5,9 @@
 
 class Obra {
     private:
-        std::string titulo; 
-        std::string autor;
+        std::string titulo, autor;
         int id;
-        bool disponivel;
-        bool danificado;
+        bool disponivel, danificado;
 
     public:
         Obra(std::string t, std::string a, int id);
