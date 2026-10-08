@@ -1,69 +1,41 @@
-#include "../include/Obra.hpp"
+#include <string>
+#include "Obra.hpp"
 
-Obra::Obra(std::string t, std::string a, int id) {
+    Obra::Obra(std::string t, std::string a, int id):
+    titulo(t), autor(a), id(id), disponivel(true), danificado(false) {}
 
-    this->titulo = t;
-    this->autor  = a;
-    this->id     = id;
+    void Obra::setDanificado(bool d) {
+        danificado = d;
+    }
 
-    // Veificar  ????????
-    this->danificado = false;
-    this->disponivel = true;
-    // ??????????
+    void Obra::setDisponivel(bool d) {
+        disponivel = d;
+    }
 
-}
+    void Obra::setTitulo(std::string t) {
+        titulo = t;
+    }
 
-void Obra::setDanificado(bool d) {
+    void Obra::setAutor(std::string a) {
+        autor = a;
+    } 
 
-    this->danificado = d;
+    std::string Obra::getAutor() const {
+        return autor;
+    }
 
-}
+    std::string Obra::getTitulo() const {
+        return titulo;
+    }
 
-void Obra::setDisponivel(bool d) {
+    int Obra::getID() const {
+        return id;
+    }
 
-    this->disponivel = d;
+    bool Obra::isDanificado() const {
+        return danificado;
+    }
 
-}
-
-void Obra::setTitulo(std::string t) {
-
-    this->titulo = t;
-
-}
-
-void Obra::setAutor(std::string a) {
-
-    this->autor = a;
-
-} 
-
-std::string Obra::getAutor() const {
-
-    return this->autor;
-
-}
-
-std::string Obra::getTitulo() const {
-
-    return this->titulo;
-
-}
-
-int Obra::getID() const {
-
-    return this->id;
-
-}
-
-bool Obra::isDanificado() const {
-
-    return this->danificado;
-
-}
-
-bool Obra::isDisponivel() const {
-
-    return this->disponivel;
-
-}
-
+    bool Obra::isDisponivel() const {
+        return disponivel;
+    }

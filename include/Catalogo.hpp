@@ -8,6 +8,7 @@
 class Catalogo {
 private:
     std::vector<Obra*> obrasCadastradas;
+    
     bool verificarDuplicata(int id) const;
 
 public:
