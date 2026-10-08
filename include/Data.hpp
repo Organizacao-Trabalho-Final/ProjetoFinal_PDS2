@@ -3,11 +3,18 @@
 
 #include <string>
 
-class Data {
+class Data {    
     private:
         int dia;
         int mes;
         int ano;
+
+    private :
+        bool isBissexto(int _ano) const;
+        int  diaMes(int _mes, int _ano) const;
+        int  Dias(int _dia, int _mes, int _ano) const;
+        int  Dias() const;
+        void addDia();
 
     public:
         Data(int d, int m, int a);
