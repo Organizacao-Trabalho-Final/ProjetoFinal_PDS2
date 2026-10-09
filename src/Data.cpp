@@ -119,7 +119,7 @@
         int _mes = this->mes;
         int _ano = this->ano;
 
-        int dias;
+        int dias = 0;
 
         for(int i = 0; i < _mes; i++) {
             dias += diaMes(i, _ano);
