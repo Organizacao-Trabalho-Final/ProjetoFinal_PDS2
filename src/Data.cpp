@@ -101,7 +101,7 @@
 
     int Data::Dias(int _dia, int _mes, int _ano) const {
 
-        int dias;
+        int dias = 0;
 
         for(int i = 0; i < _mes; i++) {
             dias += diaMes(i, _ano);
