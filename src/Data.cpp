@@ -211,7 +211,7 @@
 
     Data Data::somarDias(int d) const {
 
-        if(d < 0) {
+        if(d < 1) {
             throw std::invalid_argument("'d' inválido -> d > 0");
         }
 
@@ -222,10 +222,8 @@
         Data prazo(_dia, _mes, _ano);
 
         while(d > 0) {
-
             prazo.addDia();
             d--;
-
         }
 
         return prazo;

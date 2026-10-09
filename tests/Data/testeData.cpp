@@ -131,6 +131,7 @@ TEST_CASE("Teste função somarDias() - Data") {
     CHECK(data2.getAno() == 1943);
 
     CHECK_THROWS(data2.somarDias(-10));
+    CHECK_THROWS(data2.somarDias(0));
 
 }
 
