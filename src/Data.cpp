@@ -220,6 +220,7 @@
         while(d > 0) {
 
             prazo.addDia();
+            d--;
 
         }
 
