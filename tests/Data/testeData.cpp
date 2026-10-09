@@ -62,5 +62,35 @@ TEST_CASE("Teste função Dias() - Data") {
 
 }
 
+TEST_CASE("Teste função diaMes() - Data") {
+
+    Data data(10, 06, 1942);
+
+    CHECK(data.diaMes(2, 2025) == 28);
+    CHECK(data.diaMes(2, 2016) == 29);
+    CHECK(data.diaMes(3, 2000) == 31);
+    CHECK(data.diaMes(4, 2000) == 30);
+
+}
+
+TEST_CASE("Teste função isValida() - Data") {
+
+    Data data(30, 06, 1942);
+
+    CHECK(data.isValida(30, 06, 1942) == true);
+    CHECK(data.isValida(30, 06, -1942) == false);
+    CHECK(data.isValida(30, 06, 19420) == false);
+    CHECK(data.isValida(00, 06, 1942) == false);
+    CHECK(data.isValida(30, 13, 1942) == false);
+    CHECK(data.isValida(-10, 06, 1942) == false);
+    CHECK(data.isValida(-15, -03, 1942) == false);
+    CHECK(data.isValida(-30, 06, 19420) == false);
+    CHECK(data.isValida(29, 02, 2038) == false);
+    CHECK(data.isValida(28, 02, 2038) == true);
+
+}
+
+
+
 
 
