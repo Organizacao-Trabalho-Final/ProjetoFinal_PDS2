@@ -38,17 +38,21 @@
     }
 
     bool Data::isBissexto(int _ano) const {
-
         if(_ano % 4   == 0 &&
-           _ano % 400 == 0 &&
-           _ano % 100 == 0 ){
-
+           _ano % 100 != 0 ){
             return true;
-
         }
 
-        return false;
+        int retirar  = _ano / 100;
+            retirar *= 100;
+        _ano -= retirar;
 
+        if(_ano       == 0 &&
+           _ano % 400 == 0 ){
+            return true;
+        } 
+
+        return false;
     }
 
     int Data::diaMes(int _mes, int _ano)const {
