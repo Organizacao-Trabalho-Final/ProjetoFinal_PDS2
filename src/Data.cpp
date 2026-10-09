@@ -101,6 +101,10 @@
 
     int Data::Dias(int _dia, int _mes, int _ano) const {
 
+        if(!isValida(_dia, _mes, _ano)) {
+            throw std::invalid_argument("Data invalida");
+        }
+
         int dias = 0;
 
         for(int i = 0; i < _mes; i++) {
@@ -163,11 +167,11 @@
             return false;
         }
 
-        if(this->mes < 0 || mes > 12) {
+        if(this->mes < 0 || this->mes > 12) {
             return false;
         }
 
-        if(this->ano < 0) {
+        if(this->ano < 0 || this->ano > 9999) {
             return false;
         }
 
@@ -191,7 +195,7 @@
             return false;
         }
 
-        if(_ano < 0) {
+        if(_ano < 0 || _ano > 9999) {
             return false;
         }
 
