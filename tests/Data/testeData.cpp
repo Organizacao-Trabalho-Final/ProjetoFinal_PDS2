@@ -33,3 +33,14 @@ TEST_CASE("Teste função isBissexto - Data") {
 
 }
 
+TEST_CASE("Teste função diaMes() - Data") {
+
+    Data data(10, 06, 1942);
+
+    CHECK(data.diaMes(2, 2025) == 28);
+    CHECK(data.diaMes(2, 2016) == 29);
+    CHECK(data.diaMes(3, 2000) == 31);
+    CHECK(data.diaMes(4, 2000) == 30);
+
+}
+
