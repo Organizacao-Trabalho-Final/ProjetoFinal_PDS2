@@ -135,6 +135,17 @@ TEST_CASE("Teste função somarDias() - Data") {
 
 }
 
+TEST_CASE("Teste função difenrencaDatas() - Data") {
+
+    Data data1(30, 06, 1942);
+
+    CHECK(data1.diferencaDatas(Data(30, 6, 1942)) == 0);
+    CHECK(data1.diferencaDatas(Data(30, 7, 1942)) == 30);
+    CHECK(data1.diferencaDatas(Data(10, 8, 1942)) == 41);
+
+
+}
+
 
 
 
