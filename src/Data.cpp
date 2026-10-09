@@ -181,6 +181,30 @@
 
     }
 
+    bool Data::isValida(int _dia, int _mes, int _ano) const {
+
+        if(_dia > 31 || _dia < 1) {
+            return false;
+        }
+
+        if(_mes < 0 || _mes > 12) {
+            return false;
+        }
+
+        if(_ano < 0) {
+            return false;
+        }
+
+        int dia_mes = diaMes(_mes, _ano);
+
+        if(_dia > dia_mes) {
+            return false;
+        }
+        
+        return true;
+
+    }
+
     Data Data::somarDias(int d) const {
 
         int _dia = this->dia;
