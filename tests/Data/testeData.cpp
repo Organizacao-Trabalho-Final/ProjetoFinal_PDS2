@@ -44,3 +44,23 @@ TEST_CASE("Teste função diaMes() - Data") {
 
 }
 
+TEST_CASE("Teste função Dias() - Data") {
+
+    Data data(10, 06, 1942);
+
+    CHECK(data.Dias(31, 12, 2016) == 366);
+    CHECK(data.Dias(31, 12, 2038) == 365);
+    CHECK(data.Dias(31, 05, 2016) == 152);
+    CHECK(data.Dias(24, 01, 2000) == 24 );
+    CHECK(data.Dias(05, 04, 2023) == 95 );
+    CHECK_THROWS(data.Dias(05,  04, 20240));
+    CHECK_THROWS(data.Dias(-05, 04,  2024));
+    CHECK_THROWS(data.Dias(05,  -1,  2024));
+    CHECK_THROWS(data.Dias(05,  04, -2024));
+    CHECK_THROWS(data.Dias(05,  13,  2024));
+    CHECK_THROWS(data.Dias(29,  02,  2038));
+
+}
+
+
+
