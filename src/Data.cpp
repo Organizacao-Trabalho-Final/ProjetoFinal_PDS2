@@ -157,7 +157,7 @@
 
         this->dia = _dia;
         this->mes = _mes;
-        this->mes = _ano;
+        this->ano = _ano;
 
     }
 
@@ -210,6 +210,10 @@
     }
 
     Data Data::somarDias(int d) const {
+
+        if(d < 0) {
+            throw std::invalid_argument("'d' inválido -> d > 0");
+        }
 
         int _dia = this->dia;
         int _mes = this->mes;

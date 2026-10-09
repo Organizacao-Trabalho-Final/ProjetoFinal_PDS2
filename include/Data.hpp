@@ -9,7 +9,7 @@ class Data {
         int mes; ///< Mes do ano
         int ano; ///< Ano
 
-    private :
+    public :
 
         /**
         * @brief Verifica se o ano é bissexto.
@@ -84,6 +84,12 @@ class Data {
         * @return False se é inválida e True se Válida.
         */
         bool isValida() const;
+
+        /**
+        * @brief Verifica se a data fornecida é válida.
+        * @return False se é inválida e True se Válida.
+        */
+        bool isValida(int _dia, int _mes, int _ano) const;
 
         /**
         * @brief Soma X dias a data atual.
