@@ -14,3 +14,22 @@ TEST_CASE("Teste Construtor - Data") {
 
 }
 
+TEST_CASE("Teste função isBissexto - Data") {
+
+        Data data(10, 06, 1942);
+
+        CHECK(data.isBissexto(2016) ==  true);
+        CHECK(data.isBissexto(2020) ==  true);
+        CHECK(data.isBissexto(2024) ==  true);
+        CHECK(data.isBissexto(2023) == false);
+        CHECK(data.isBissexto(2025) == false);
+        CHECK(data.isBissexto(2026) == false);
+        CHECK(data.isBissexto(2028) ==  true);
+        CHECK(data.isBissexto(2035) == false);
+        CHECK(data.isBissexto(2037) == false);
+        CHECK(data.isBissexto(2038) == false);
+        CHECK_THROWS(data.isBissexto(-2000));
+        CHECK_THROWS(data.isBissexto(20242));
+
+}
+
