@@ -90,6 +90,52 @@ TEST_CASE("Teste função isValida() - Data") {
 
 }
 
+TEST_CASE("Teste função somarDias() - Data") {
+
+    Data data1(10, 6, 1942);
+    data1 = data1.somarDias(10);
+
+    CHECK(data1.getDia() == 20);
+    CHECK(data1.getMes() == 6);
+    CHECK(data1.getAno() == 1942);
+
+    data1 = data1.somarDias(10);
+
+    CHECK(data1.getDia() == 30);
+    CHECK(data1.getMes() == 6);
+    CHECK(data1.getAno() == 1942);
+
+    data1 = data1.somarDias(10);
+
+    CHECK(data1.getDia() == 10);
+    CHECK(data1.getMes() == 7);
+    CHECK(data1.getAno() == 1942);
+
+    Data data2(10, 12, 1942);
+    data2 = data2.somarDias(10);
+
+    CHECK(data2.getDia() == 20);
+    CHECK(data2.getMes() == 12);
+    CHECK(data2.getAno() == 1942);
+
+    data2 = data2.somarDias(10);
+
+    CHECK(data2.getDia() == 30);
+    CHECK(data2.getMes() == 12);
+    CHECK(data2.getAno() == 1942);
+
+    data2 = data2.somarDias(10);
+
+    CHECK(data2.getDia() == 9);
+    CHECK(data2.getMes() == 1);
+    CHECK(data2.getAno() == 1943);
+
+    CHECK_THROWS(data2.somarDias(-10));
+
+}
+
+
+
 
 
 
