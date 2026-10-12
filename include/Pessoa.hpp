@@ -50,7 +50,7 @@ class Pessoa {
 
         /**
          * @brief usado para ler o valor máximo de empréstimos
-         * @return retorna o valor máximo de empréstimos
+         * @return retorna o valor máximo de empréstimos da pessoa
          */
         virtual int getMaxEmprestimos() const;
 
