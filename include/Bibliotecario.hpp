@@ -2,6 +2,7 @@
 #define BIBLIOTECARIO_H
 
 #include "Pessoa.hpp"
+
 class Data;
 class Obra;
 class Emprestimo;
@@ -16,6 +17,6 @@ class Bibliotecario : public Pessoa {
         bool aprovarRenovacao(Emprestimo *e);
         void registrarDevolucao(Emprestimo *e);
         void avaliarObra(Obra *o);
-        Manutencao* encaminharManutencao(Obra *o, TecnicoManutencao *tm);
+        Manutencao* encaminharManutencao(Obra *o, TecnicoManutencao *tm, std::string dano, Data i);
 };
 #endif
