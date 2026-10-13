@@ -1,8 +1,17 @@
 #ifndef DATA_H
 #define DATA_H
 
+/**
+ * @file Data.hpp
+ * @brief Declaração da classe Data
+ * @date 2026-10-13
+ */
 #include <string>
 
+/**
+ * @class Data
+ * @brief Cria a estrutura da calsse Data
+ */
 class Data {    
     private:
         int dia; ///< Dia do mês
