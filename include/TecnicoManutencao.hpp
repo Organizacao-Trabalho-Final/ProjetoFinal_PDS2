@@ -1,5 +1,5 @@
-#ifndef TECNICOMANUTENCAO_H
-#define TECNICOMANUTENCAO_H
+#ifndef TECNICOMANUTENCAO_HPP
+#define TECNICOMANUTENCAO_HPP
 
 /**
  * @file TecnicoManutencao
