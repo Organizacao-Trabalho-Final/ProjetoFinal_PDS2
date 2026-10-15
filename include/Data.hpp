@@ -13,12 +13,12 @@
  * @brief Cria a estrutura da calsse Data
  */
 class Data {    
-    private:
+    private :
         int dia; ///< Dia do mês
         int mes; ///< Mes do ano
         int ano; ///< Ano
 
-    public :
+    private :
 
         /**
         * @brief Verifica se o ano é bissexto.
@@ -54,7 +54,7 @@ class Data {
         */
         void addDia();
 
-    public:
+    public :
 
         /**
         * @brief Carrega o dia, mês e ano para os parÂmetros da classe.
