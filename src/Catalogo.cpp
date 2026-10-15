@@ -10,7 +10,7 @@
         int tamanho = obrasCadastradas.size();
 
         for(int i = 0; i < tamanho; i++) {
-            temp_id = obrasCadastradas[i].getID();
+            temp_id = obrasCadastradas[i]->getID();
 
             if(temp_id == id)
                 return true;
@@ -21,7 +21,13 @@
     }
 
     bool Catalogo::cadastrarObra(Obra *o) {
+        int temp_id = o->getID();
+        bool existe = verificarDuplicata(temp_id);
+        
+        if(existe)
+            return false;
 
+        obrasCadastradas.push_back(o);
     }
 
     bool Catalogo::removerObra(int id) {
