@@ -6,7 +6,9 @@
     Obra(t, a, id), genero(g), edicao(e) {}
 
     void Livro::setEdicao(int e) {
-        edicao = e;
+        if (e > 0) {
+            edicao = e;
+        }
     }
 
     void Livro::setGenero(std::string g) {
@@ -22,5 +24,10 @@
     }
 
     void Livro::printObra() const {
-        std::cout << "Titulo: " << getTitulo() << "\nAutor: " << getAutor() << "\nID: " << getID() << "\nGenero: " << getGenero() << "\nEdição: " << getEdicao();
+        std::cout << "Titulo: " << getTitulo();
+        std::cout << "Autor: " << getAutor() << std::endl;
+        std::cout << "Genero: " << getGenero() << std::endl;
+        std::cout << "Edição: " << getEdicao() << std::endl;
+        std::cout << "ID: " << getID() << std::endl;
+        std::cout << "Disponivel: " << (isDisponivel() ? "Sim" : "Não") << std::endl;
     }
