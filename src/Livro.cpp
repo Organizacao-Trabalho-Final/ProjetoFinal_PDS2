@@ -1,3 +1,4 @@
+#include <iostream>
 #include <string>
 #include "Livro.hpp"
 
@@ -5,21 +6,21 @@
     Obra(t, a, id), genero(g), edicao(e) {}
 
     void Livro::setEdicao(int e) {
-
+        edicao = e;
     }
 
     void Livro::setGenero(std::string g) {
-
+        genero = g;
     }
 
     int Livro::getEdicao() const {
-
+        return edicao;
     }
 
     std::string Livro::getGenero() const {
-
+        return genero;
     }
 
     void Livro::printObra() const {
-
+        std::cout << "Titulo: " << getTitulo() << "\nAutor: " << getAutor() << "\nID: " << getID() << "\nGenero: " << getGenero() << "\nEdição: " << getEdicao();
     }
