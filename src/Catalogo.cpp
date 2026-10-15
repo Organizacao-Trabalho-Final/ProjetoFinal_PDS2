@@ -4,6 +4,22 @@
 
     Catalogo::Catalogo(): obrasCadastradas() {}
 
+    bool Catalogo::verificarDuplicata(int id) const {
+
+        int temp_id;
+        int tamanho = obrasCadastradas.size();
+
+        for(int i = 0; i < tamanho; i++) {
+            temp_id = obrasCadastradas[i].getID();
+
+            if(temp_id == id)
+                return true;
+        }
+
+        return false;
+
+    }
+
     bool Catalogo::cadastrarObra(Obra *o) {
 
     }
