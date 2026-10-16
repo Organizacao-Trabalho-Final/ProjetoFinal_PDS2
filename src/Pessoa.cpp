@@ -1,5 +1,6 @@
 #include <string>
 #include <vector>
+#include <iostream>
 #include "Obra.hpp"
 #include "Pessoa.hpp"
 #include "Emprestimo.hpp"
@@ -42,9 +43,17 @@
     }
 
     std::vector<Emprestimo*> Pessoa::historicoEmprestimos() {
-
+        for(Emprestimo * e : emprestimos) {
+            std::cout << "||======================================================||" << std::endl;
+            e->printEmprestimo();
+            std::cout << "||======================================================||" << std::endl;
+        }
+        return emprestimos;
     }
 
     void Pessoa::registrarEmprestimo(Emprestimo *e) {
-        
+        if(e == nullptr) {
+            throw std::invalid_argument("Ponteiro para Emprestimo nulo -> e = 'nullptr'");
+        }
+        emprestimos.push_back(e);
     }
