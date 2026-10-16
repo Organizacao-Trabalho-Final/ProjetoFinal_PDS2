@@ -42,7 +42,7 @@ class Emprestimo {
          * @brief Verifica se o emprestimo está ativo.
          * @return retorna True se ativo e False caso contrário.
          */
-        bool isAtivo();
+        bool isAtivo() const;
 
         /**
          * @brief Usado para ler o valor de "Obra"
@@ -87,6 +87,11 @@ class Emprestimo {
          * @brief Prolonga o tempo que o emprestimo poderá existir sem que haja atraso
          */
         void renovarEmprestimo();
+
+        /**
+         * @brief Imprime Nome da obra, ID, retirada, devolução e se está ativo.
+         */
+        void printEmprestimo() const;
 
         /**
          * @brief destrutor de "Emprestimo"
