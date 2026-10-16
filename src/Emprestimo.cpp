@@ -1,5 +1,6 @@
 #include "Emprestimo.hpp"
 #include "Pessoa.hpp"
+#include "Obra.hpp"
 
     Emprestimo::Emprestimo(Obra &o, Pessoa &p, Data d):
     obra(&o), usuario(&p), retirada(d), devolucao(d.somarDias(p.getPrazo())), ativo(true) {}
