@@ -68,7 +68,18 @@
     }
 
     Obra* Catalogo::buscarPorTitulo(const std::string& t) const {
-
+        std::string temp_t;
+        int tamanho = obrasCadastradas.size();
+        for(int i = 0; i < tamanho; i++) {
+            temp_t = obrasCadastradas[i]->getTitulo();
+            if(temp_t == t) {
+                return obrasCadastradas[i];
+            }
+        }
+        throw std::invalid_argument("Obra não encontrada!");
+        Obra * nao_encontrada;
+        nao_encontrada->setTitulo("Obra não encontrada!");
+        return nao_encontrada;
     }
 
     std::vector<Obra*> Catalogo::buscarPorAutor(const std::string& a) const {
