@@ -1,5 +1,6 @@
 #include <string>
 #include <vector>
+#include "Obra.hpp"
 #include "Pessoa.hpp"
 #include "Emprestimo.hpp"
 
