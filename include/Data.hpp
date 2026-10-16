@@ -18,7 +18,7 @@ class Data {
         int mes; ///< Mes do ano
         int ano; ///< Ano
 
-    private :
+    public  :
 
         /**
         * @brief Verifica se o ano é bissexto.

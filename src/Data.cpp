@@ -43,8 +43,8 @@
             return true;
         }
 
-        int retirar  = a / 100;
-            retirar *= 100;
+        int  retirar  = a / 100;
+        retirar *= 100;
         a -= retirar;
 
         if(a       == 0 &&
@@ -82,7 +82,6 @@
              _mes   == 12  ){
                 return 31;                
         }
-
         return 0;
     }
 
@@ -150,7 +149,7 @@
         if(mes < 0 || mes > 12) {
             return false;
         }
-        if(ano < 0 || ano > 9999) {
+        if(ano < 1 || ano > 9999) {
             return false;
         }
 
@@ -167,10 +166,10 @@
         if(_dia > 31 || _dia < 1) {
             return false;
         }
-        if(_mes < 0 || _mes > 12) {
+        if(_mes < 1 || _mes > 12) {
             return false;
         }
-        if(_ano < 0 || _ano > 9999) {
+        if(_ano < 1 || _ano > 9999) {
             return false;
         }
         int dia_mes = diaMes(_mes, _ano);
