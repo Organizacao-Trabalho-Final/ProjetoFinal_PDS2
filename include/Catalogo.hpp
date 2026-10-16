@@ -19,7 +19,7 @@ private:
     std::vector<Obra*> obrasCadastradas;
     
     /**
-     * @brief verifica se tem algum livro duplicado
+     * @brief verifica se tem alguma obra duplicado
      * @return Retorna true se tiver, ou falso se não tiver
      */
     bool verificarDuplicata(int id) const;
