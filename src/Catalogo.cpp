@@ -83,9 +83,32 @@
     }
 
     std::vector<Obra*> Catalogo::buscarPorAutor(const std::string& a) const {
-
+        std::string temp_a;
+        std::vector<Obra*> obrasAutor(0);
+        int tamanho = obrasCadastradas.size();
+        for(int i = 0; i < tamanho; i++) {
+            temp_a = obrasCadastradas[i]->getAutor();
+            if(temp_a == a) {
+                obrasAutor.push_back(obrasCadastradas[i]);
+            }
+        }
+        tamanho = obrasAutor.size();
+        if(tamanho > 0) {
+            return obrasAutor;
+        }
+        throw std::invalid_argument("Autor não encontrada!");
+        Obra * nao_encontrada;
+        nao_encontrada->setTitulo("Obra não encontrada!");
+        obrasAutor.push_back(nao_encontrada);
+        return obrasAutor;
     }
 
     std::vector<Obra*> Catalogo::listarObras() const {
-
+        int tamanho = obrasCadastradas.size();
+        for(int i = 0; i < tamanho; i++) {
+            std::cout << "||================================================|| << std::endl";
+            obrasCadastradas[i]->printObra();
+            std::cout << "||================================================||" << std::endl;
+        }
+        return obrasCadastradas;
     }
