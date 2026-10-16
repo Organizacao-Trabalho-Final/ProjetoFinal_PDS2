@@ -19,7 +19,8 @@ class Emprestimo {
     private:
         Obra *obra;
         Pessoa *usuario;
-        Data retirada, devolucao;
+        Data retirada;
+        Data devolucao;
         bool ativo;
 
     public:
@@ -36,6 +37,12 @@ class Emprestimo {
          * @param b Valor booleano passado para alterar "Ativo"
          */
         void setAtivo(bool b);
+
+        /**
+         * @brief Verifica se o emprestimo está ativo.
+         * @return retorna True se ativo e False caso contrário.
+         */
+        bool isAtivo();
 
         /**
          * @brief Usado para ler o valor de "Obra"
