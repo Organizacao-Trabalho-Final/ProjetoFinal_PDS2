@@ -9,6 +9,10 @@
         ativo = b;
     }
 
+    bool Emprestimo::isAtivo() {
+        return ativo;
+    }
+
     Obra& Emprestimo::getObra() {
         return *obra;
     }
