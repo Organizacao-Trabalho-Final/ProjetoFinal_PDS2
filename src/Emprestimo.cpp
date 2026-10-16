@@ -54,5 +54,6 @@
     }
 
     void Emprestimo::renovarEmprestimo() {
-        
+        //Renovar por mais quanto tempo ????!??!!!?? 
+        //Quato tempo!?!!??
     }
