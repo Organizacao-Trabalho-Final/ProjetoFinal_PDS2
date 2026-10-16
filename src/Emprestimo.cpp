@@ -1,3 +1,4 @@
+#include <iostream>
 #include "Emprestimo.hpp"
 #include "Pessoa.hpp"
 #include "Obra.hpp"
@@ -9,7 +10,7 @@
         ativo = b;
     }
 
-    bool Emprestimo::isAtivo() {
+    bool Emprestimo::isAtivo() const {
         return ativo;
     }
 
@@ -37,6 +38,19 @@
     void Emprestimo::encerrarEmprestimo() {
         setAtivo(false);
         obra->setDisponivel(true);
+    }
+
+    void Emprestimo::printEmprestimo() const {
+        std::string _nome = obra->getTitulo();
+        std::string _dev  = devolucao.getData();
+        std::string _ret  = retirada.getData();
+        int         _id   = obra->getID();
+        bool        _at   = ativo;
+        std::cout << "Obra: " << _nome << std::endl;
+        std::cout << "ID: " << _id << std::endl;
+        std::cout << "Retirada: " << _ret << std::endl;
+        std::cout << "Data para devolução: " << _dev << std::endl;
+        std::cout << "Ativo: " << _at << std::endl;
     }
 
     void Emprestimo::renovarEmprestimo() {
