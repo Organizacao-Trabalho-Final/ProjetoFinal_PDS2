@@ -42,11 +42,20 @@
     }
 
     bool Catalogo::alterarTituloObra(int id, const std::string& t) {
-        
+        int temp_id;
+        int tamanho = obrasCadastradas.size();
+        for(int i = 0; i < tamanho; i++) {
+            temp_id = obrasCadastradas[i]->getID();
+            if(id == temp_id) {
+                obrasCadastradas[i]->setTitulo(t);
+                return true;
+            }            
+        }
+        return false;
     }
 
     bool Catalogo::alterarAutorObra(int id, const std::string& a) {
-
+        
     }
 
     Obra* Catalogo::buscarPorTitulo(const std::string& t) const {
