@@ -18,10 +18,14 @@
     }
 
     bool Catalogo::cadastrarObra(Obra *o) {
+        if(o == nullptr) {
+            //throw std::invalid_argument("Ponteiro para obra Nulo");
+            return false;
+        }
         int temp_id = o->getID();
         bool existe = verificarDuplicata(temp_id);
         if(existe) {
-            throw std::invalid_argument("Essa obra já está no catálogo");
+            //throw std::invalid_argument("Essa obra já está no catálogo");
             return false;
         }
         obrasCadastradas.push_back(o);
@@ -34,6 +38,7 @@
         for(int i = 0; i < tamanho; i++) {
             temp_id = obrasCadastradas[i]->getID();
             if(temp_id == id) {
+                //delete obrasCadastradas[i];
                 obrasCadastradas.erase(obrasCadastradas.begin() + i);
                 return true;
             }
@@ -76,10 +81,8 @@
                 return obrasCadastradas[i];
             }
         }
-        throw std::invalid_argument("Obra não encontrada!");
-        Obra * nao_encontrada;
-        nao_encontrada->setTitulo("Obra não encontrada!");
-        return nao_encontrada;
+        //throw std::invalid_argument("Obra não encontrada!");
+        return nullptr;
     }
 
     std::vector<Obra*> Catalogo::buscarPorAutor(const std::string& a) const {
@@ -93,20 +96,14 @@
             }
         }
         tamanho = obrasAutor.size();
-        if(tamanho > 0) {
-            return obrasAutor;
-        }
-        throw std::invalid_argument("Autor não encontrada!");
-        Obra * nao_encontrada;
-        nao_encontrada->setTitulo("Obra não encontrada!");
-        obrasAutor.push_back(nao_encontrada);
         return obrasAutor;
+        //throw std::invalid_argument("Autor não encontrada!");
     }
 
     std::vector<Obra*> Catalogo::listarObras() const {
         int tamanho = obrasCadastradas.size();
         for(int i = 0; i < tamanho; i++) {
-            std::cout << "||================================================|| << std::endl";
+            std::cout << "||================================================||" << std::endl;
             obrasCadastradas[i]->printObra();
             std::cout << "||================================================||" << std::endl;
         }
