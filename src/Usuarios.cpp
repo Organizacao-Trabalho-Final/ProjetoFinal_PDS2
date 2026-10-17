@@ -1,8 +1,8 @@
 #include "Usuarios.hpp"
 
-Usuarios::Usuarios() : usuarios() {}
+Usuarios::Usuarios() : usuarios(0) {}
 
-void Usuarios::adicionarUsuario(const Pessoa *usuario) {
+void Usuarios::adicionarUsuario(Pessoa *usuario) {
     int id = usuarios.size() + 1;
     usuarios.push_back(std::make_pair(usuario, id));
 }
