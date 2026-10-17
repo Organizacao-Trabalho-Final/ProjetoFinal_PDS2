@@ -26,6 +26,10 @@
         return emprestimos.size();
     }
 
+    std::vector<Emprestimo*>& Pessoa::getEmprestimos() const {
+        return emprestimos;
+    }
+
     bool Pessoa::podeEmprestar(const Obra *o) const {
         return o->isDisponivel();
     }
