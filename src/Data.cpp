@@ -33,7 +33,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
     bool Data::isBissexto(int a) const {
-        if(a < 0) {
+        if(a < 1) {
             throw std::invalid_argument("Ano inválido -> ANO > 0");           
         } else if(a > 9999) {
             throw std::invalid_argument("Ano inválido -> ANO com 4 Digitos");
@@ -43,11 +43,7 @@
             return true;
         }
 
-        int  retirar  = a / 100;
-        retirar *= 100;
-        a -= retirar;
-
-        if(a       == 0 &&
+        if(a % 100 == 0 &&
            a % 400 == 0 ){
             return true;
         } 
