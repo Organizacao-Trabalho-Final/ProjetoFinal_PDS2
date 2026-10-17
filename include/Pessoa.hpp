@@ -54,6 +54,12 @@ class Pessoa {
          */
         virtual int getMaxEmprestimos() const;
 
+         /**
+         * @brief Método virtual constante que retorna o vetor de ponteiros para os empréstimos da pessoa
+         * @return Referência para vetor de 'std::vector<Emprestimo*>'.
+         */
+        virtual std::vector<Emprestimo*>& getEmprestimos() const;
+
         /**
          * @brief método virtual constante que verifica se a pessoa pode pegar aquela obra eprestada
          * @param o um ponteiro para obra
