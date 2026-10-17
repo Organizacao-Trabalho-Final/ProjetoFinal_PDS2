@@ -26,7 +26,7 @@
         return emprestimos.size();
     }
 
-    std::vector<Emprestimo*>& Pessoa::getEmprestimos() const {
+    const std::vector<Emprestimo*>& Pessoa::getEmprestimos() const {
         return emprestimos;
     }
 
