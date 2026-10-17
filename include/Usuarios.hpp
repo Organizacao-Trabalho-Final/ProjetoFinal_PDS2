@@ -16,9 +16,9 @@ class Usuarios {
         Usuarios();
 
         void adicionarUsuario(const Pessoa *usuario);
-        void removerUsuario(const std::string &nome);
-        Pessoa * buscarUsuarioNome(const std::string & nome);
-        Pessoa * buscarUsuarioId(int id);
+        void removerUsuario(const std::string & nome);
+        Pessoa * buscarUsuarioNome(const std::string & nome) const;
+        Pessoa * buscarUsuarioId(int id) const;
         
         std::vector<pair<Pessoa*, int>> getUsuarios() const;
         
