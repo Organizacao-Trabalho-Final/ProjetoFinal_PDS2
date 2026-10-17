@@ -29,6 +29,7 @@ TEST_CASE("Teste função isBissexto - Data") {
         CHECK(data.isBissexto(2026) == false);
         CHECK(data.isBissexto(2028) ==  true);
         CHECK(data.isBissexto(2035) == false);
+        CHECK(data.isBissexto(1900) == false);
         CHECK(data.isBissexto(2037) == false);
         CHECK(data.isBissexto(2038) == false);
         CHECK_THROWS(data.isBissexto(-2000));
