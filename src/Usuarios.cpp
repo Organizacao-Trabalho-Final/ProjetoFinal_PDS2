@@ -34,6 +34,6 @@ Pessoa * Usuarios::buscarUsuarioId(int id) const {
     return nullptr;
 }
 
-std::vector<std::pair<Pessoa*, int>> Usuarios::getUsuarios() const {
+const std::vector<std::pair<Pessoa*, int>>& Usuarios::getUsuarios() const {
     return usuarios;
 }

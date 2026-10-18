@@ -21,7 +21,7 @@ class Usuarios {
         Pessoa * buscarUsuarioNome(const std::string & nome) const;
         Pessoa * buscarUsuarioId(int id) const;
         
-        std::vector<std::pair<Pessoa*, int>> getUsuarios() const;
+        const std::vector<std::pair<Pessoa*, int>>& getUsuarios() const;
         
         ~Usuarios();
 
