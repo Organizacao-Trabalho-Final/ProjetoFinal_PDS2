@@ -85,6 +85,22 @@
         return nullptr;
     }
 
+    Obra* Catalogo::buscarPorId(int _id) const {
+
+        int temp_id;
+        int tamanho = obrasCadastradas.size();
+        for(int i = 0; i < tamanho; i++) {
+            temp_id = obrasCadastradas[i]->getID();
+            if(temp_id == _id) {
+                return obrasCadastradas[i];
+            }
+        }
+        //throw std::invalid_argument("Obra não encontrada!");
+        return nullptr;
+
+    }
+
+
     std::vector<Obra*> Catalogo::buscarPorAutor(const std::string& a) const {
         std::string temp_a;
         std::vector<Obra*> obrasAutor(0);
