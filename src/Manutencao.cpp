@@ -24,6 +24,10 @@
         return reparo;
     }
 
+    void Manutencao::setEstado(EstadoManutencao e) {
+        estado = e;
+    }
+
     Data Manutencao::getInicio() const {
         return inicio;
     }

@@ -10,6 +10,10 @@
         ativo = b;
     }
 
+    void Emprestimo::setDevolucao(Data d) {
+        devolucao = d;
+    }
+
     bool Emprestimo::isAtivo() const {
         return ativo;
     }

@@ -84,6 +84,12 @@ class Pessoa {
          * @param e ponteiro para empréstimo
          */
         void registrarEmprestimo(Emprestimo *e);
+
+        /**
+         * @brief Registra todos o empréstimo de uma pessoa, passando por parâmetro um 'std:vector<Emprestimo*>.
+         * @param emprestimos Vetor de empréstimos.
+         */
+        void setEmprestimos(std::vector<Emprestimo*> em);
     
         /**
          * @brief método destrutor virtual de pessoa, importante para herança polimórfica

@@ -69,6 +69,13 @@ public:
     Obra* buscarPorTitulo(const std::string& t) const;
 
     /**
+     * @brief Procura por uma obra no catálogo pelo ID único.
+     * @param _id ID único da Obra.
+     * @return Retorna um ponteiro para a obra
+     */
+    Obra* buscarPorId(int _id) const;
+
+    /**
      * @brief Procura por uma obra pelo seu autor
      * @param a String com o nome do autor
      * @return Retorna um vetor de ponteiros para Obra

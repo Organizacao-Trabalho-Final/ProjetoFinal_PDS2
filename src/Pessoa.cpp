@@ -61,3 +61,7 @@
         }
         emprestimos.push_back(e);
     }
+
+    void Pessoa::setEmprestimos(std::vector<Emprestimo*> em) {
+        emprestimos = em;
+    }

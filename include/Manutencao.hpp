@@ -67,6 +67,12 @@ class Manutencao {
         std::string getReparo() const;
 
         /**
+         * @brief Define o estado atual da manutenção.
+         * @param e Estado do reparo 'EstadoManutencao'.
+         */
+        void setEstado(EstadoManutencao e);
+
+        /**
          * @brief Usado pra ler qual é a data que se iniciou a manutencao
          * @return Retorna o objeto "inicio" da classe Data
          */
