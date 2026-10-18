@@ -49,8 +49,8 @@ class TecnicoManutencao : public Pessoa {
         void adicionarManutencao(Manutencao *m);
 
         /**
-         * @brief Adiciona todas a manutenções de um técnico.
-         * @param m Ponteiro para a lista de manutenções 'std::vector<Manutencao*>'.
+         * @brief Adiciona todas as manutenções de um técnico.
+         * @param m Vetor de manutenções 'std::vector<Manutencao*>'.
          */
         void setManutencoes(std::vector<Manutencao*> m);
 

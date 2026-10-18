@@ -21,7 +21,6 @@ class Emprestimo {
         Pessoa *usuario;
         Data retirada;
         Data devolucao;
-        int id;
         bool ativo;
 
     public:
@@ -38,12 +37,6 @@ class Emprestimo {
          * @param b Valor booleano passado para alterar "Ativo"
          */
         void setAtivo(bool b);
-
-        /**
-         * @brief Registra a data de devolução
-         * @param d Data de devolução.
-         */
-        void setDevolucao(Data d);
 
         /**
          * @brief Verifica se o emprestimo está ativo.
@@ -77,6 +70,11 @@ class Emprestimo {
          * @note O valor não é alterado pela funçao
          */
         Data getDevolucao() const;
+
+        /**
+         * @brief Define a data de devolução.
+         */
+        void setDevolucao(Data d);
 
         /**
          * @brief Calcula o tempo de atraso da devolução de um empréstimo

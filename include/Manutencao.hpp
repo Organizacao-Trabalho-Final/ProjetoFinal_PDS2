@@ -67,12 +67,6 @@ class Manutencao {
         std::string getReparo() const;
 
         /**
-         * @brief Define o estado atual da manutenção.
-         * @param e Estado do reparo 'EstadoManutencao'.
-         */
-        void setEstado(EstadoManutencao e);
-
-        /**
          * @brief Usado pra ler qual é a data que se iniciou a manutencao
          * @return Retorna o objeto "inicio" da classe Data
          */
@@ -83,6 +77,12 @@ class Manutencao {
          * @return Retorna um dos enumeradores de EstadoManutencao
          */
         EstadoManutencao getEstado() const;
+
+        /**
+         * @brief Define o estado atual da manutenção.
+         * @param e Estado da manutencao em 'EstadoManutencao'.
+         */
+        void setEstado(EstadoManutencao e);
 
         /**
          * @brief Método capaz de escrever no atributo reparo qual é o reparo a ser feito

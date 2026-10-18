@@ -10,10 +10,6 @@
         ativo = b;
     }
 
-    void Emprestimo::setDevolucao(Data d) {
-        devolucao = d;
-    }
-
     bool Emprestimo::isAtivo() const {
         return ativo;
     }
@@ -32,6 +28,10 @@
 
     Data Emprestimo::getDevolucao() const {
         return devolucao;
+    }
+
+    void Emprestimo::setDevolucao(Data d) {
+        devolucao = d;
     }
 
     int Emprestimo::getAtraso(Data d) const {

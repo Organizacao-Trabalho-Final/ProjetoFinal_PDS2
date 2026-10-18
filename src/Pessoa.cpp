@@ -26,6 +26,10 @@
         return emprestimos.size();
     }
 
+    void Pessoa::setEmprestimos(std::vector<Emprestimo*> e) {
+        emprestimos = e;
+    }
+
     const std::vector<Emprestimo*>& Pessoa::getEmprestimos() const {
         return emprestimos;
     }
@@ -60,8 +64,4 @@
             throw std::invalid_argument("Ponteiro para Emprestimo nulo -> e = 'nullptr'");
         }
         emprestimos.push_back(e);
-    }
-
-    void Pessoa::setEmprestimos(std::vector<Emprestimo*> em) {
-        emprestimos = em;
     }

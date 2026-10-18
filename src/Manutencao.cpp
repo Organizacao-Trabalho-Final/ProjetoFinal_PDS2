@@ -24,16 +24,16 @@
         return reparo;
     }
 
-    void Manutencao::setEstado(EstadoManutencao e) {
-        estado = e;
-    }
-
     Data Manutencao::getInicio() const {
         return inicio;
     }
 
     EstadoManutencao Manutencao::getEstado() const {
         return estado;
+    }
+
+    void Manutencao::setEstado(EstadoManutencao e) {
+        estado = e;
     }
 
     void Manutencao::registrarReparo(std::string r) {
