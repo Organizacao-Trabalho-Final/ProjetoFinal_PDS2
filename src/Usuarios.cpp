@@ -2,9 +2,8 @@
 
 Usuarios::Usuarios() : usuarios(0) {}
 
-void Usuarios::adicionarUsuario(Pessoa *usuario) {
-    int id = usuarios.size() + 1;
-    usuarios.push_back(std::make_pair(usuario, id));
+void Usuarios::adicionarUsuario(Pessoa *usuario, int _id) {
+    usuarios.push_back(std::make_pair(usuario, _id));
 }
 
 void Usuarios::removerUsuario(const std::string & nome) {

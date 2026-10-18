@@ -16,14 +16,14 @@ class Usuarios {
 
         Usuarios();
 
-        void adicionarUsuario(Pessoa *usuario);
+        void adicionarUsuario(Pessoa *usuario, int _id);
         void removerUsuario(const std::string & nome);
         Pessoa * buscarUsuarioNome(const std::string & nome) const;
         Pessoa * buscarUsuarioId(int id) const;
         
         std::vector<std::pair<Pessoa*, int>> getUsuarios() const;
         
-        ~Usuarios();
+        ~Usuarios() = default;
 
 };
 
