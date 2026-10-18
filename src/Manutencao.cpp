@@ -32,6 +32,10 @@
         return estado;
     }
 
+    void Manutencao::setEstado(EstadoManutencao e) {
+        estado = e;
+    }
+
     void Manutencao::registrarReparo(std::string r) {
         reparo = r;
     }

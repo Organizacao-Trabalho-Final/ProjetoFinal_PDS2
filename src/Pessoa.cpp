@@ -26,6 +26,10 @@
         return emprestimos.size();
     }
 
+    void Pessoa::setEmprestimos(std::vector<Emprestimo*> e) {
+        emprestimos = e;
+    }
+
     const std::vector<Emprestimo*>& Pessoa::getEmprestimos() const {
         return emprestimos;
     }

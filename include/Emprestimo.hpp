@@ -72,6 +72,11 @@ class Emprestimo {
         Data getDevolucao() const;
 
         /**
+         * @brief Define a data de devolução.
+         */
+        void setDevolucao(Data d);
+
+        /**
          * @brief Calcula o tempo de atraso da devolução de um empréstimo
          * @return Retorna os dias de atraso
          *  @note O valor não é alterado pela funçao

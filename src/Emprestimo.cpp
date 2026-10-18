@@ -30,6 +30,10 @@
         return devolucao;
     }
 
+    void Emprestimo::setDevolucao(Data d) {
+        devolucao = d;
+    }
+
     int Emprestimo::getAtraso(Data d) const {
         int atraso = devolucao.diferencaDatas(d);
         return atraso;

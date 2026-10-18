@@ -18,6 +18,10 @@
     void TecnicoManutencao::adicionarManutencao(Manutencao *m) {
 
     }
+
+    void TecnicoManutencao::setManutencoes(std::vector<Manutencao*> m) {
+
+    }
         
     int TecnicoManutencao::consultarManutencoesPendentes() const {
 

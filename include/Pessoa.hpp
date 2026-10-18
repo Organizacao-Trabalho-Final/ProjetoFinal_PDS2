@@ -54,6 +54,12 @@ class Pessoa {
          */
         virtual int getMaxEmprestimos() const;
 
+        /**
+         * @brief Carrega todos os empréstimos de uma pessoa.
+         * @param e Vetor de empréstimos 'std::vector<Emprestimo*>'.
+         */
+        void setEmprestimos(std::vector<Emprestimo*> e);
+
          /**
          * @brief Método virtual constante que retorna o vetor de ponteiros para os empréstimos da pessoa
          * @return Referência para vetor de 'std::vector<Emprestimo*>'.
