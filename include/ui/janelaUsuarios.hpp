@@ -2,6 +2,7 @@
 #define JANELAUSUARIO_HPP
 
 #include <QWidget>
+#include "Pessoa.hpp"
 #include "Usuarios.hpp"
 
 class QStackedWidget;
@@ -17,6 +18,7 @@ class JanelaUsuario : public QWidget {
 
         QListWidget* listaUsuariosWidget;
         QStackedWidget* infoUsuarioWidget;
+        QStackedWidget* editarUsuarioWidget;
 
         void atualizarLista();
         void limparStacked();
@@ -31,6 +33,7 @@ class JanelaUsuario : public QWidget {
         QWidget* JanelaLista(QWidget * parent = nullptr);
         QWidget* JanelaOpcoes(QWidget * parent = nullptr);
         QWidget* JanelaCadastro(QWidget * parent = nullptr);
+        QWidget* JanelaOcupacao(std::string ocupacao, QWidget * parent = nullptr);
         QWidget* JanelaEditar(QWidget * parent = nullptr);
         QWidget* JanelaInformacoes(QWidget * parent = nullptr);
 

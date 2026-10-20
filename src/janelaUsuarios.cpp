@@ -22,7 +22,8 @@
 
 JanelaUsuario::JanelaUsuario(QWidget* parent) : QWidget(parent), usuarios(new Usuarios),
                                                 infoUsuarioWidget(new QStackedWidget()),
-                                                listaUsuariosWidget(new QListWidget()) {
+                                                listaUsuariosWidget(new QListWidget()), 
+                                                editarUsuarioWidget(new QStackedWidget()) {
 
     setMinimumSize(600, 600);
 
@@ -321,7 +322,7 @@ void JanelaUsuario::atualizarLista() {
     for (const auto& p : pessoas) {
         int id = p.second;
 
-        int qtdEmprestimos = p.first->Pessoa::getMaxEmprestimos();
+        int qtdEmprestimos = p.first->getNumEmprestimos();
         std::string nome = p.first->getNome();
         std::string cpf = p.first->getCPF();
         std::string ocupacao = usuarios->getOcupacao(cpf);
@@ -350,10 +351,89 @@ void JanelaUsuario::atualizarLista() {
 
 }
 
+QWidget* JanelaUsuario::JanelaOcupacao(std::string ocupacao, QWidget * parent) {
+
+    QWidget* janelaMain = new QWidget(parent);
+
+    QFormLayout* layout = new QFormLayout(janelaMain);
+
+    QLineEdit* nome = new QLineEdit(janelaMain);
+    QLineEdit* cpf  = new QLineEdit(janelaMain);
+    QSpinBox*  id   = new QSpinBox(janelaMain);
+               id->setRange(0, 1000);
+
+    layout->addRow("Nome: ", nome);
+    layout->addRow("CPF: ", cpf);
+    layout->addRow("ID: ", id);
+
+    if(ocupacao == "Estudante") {
+        QLineEdit* curso = new QLineEdit(janelaMain);
+        QLineEdit* matricula = new QLineEdit(janelaMain);
+
+        layout->addRow("Curso: ", curso);
+        layout->addRow("Matricula: ", matricula);
+    } else if(ocupacao == "Professor") {
+        QLineEdit* area = new QLineEdit(janelaMain);
+
+        layout->addRow("Area: ", area);
+    } else if(ocupacao == "Tecnico") {
+        
+    } else if(ocupacao == "Bibliotecario") {
+        
+    }
+
+    QPushButton* salvar = new QPushButton("Salvar ALterações",janelaMain);
+
+    connect(salvar, &QPushButton::clicked, this, [this]() {
+
+        
+
+    })
+
+    return janelaMain;
+
+}
+
 QWidget* JanelaUsuario::JanelaEditar(QWidget * parent) {
 
     QWidget* janelaMain = new QWidget(parent);
 
+    QHBoxLayout* layout = new QHBoxLayout(janelaMain);
+
+    QWidget* professor = JanelaOcupacao("Professor", janelaMain);
+    QWidget* estudante = JanelaOcupacao("Estudante", janelaMain);
+    QWidget* tecnico   = JanelaOcupacao("Tecnico", janelaMain);
+    QWidget* biblio    = JanelaOcupacao("Bibliotecario", janelaMain);
+
+    this->editarUsuarioWidget->addWidget(professor);
+    this->editarUsuarioWidget->addWidget(estudante);
+    this->editarUsuarioWidget->addWidget(tecnico);
+    this->editarUsuarioWidget->addWidget(biblio);
+
+    layout->addWidget(this->editarUsuarioWidget);
+
+    connect(this->listaUsuariosWidget, &QListWidget::currentRowChanged, 
+            this, [this]() {
+
+                QListWidgetItem* item = this->listaUsuariosWidget->currentItem();
+
+                int index = this->listaUsuariosWidget->row(item);
+
+                std::vector<std::pair<Pessoa*, int>> users = this->usuarios->getUsuarios();
+
+                std::string ocupacao = usuarios->getOcupacao(index);
+
+                if(ocupacao == "Estudante") {
+                    this->editarUsuarioWidget->setCurrentIndex(1);
+                } else if(ocupacao == "Professor") {
+                    this->editarUsuarioWidget->setCurrentIndex(0);
+                } else if(ocupacao == "TecnicoManutencao") {
+                    this->editarUsuarioWidget->setCurrentIndex(2);
+                } else if(ocupacao == "Bibliotecario") {
+                    this->editarUsuarioWidget->setCurrentIndex(3);
+                }
+
+            });
 
     return janelaMain;
 

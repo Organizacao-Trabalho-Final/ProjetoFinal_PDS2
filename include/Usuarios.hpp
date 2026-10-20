@@ -26,6 +26,7 @@ class Usuarios {
         const std::vector<std::pair<Pessoa*, int>>& getUsuarios() const;
         
         std::string getOcupacao(std::string _cpf) const;
+        std::string getOcupacao(int index) const;
 
         ~Usuarios() = default;
 

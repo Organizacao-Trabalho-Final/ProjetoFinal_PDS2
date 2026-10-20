@@ -55,6 +55,18 @@ class Pessoa {
         virtual int getMaxEmprestimos() const;
 
         /**
+         * @brief Método para capturar a qunatidade de empréstimos de uma pessoa.
+         * @return Quantidade de empréstimos.
+         */
+        int getNumEmprestimos() const;
+
+        /**
+         * @brief Método para bucar e retornar os empréstimos Ativos.
+         * @return Quantidade de empréstimos Ativos.
+         */
+        int getEmprestimosAtivos() const;
+
+        /**
          * @brief Carrega todos os empréstimos de uma pessoa.
          * @param e Vetor de empréstimos 'std::vector<Emprestimo*>'.
          */
