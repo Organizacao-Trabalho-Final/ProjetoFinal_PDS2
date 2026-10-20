@@ -6,6 +6,8 @@
 #include <vector>
 #include <string>
 
+class Pessoa;
+
 class Usuarios {
 
     private :
@@ -20,9 +22,12 @@ class Usuarios {
         void removerUsuario(const std::string & nome);
         Pessoa * buscarUsuarioNome(const std::string & nome) const;
         Pessoa * buscarUsuarioId(int id) const;
+        Pessoa * buscarUsuarioCPF(std::string _cpf) const;
         
         const std::vector<std::pair<Pessoa*, int>>& getUsuarios() const;
         
+        std::string getOcupacao(std::string _cpf) const;
+
         ~Usuarios() = default;
 
 };

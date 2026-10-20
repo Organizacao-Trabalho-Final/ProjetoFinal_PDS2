@@ -1,5 +1,11 @@
 #include "Usuarios.hpp"
 
+#include "Pessoa.hpp"
+#include "Estudante.hpp"
+#include "Professor.hpp"
+#include "Bibliotecario.hpp"
+#include "TecnicoManutencao.hpp"
+
 Usuarios::Usuarios() : usuarios(0) {}
 
 void Usuarios::adicionarUsuario(Pessoa *usuario, int _id) {
@@ -33,6 +39,29 @@ Pessoa * Usuarios::buscarUsuarioId(int id) const {
     return nullptr;
 }
 
+Pessoa * Usuarios::buscarUsuarioCPF(std::string _cpf) const {
+    for (const auto & usuario : usuarios) {
+        if (usuario.first->getCPF() == _cpf) {
+            return usuario.first;
+        }
+    }
+    return nullptr;
+}
+
 const std::vector<std::pair<Pessoa*, int>>& Usuarios::getUsuarios() const {
     return usuarios;
+}
+
+std::string Usuarios::getOcupacao(std::string _cpf) const {
+    Pessoa* pessoa = buscarUsuarioCPF(_cpf);
+    if (Estudante* e = dynamic_cast<Estudante*>(pessoa)) {
+        return "Estudante";
+    } else if (Professor* p = dynamic_cast<Professor*>(pessoa)) {
+        return "Professor";
+    } else if (Bibliotecario* b = dynamic_cast<Bibliotecario*>(pessoa)) {
+        return "Bibliotecario";
+    } else if (TecnicoManutencao* t = dynamic_cast<TecnicoManutencao*>(pessoa)) {
+        return "TecnicoManutencao";
+    }
+    return "ERRO";
 }

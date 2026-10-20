@@ -2,6 +2,7 @@
 #include <QHBoxLayout>
 #include <QListWidget>
 #include <QStackedWidget>
+#include "janelaUsuarios.hpp"
 #include "janelaCatalogo.hpp"
 #include "janelaPrincipal.hpp"
 
@@ -52,7 +53,7 @@ janelaPrincipal::janelaPrincipal(QWidget * parent) : QMainWindow(parent) {
     menu->addItem("Configurações");
 
     
-    //janelas->addWidget(new janelaUsuarios(central));
+    janelas->addWidget(new JanelaUsuario(central));
     janelas->addWidget(new janelaCatalogo(central));
     //janelas->addWidget(new janelaEmprestimos(central));
     //janelas->addWidget(new janelaDevolucoes(central));
@@ -60,7 +61,7 @@ janelaPrincipal::janelaPrincipal(QWidget * parent) : QMainWindow(parent) {
     //janelas->addWidget(new janelaConfiguracoes(central));
     
 
-    janelas->addWidget(new QLabel("Usuários", central));
+    //janelas->addWidget(new QLabel("Usuários", central));
     //janelas->addWidget(new QLabel("Catálogo", central));
     janelas->addWidget(new QLabel("Empréstimos", central));
     janelas->addWidget(new QLabel("Devoluções", central));

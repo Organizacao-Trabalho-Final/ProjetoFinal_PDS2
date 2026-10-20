@@ -6,7 +6,7 @@
 #include "Emprestimo.hpp"
 
     Pessoa::Pessoa(std::string n, std::string c):
-    nome(n), CPF(c), emprestimos() {}
+    nome(n), CPF(c), emprestimos(0) {}
 
     std::string Pessoa::getNome() const {
         return nome;

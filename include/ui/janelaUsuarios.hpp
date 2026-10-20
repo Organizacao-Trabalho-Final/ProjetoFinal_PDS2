@@ -4,6 +4,9 @@
 #include <QWidget>
 #include "Usuarios.hpp"
 
+class QStackedWidget;
+class QListWidget;
+
 class JanelaUsuario : public QWidget {
 
     Q_OBJECT
@@ -11,6 +14,12 @@ class JanelaUsuario : public QWidget {
     private :
 
         Usuarios * usuarios;
+
+        QListWidget* listaUsuariosWidget;
+        QStackedWidget* infoUsuarioWidget;
+
+        void atualizarLista();
+        void limparStacked();
 
     public :
 
@@ -20,10 +29,13 @@ class JanelaUsuario : public QWidget {
         Usuarios& getUsuarios() const;
 
         QWidget* JanelaLista(QWidget * parent = nullptr);
+        QWidget* JanelaOpcoes(QWidget * parent = nullptr);
         QWidget* JanelaCadastro(QWidget * parent = nullptr);
         QWidget* JanelaEditar(QWidget * parent = nullptr);
         QWidget* JanelaInformacoes(QWidget * parent = nullptr);
 
-}
+        bool isValidoID(int _id) const;
+
+};
 
 #endif 
