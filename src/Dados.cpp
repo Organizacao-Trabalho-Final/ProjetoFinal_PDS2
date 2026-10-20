@@ -143,7 +143,7 @@
                 arquivoUsuarios << estudante->getCPF() << ";";
                 arquivoUsuarios << estudante->getCurso() << ";";
                 arquivoUsuarios << estudante->getMatricula() << ";";
-                arquivoUsuarios << estudante->getMaxEmprestimos() << ";";
+                arquivoUsuarios << estudante->getNumEmprestimos() << ";";
 
                 salvarEmprestimos(arquivoUsuarios, estudante->getEmprestimos());
                 arquivoUsuarios << std::endl;
@@ -154,7 +154,7 @@
                 arquivoUsuarios << professor->getNome() << ";";
                 arquivoUsuarios << professor->getCPF() << ";";
                 arquivoUsuarios << professor->getArea() << ";";
-                arquivoUsuarios << professor->getMaxEmprestimos() << ";";
+                arquivoUsuarios << professor->getNumEmprestimos() << ";";
                 
                 salvarEmprestimos(arquivoUsuarios, professor->getEmprestimos());
                 arquivoUsuarios << std::endl;
@@ -164,7 +164,7 @@
                 arquivoUsuarios << usuario.second << ";";
                 arquivoUsuarios << tecnico->getNome() << ";";
                 arquivoUsuarios << tecnico->getCPF() << ";";
-                arquivoUsuarios << tecnico->getMaxEmprestimos() << ";";
+                arquivoUsuarios << tecnico->getNumEmprestimos() << ";";
                 
                 salvarEmprestimos(arquivoUsuarios, tecnico->getEmprestimos());
 
@@ -186,7 +186,7 @@
                 arquivoUsuarios << usuario.second << ";";
                 arquivoUsuarios << bibliotecario->getNome() << ";";
                 arquivoUsuarios << bibliotecario->getCPF() << ";";
-                arquivoUsuarios << bibliotecario->getMaxEmprestimos() << ";";
+                arquivoUsuarios << bibliotecario->getNumEmprestimos() << ";";
                 
                 salvarEmprestimos(arquivoUsuarios, bibliotecario->getEmprestimos());
                 arquivoUsuarios << std::endl;

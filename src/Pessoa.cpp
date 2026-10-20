@@ -6,7 +6,7 @@
 #include "Emprestimo.hpp"
 
     Pessoa::Pessoa(std::string n, std::string c):
-    nome(n), CPF(c), emprestimos() {}
+    nome(n), CPF(c), emprestimos(0) {}
 
     std::string Pessoa::getNome() const {
         return nome;
@@ -17,13 +17,24 @@
     }
 
     int Pessoa::getPrazo() const {
-        //return o que? eu não sei!! Que prazo!? 
-        // Do empréstimo?
-        // Mas pessoa tem um vetor de emptréstimos, como vou retornar apenas um 'int'??!?!
+        return 0;
     }
 
     int Pessoa::getMaxEmprestimos() const {
+        return 0;
+    }
+
+    int Pessoa::getNumEmprestimos() const {
         return emprestimos.size();
+    }
+
+    int Pessoa::getEmprestimosAtivos() const {
+        int count = 0;
+        for(Emprestimo* e : emprestimos) {
+            if(e->isAtivo()) 
+                count++;
+        }
+        return count;
     }
 
     void Pessoa::setEmprestimos(std::vector<Emprestimo*> e) {

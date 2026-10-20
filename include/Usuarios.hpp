@@ -1,7 +1,6 @@
 #ifndef USUARIOS_HPP
 #define USUARIOS_HPP
 
-#include "Pessoa.hpp"
 #include <utility>
 #include <vector>
 #include <string>
@@ -27,6 +26,7 @@ class Usuarios {
         const std::vector<std::pair<Pessoa*, int>>& getUsuarios() const;
         
         std::string getOcupacao(std::string _cpf) const;
+        std::string getOcupacao(int index) const;
 
         ~Usuarios() = default;
 

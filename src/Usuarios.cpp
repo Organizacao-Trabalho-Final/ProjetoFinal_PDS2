@@ -65,3 +65,20 @@ std::string Usuarios::getOcupacao(std::string _cpf) const {
     }
     return "ERRO";
 }
+
+std::string Usuarios::getOcupacao(int index) const {
+    if(index < 0 || index > usuarios.size()) {
+        return "ERRO -> Index Inválido";
+    }
+    Pessoa* pessoa = usuarios[index].first;
+    if (Estudante* e = dynamic_cast<Estudante*>(pessoa)) {
+        return "Estudante";
+    } else if (Professor* p = dynamic_cast<Professor*>(pessoa)) {
+        return "Professor";
+    } else if (Bibliotecario* b = dynamic_cast<Bibliotecario*>(pessoa)) {
+        return "Bibliotecario";
+    } else if (TecnicoManutencao* t = dynamic_cast<TecnicoManutencao*>(pessoa)) {
+        return "TecnicoManutencao";
+    }
+    return "ERRO";
+}
