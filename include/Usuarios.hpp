@@ -1,7 +1,6 @@
 #ifndef USUARIOS_HPP
 #define USUARIOS_HPP
 
-#include "Pessoa.hpp"
 #include <utility>
 #include <vector>
 #include <string>

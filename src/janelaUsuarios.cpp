@@ -210,18 +210,14 @@ QWidget* JanelaUsuario::JanelaCadastro(QWidget * parent) {
             QMessageBox::warning(this, "Erro", "CPF obrigatório!");
             return;
         }
-
         int _id = id->value();
         std::string _nome = nome->text().toStdString();
         std::string _cpf  = cpf->text().toStdString();
 
         if(tipoPessoa->currentIndex() == 0) {
-
             QMessageBox::warning(this, "Erro", "Selecione o tipo de usuário.");
             return;
-
         } else if(tipoPessoa->currentIndex() == 1) {
-
             if(!isValidoID(_id)) {
                 QMessageBox::warning(this, "Erro", "ID em uso.");
                 return;
@@ -232,16 +228,12 @@ QWidget* JanelaUsuario::JanelaCadastro(QWidget * parent) {
                 QMessageBox::warning(this, "Erro", "Matricula obrigatório!");
                 return;
             }
-
             std::string _curso = curso->text().toStdString();
             std::string _matricula = matricula->text().toStdString();
-
             this->usuarios->adicionarUsuario(
                 new Estudante(_nome, _cpf, _curso, _matricula), _id
             );
-
         } else if(tipoPessoa->currentIndex() == 2) {
-
             if(!isValidoID(_id)) {
                 QMessageBox::warning(this, "Erro", "ID em uso.");
                 return;
@@ -249,31 +241,23 @@ QWidget* JanelaUsuario::JanelaCadastro(QWidget * parent) {
                 QMessageBox::warning(this, "Erro", "Área obrigatório!");
                 return;
             }
-
             std::string _area = area->text().toStdString();
-
             this->usuarios->adicionarUsuario(
                 new Professor(_nome, _cpf, _area), _id
             );
-
         } else if(tipoPessoa->currentIndex() == 3) {
-
             if(!isValidoID(_id)) {
                 QMessageBox::warning(this, "Erro", "ID em uso.");
                 return;
             }
-
             this->usuarios->adicionarUsuario(
                 new Bibliotecario(_nome, _cpf), _id
             );
-
         } else if(tipoPessoa->currentIndex() == 4) {
-
             if(!isValidoID(_id)) {
                 QMessageBox::warning(this, "Erro", "ID em uso.");
                 return;
             }
-
             this->usuarios->adicionarUsuario(
                 new TecnicoManutencao(_nome, _cpf), _id
             );
@@ -292,16 +276,13 @@ QWidget* JanelaUsuario::JanelaCadastro(QWidget * parent) {
         "Cadastro Realizado",
         "Usuário cadastrado com sucesso!"
         );
-
     });
-
 
     layout->addRow(tipoPessoa);
     layout->addRow(paginas);
     layout->addRow(botaoCadastrar);
 
     return janelaMain;
-
 }
 
 QWidget* JanelaUsuario::JanelaLista(QWidget* parent) {
@@ -318,7 +299,7 @@ QWidget* JanelaUsuario::JanelaLista(QWidget* parent) {
     atualizarLista();
 
     return janelaMain;
-
+    
 }
 
 void JanelaUsuario::limparStacked() {
