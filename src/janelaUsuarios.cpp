@@ -358,8 +358,11 @@ QWidget* JanelaUsuario::JanelaOcupacao(std::string ocupacao, QWidget * parent) {
     QFormLayout* layout = new QFormLayout(janelaMain);
 
     QLineEdit* nome = new QLineEdit(janelaMain);
+               nome->setObjectName("CursoCampo");
     QLineEdit* cpf  = new QLineEdit(janelaMain);
+               cpf->setObjectName("CpfCampo");
     QSpinBox*  id   = new QSpinBox(janelaMain);
+               id->setObjectName("IdCampo");
                id->setRange(0, 1000);
 
     layout->addRow("Nome: ", nome);
@@ -368,12 +371,15 @@ QWidget* JanelaUsuario::JanelaOcupacao(std::string ocupacao, QWidget * parent) {
 
     if(ocupacao == "Estudante") {
         QLineEdit* curso = new QLineEdit(janelaMain);
+                   curso->setObjectName("CursoCampo");
         QLineEdit* matricula = new QLineEdit(janelaMain);
+                   matricula->setObjectName("MatriculaCampo");
 
         layout->addRow("Curso: ", curso);
         layout->addRow("Matricula: ", matricula);
     } else if(ocupacao == "Professor") {
         QLineEdit* area = new QLineEdit(janelaMain);
+                   area->setObjectName("AreaCampo");
 
         layout->addRow("Area: ", area);
     } else if(ocupacao == "Tecnico") {
@@ -382,13 +388,13 @@ QWidget* JanelaUsuario::JanelaOcupacao(std::string ocupacao, QWidget * parent) {
         
     }
 
-    QPushButton* salvar = new QPushButton("Salvar ALterações",janelaMain);
+    //QPushButton* salvar = new QPushButton("Salvar ALterações",janelaMain);
 
-    connect(salvar, &QPushButton::clicked, this, [this]() {
+    /*connect(salvar, &QPushButton::clicked, this, [this]() {
 
         
 
-    })
+    });*/
 
     return janelaMain;
 
@@ -413,7 +419,7 @@ QWidget* JanelaUsuario::JanelaEditar(QWidget * parent) {
     layout->addWidget(this->editarUsuarioWidget);
 
     connect(this->listaUsuariosWidget, &QListWidget::currentRowChanged, 
-            this, [this]() {
+            this, [this, estudante, professor, biblio, tecnico]() {
 
                 QListWidgetItem* item = this->listaUsuariosWidget->currentItem();
 
@@ -423,14 +429,82 @@ QWidget* JanelaUsuario::JanelaEditar(QWidget * parent) {
 
                 std::string ocupacao = usuarios->getOcupacao(index);
 
+                std::pair<Pessoa*, int> &pessoa = usuarios->buscarUsuarioIndex(index);
+
+                if(pessoa.first == nullptr) {
+                    return;
+                }
+
+                QString textNome = QString::fromStdString(pessoa.first->getNome());
+                QString textCpf  = QString::fromStdString(pessoa.first->getCPF());
+                int textId = pessoa.second;
+
                 if(ocupacao == "Estudante") {
                     this->editarUsuarioWidget->setCurrentIndex(1);
+
+                    Estudante* estudantePessoa = dynamic_cast<Estudante*>(pessoa.first);
+
+                    QString textCurso = QString::fromStdString(estudantePessoa->getCurso());
+                    QString textMatricula = QString::fromStdString(estudantePessoa->getMatricula());
+
+                    QLineEdit* nome = estudante->findChild<QLineEdit*>("NomeCampo");
+                               nome->setText(textNome);
+
+                    QLineEdit* cpf = estudante->findChild<QLineEdit*>("CpfCampo");
+                               cpf->setText(textCpf);
+                    
+                    QSpinBox* id = estudante->findChild<QSpinBox*>("IdCampo");
+                              id->setValue(textId);
+                    
+                    QLineEdit* curso = estudante->findChild<QLineEdit*>("CursoCampo");
+                               curso->setText(textCurso);
+
+                    QLineEdit* matricula = estudante->findChild<QLineEdit*>("MatriculaCampo");
+                               matricula->setText(textMatricula);
+
                 } else if(ocupacao == "Professor") {
                     this->editarUsuarioWidget->setCurrentIndex(0);
+
+                    Professor* professorPessoa = dynamic_cast<Professor*>(pessoa.first);
+
+                    QString textArea = QString::fromStdString(professorPessoa->getArea());
+
+                    QLineEdit* nome = professor->findChild<QLineEdit*>("NomeCampo");
+                               nome->setText(textNome);
+
+                    QLineEdit* cpf = professor->findChild<QLineEdit*>("CpfCampo");
+                               cpf->setText(textCpf);
+                    
+                    QSpinBox* id = professor->findChild<QSpinBox*>("IdCampo");
+                              id->setValue(textId);
+
+                    QLineEdit* area = professor->findChild<QLineEdit*>("AreaCampo");
+                               area->setText(textArea);
+
                 } else if(ocupacao == "TecnicoManutencao") {
                     this->editarUsuarioWidget->setCurrentIndex(2);
+
+                    QLineEdit* nome = tecnico->findChild<QLineEdit*>("NomeCampo");
+                               nome->setText(textNome);
+
+                    QLineEdit* cpf = tecnico->findChild<QLineEdit*>("CpfCampo");
+                               cpf->setText(textCpf);
+                    
+                    QSpinBox* id = tecnico->findChild<QSpinBox*>("IdCampo");
+                              id->setValue(textId);
+
                 } else if(ocupacao == "Bibliotecario") {
                     this->editarUsuarioWidget->setCurrentIndex(3);
+
+                    QLineEdit* nome = biblio->findChild<QLineEdit*>("NomeCampo");
+                               nome->setText(textNome);
+
+                    QLineEdit* cpf = biblio->findChild<QLineEdit*>("CpfCampo");
+                               cpf->setText(textCpf);
+                    
+                    QSpinBox* id = biblio->findChild<QSpinBox*>("IdCampo");
+                              id->setValue(textId);
+                               
                 }
 
             });
@@ -449,6 +523,7 @@ QWidget* JanelaUsuario::JanelaInformacoes(QWidget * parent ) {
                  layout->addWidget(this->infoUsuarioWidget);
 
     QTextEdit* vazio = new QTextEdit(janelaMain);
+               vazio->setReadOnly(true);
 
     infoUsuarioWidget->addWidget(vazio);
 

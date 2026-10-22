@@ -48,6 +48,24 @@ Pessoa * Usuarios::buscarUsuarioCPF(std::string _cpf) const {
     return nullptr;
 }
 
+std::pair<Pessoa*, int>& Usuarios::buscarUsuarioIndex(int index) {
+    if(index < 0 || index > usuarios.size()) {
+        std::pair<Pessoa*, int> erro;
+        erro.first = nullptr;
+        erro.second = -1;
+        return erro;
+    }
+    for (auto & usuario : usuarios) {
+        if (usuario.first == usuarios[index].first) {
+            return usuario;
+        }
+    }
+    std::pair<Pessoa*, int> erro;
+    erro.first = nullptr;
+    erro.second = -1;
+    return erro;
+}
+
 const std::vector<std::pair<Pessoa*, int>>& Usuarios::getUsuarios() const {
     return usuarios;
 }

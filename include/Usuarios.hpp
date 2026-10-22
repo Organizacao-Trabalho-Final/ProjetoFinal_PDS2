@@ -22,6 +22,7 @@ class Usuarios {
         Pessoa * buscarUsuarioNome(const std::string & nome) const;
         Pessoa * buscarUsuarioId(int id) const;
         Pessoa * buscarUsuarioCPF(std::string _cpf) const;
+        std::pair<Pessoa*, int>& buscarUsuarioIndex(int index) ;
         
         const std::vector<std::pair<Pessoa*, int>>& getUsuarios() const;
         
