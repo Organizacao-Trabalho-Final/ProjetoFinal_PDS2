@@ -111,7 +111,6 @@
                 obrasAutor.push_back(obrasCadastradas[i]);
             }
         }
-        tamanho = obrasAutor.size();
         return obrasAutor;
         //throw std::invalid_argument("Autor não encontrada!");
     }
