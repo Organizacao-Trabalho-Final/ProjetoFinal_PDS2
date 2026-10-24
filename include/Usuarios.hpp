@@ -20,9 +20,6 @@
 class Usuarios {
 
     private :
-        /**
-         * @brief Vetor de pares de ponteiros para Pessoa e seus respectivos IDs
-         */
         std::vector<std::pair<Pessoa*, int>> usuarios;
 
     public :
