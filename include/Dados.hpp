@@ -20,9 +20,21 @@ class Dados {
         std::vector<Manutencao*> manutencao;
 
     public :
-
+        /**
+         * @brief Construtor da classe Dados
+         * @param usuario Ponteiro para o objeto Usuarios
+         * @param catalogo Ponteiro para o objeto Catalogo
+         */
         Dados(Usuarios * usuario, Catalogo * catalogo);
+        /**
+         * @brief Método utilizado para retornar os usuários cadastrados. 
+         * @return Ponteiro para os usuários cadastrados.
+         */
         Usuarios * getUsuarios() const;
+        /**
+         * @brief Método utilizado para retornar o catálogo de itens.
+         * @return Ponteiro para o catálogo de itens.
+         */
         Catalogo * getCatalogo() const;
 
     private :
@@ -31,13 +43,17 @@ class Dados {
         void carregarEmprestimos(std::ifstream &in, Pessoa* _pessoa, Catalogo* catalogo);
 
     public :
-
+        /**
+         * @brief Salva os dados de usuários e catálogos em um arquivo .txt
+         */
         void SalvarDados();
+        /**
+         * @brief Carrega os dados de usuários e catálogos a partir de um arquivo .txt
+         */
         void CarregarDados();
-        void CarregarUsuarios(Usuarios &usuarios);
-        void CarregarCatalogo(Catalogo &catalogo);
-        void CarregarTecnicoManutencao(TecnicoManutencao &tecnico);
-
+        /**
+         * @brief Destrutor da classe Dados
+         */
         ~Dados() = default;
 
 };
