@@ -31,10 +31,28 @@ class TecnicoManutencao : public Pessoa {
         TecnicoManutencao(std::string n, std::string c);
 
         /**
+         * @brief Método que retorna as manutenções do técnico.
+         * @return Referência para vetor 'std::vector<Manutencao*>&'.
+         */
+        std::vector<Manutencao*>& getManutencoes() const;
+
+        /**
+         * @brief Método a quantidade de manutenções realizadas pelo técnico.
+         * @return Número de manutenções.
+         */
+        int getMaxManutencoes() const;
+
+        /**
          * @brief Adiciona uma manutenção a lista de manutenções a fazer
          * @param m ponteiro para um objeto do tipo Manutencao
          */
         void adicionarManutencao(Manutencao *m);
+
+        /**
+         * @brief Adiciona todas as manutenções de um técnico.
+         * @param m Vetor de manutenções 'std::vector<Manutencao*>'.
+         */
+        void setManutencoes(std::vector<Manutencao*> m);
 
         /**
          * @brief Consulta a lista de Manutenções a fazer

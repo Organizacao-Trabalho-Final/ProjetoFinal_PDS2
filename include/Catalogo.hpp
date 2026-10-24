@@ -19,7 +19,7 @@ private:
     std::vector<Obra*> obrasCadastradas;
     
     /**
-     * @brief verifica se tem algum livro duplicado
+     * @brief verifica se tem alguma obra duplicado
      * @return Retorna true se tiver, ou falso se não tiver
      */
     bool verificarDuplicata(int id) const;
@@ -67,6 +67,13 @@ public:
      * @return Retorna um ponteiro para a obra
      */
     Obra* buscarPorTitulo(const std::string& t) const;
+
+    /**
+     * @brief Procura por uma obra no catálogo pelo ID único.
+     * @param _id ID único da Obra.
+     * @return Retorna um ponteiro para a obra
+     */
+    Obra* buscarPorId(int _id) const;
 
     /**
      * @brief Procura por uma obra pelo seu autor

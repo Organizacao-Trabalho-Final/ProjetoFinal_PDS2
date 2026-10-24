@@ -79,6 +79,12 @@ class Manutencao {
         EstadoManutencao getEstado() const;
 
         /**
+         * @brief Define o estado atual da manutenção.
+         * @param e Estado da manutencao em 'EstadoManutencao'.
+         */
+        void setEstado(EstadoManutencao e);
+
+        /**
          * @brief Método capaz de escrever no atributo reparo qual é o reparo a ser feito
          * @param r String com o reparo
          */

@@ -10,8 +10,20 @@ using namespace std;
 
 TecnicoManutencao::TecnicoManutencao(string n, string c): Pessoa::Pessoa(n, c){}
 
+TecnicoManutencao::vector<Manutencao*>& getManutencoes() const{
+    return manutencoes;
+}
+
+int TecnicoManutencao::getMaxManutencoes() const{
+    return MAX_MANUTENCOES;
+}
+
 void TecnicoManutencao::adicionarManutencao(Manutencao* m){
     manutencoes.push_back(m);
+}
+
+void TecnicoManutencoes::setManutencoes(vector<Manutencao*> m){
+    manutencoes = m;
 }
 
 int TecnicoManutencao::consultarManutencoesPendentes() const{

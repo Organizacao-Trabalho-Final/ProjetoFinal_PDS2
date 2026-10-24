@@ -19,7 +19,8 @@ class Emprestimo {
     private:
         Obra *obra;
         Pessoa *usuario;
-        Data retirada, devolucao;
+        Data retirada;
+        Data devolucao;
         bool ativo;
 
     public:
@@ -36,6 +37,12 @@ class Emprestimo {
          * @param b Valor booleano passado para alterar "Ativo"
          */
         void setAtivo(bool b);
+
+        /**
+         * @brief Verifica se o emprestimo está ativo.
+         * @return retorna True se ativo e False caso contrário.
+         */
+        bool isAtivo() const;
 
         /**
          * @brief Usado para ler o valor de "Obra"
@@ -65,6 +72,11 @@ class Emprestimo {
         Data getDevolucao() const;
 
         /**
+         * @brief Define a data de devolução.
+         */
+        void setDevolucao(Data d);
+
+        /**
          * @brief Calcula o tempo de atraso da devolução de um empréstimo
          * @return Retorna os dias de atraso
          *  @note O valor não é alterado pela funçao
@@ -80,6 +92,11 @@ class Emprestimo {
          * @brief Prolonga o tempo que o emprestimo poderá existir sem que haja atraso
          */
         void renovarEmprestimo();
+
+        /**
+         * @brief Imprime Nome da obra, ID, retirada, devolução e se está ativo.
+         */
+        void printEmprestimo() const;
 
         /**
          * @brief destrutor de "Emprestimo"
