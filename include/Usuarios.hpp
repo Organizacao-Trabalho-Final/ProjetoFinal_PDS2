@@ -11,18 +11,19 @@
 #include <vector>
 #include <string>
 
+class Pessoa; 
 /**
- * @class Artigo
+ * @class Usuarios
  * @brief Cria a estrutura da classe Usuarios
  */
 
 
 class Usuarios {
 
-    private :
+    private:
         std::vector<std::pair<Pessoa*, int>> usuarios;
 
-    public :
+    public:
         /**
          * @brief Construtor da classe Usuarios
          */
