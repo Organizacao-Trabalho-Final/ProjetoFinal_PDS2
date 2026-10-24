@@ -1,5 +1,6 @@
 #include <string>
 #include "Estudante.hpp"
+#include "Obra.hpp"
 
     Estudante::Estudante(std::string n, std::string cpf, std::string c, std::string m):
     Pessoa(n, cpf), curso(c), matricula(m) {}
@@ -12,11 +13,11 @@
         return matricula;
     }
 
-    int Estudante::getPrazo() const override {
+    int Estudante::getPrazo() const {
         return 30;
     }
 
-    int Estudante::getMaxEmprestimos() const override {
+    int Estudante::getMaxEmprestimos() const {
         return 5;
     }
 
