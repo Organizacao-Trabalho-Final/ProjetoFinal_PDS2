@@ -16,7 +16,7 @@
         this->min_string = m;
     }
 
-    void Tratamento::setCaracterValidos(std::string c) {
+    void Tratamento::setCaracterInvalidos(std::string c) {
         this->caracter_invalidos = c;
     }
 
@@ -36,7 +36,7 @@
         return this->min_string;
     }
 
-    std::string Tratamento::getCaracterValidos() {
+    std::string Tratamento::getCaracterInvalidos() {
         return this->caracter_invalidos;
     }
 
@@ -133,6 +133,9 @@
     }
 
     bool Tratamento::isCaracterValido(const std::string &s, const std::string &invalidos, std::string tipo) {
+        if (tipo.empty()){ 
+            tipo = "STR";
+        }
         this->isVazio(s, tipo);
         for (char c : invalidos) {
             if (c == ' ') {
@@ -149,6 +152,9 @@
     }
 
     bool Tratamento::temNumeroStringEX(const std::string &s, std::string tipo) {
+        if (tipo.empty()){ 
+            tipo = "STR";
+        }
         this->isVazio(s, tipo);
         for (char c : s) {
             if (std::isdigit(static_cast<unsigned char>(c))) {
@@ -168,6 +174,9 @@
     }
 
     bool Tratamento::somenteNumerosEX(const std::string &s, std::string tipo) {
+        if (tipo.empty()){ 
+            tipo = "STR";
+        }
         for (char c : s) {
             if (!std::isdigit(static_cast<unsigned char>(c))) {
                 throw std::invalid_argument(tipo + " deve conter apenas números");
