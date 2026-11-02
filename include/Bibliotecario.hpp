@@ -14,9 +14,9 @@ class Bibliotecario : public Pessoa {
         Bibliotecario(std::string n, std::string c);
         
         Emprestimo* aprovarEmprestimo(Pessoa *p, Obra *o, Data d);
-        bool aprovarRenovacao(Emprestimo *e);
+        bool aprovarRenovacao(Emprestimo *e, Data hj);
         void registrarDevolucao(Emprestimo *e);
-        void avaliarObra(Obra *o);
+        bool avaliarObra(const Obra *o) const;
         Manutencao* encaminharManutencao(Obra *o, TecnicoManutencao *tm, std::string dano, Data i);
 };
 #endif
