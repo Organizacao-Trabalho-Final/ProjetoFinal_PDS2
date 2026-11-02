@@ -6,7 +6,7 @@
 #include "TecnicoManutencao.hpp"
 #include "Obra.hpp"
 
-    Bibliotecario::Bibliotecario(std::string n, std::string c):
+    Bibliotecario::Bibliotecario(const std::string &n, const std::string &c):
     Pessoa(n, c) {}
         
     Emprestimo* Bibliotecario::aprovarEmprestimo(Pessoa *p, Obra *o, Data d) {

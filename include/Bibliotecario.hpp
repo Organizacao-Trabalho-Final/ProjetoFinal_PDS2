@@ -29,7 +29,7 @@ class Bibliotecario : public Pessoa {
          * @param n Nome do bibliotecário.
          * @param c CPF do bibliotecário.
          */
-        Bibliotecario(std::string n, std::string c);
+        Bibliotecario(const std::string &n, const std::string &c);
         
         /**
          * @brief Aprova e registra um novo empréstimo.

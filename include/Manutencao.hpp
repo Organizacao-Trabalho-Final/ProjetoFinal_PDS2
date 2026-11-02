@@ -3,8 +3,7 @@
 
 /**
  * @file Manutencao.hpp
- * @brief Declaração da classe Manutencao
- * @date 2026-10-14
+ * @brief Contrato da classe Manutencao.
  */
 #include <iostream>
 #include <string>
@@ -13,6 +12,10 @@
 class Obra;
 class TecnicoManutencao;
 
+/**
+ * @enum EstadoManutencao
+ * @brief Representa os possíveis estados de uma manutenção.
+ */
 enum class EstadoManutencao {
     PENDENTE,
     EM_ANDAMENTO,
@@ -21,30 +24,32 @@ enum class EstadoManutencao {
 
 /**
  * @class Manutencao
- * @brief Cria a estrutura da classe Manutencao
+ * @brief Representa o processo de manutenção de uma obra danificada.
+ *
+ * Armazena a obra, o técnico responsável, o dano identificado,
+ * o reparo realizado, a data de início e o estado da manutenção.
  */
 class Manutencao {
     private:
-        Obra *obra;
-        TecnicoManutencao *tecnico;
-        std::string dano;
-        std::string reparo;
-        Data inicio;
-        EstadoManutencao estado;
+        Obra *obra; ///< Obra submetida à manutenção.
+        TecnicoManutencao *tecnico; ///< Técnico responsável pela manutenção.
+        std::string dano, reparo; ///< Descrição do dano identificado + reparo realiado.
+        Data inicio; ///< Data de início da manutenção.
+        EstadoManutencao estado; ///< Estado atual da manutenção.
 
     public:
         /**
-         * @brief Construtor de Manutencao
-         * @param o Ponteiro para Obra
-         * @param tm Ponteiro para TecnicoManutencao
-         * @param d String contendo o dano da obra
-         * @param i Objeto do tipo Data contendo a data de início da manutenção 
+         * @brief Constrói um objeto Manutencao.
+         * @param o Ponteiro para a obra danificada.
+         * @param tm Ponteiro para o técnico responsável.
+         * @param d Descrição do dano identificado.
+         * @param i Data de início da manutenção.
          */
-        Manutencao(Obra *o, TecnicoManutencao *tm, std::string d, Data i);
+        Manutencao(Obra *o, TecnicoManutencao *tm, const std::string &d, const Data &i);
 
         /**
-         * @brief Usado para passar o ponteiro da Obra, ou seja, o acesso a essa obra
-         * @return Retorna *Obra
+         * @brief Retorna a obra associada à manutenção.
+         * @return Ponteiro para a obra.
          */
         Obra* getObra() const;
 
@@ -55,53 +60,57 @@ class Manutencao {
         TecnicoManutencao* getTecnico() const;
 
         /**
-         * @brief Usado para ler qual o dano armazenado na variável "dano"
-         * @return Retorna a string "dano"
+         * @brief Retorna a descrição do dano.
+         * @return Descrição do dano.
          */
         std::string getDano() const;
 
         /**
-         * @brief Usado para ler qual vai ser o repara a ser feito na obra
-         * @return Retorna a string "reparo"
+         * @brief Retorna a descrição do reparo.
+         * @return Descrição do reparo realizado.
          */
         std::string getReparo() const;
 
         /**
-         * @brief Usado pra ler qual é a data que se iniciou a manutencao
-         * @return Retorna o objeto "inicio" da classe Data
+         * @brief Retorna a data de início da manutenção.
+         * @return Data de início.
          */
         Data getInicio() const;
 
         /**
-         * @brief Usado para ler o estado da manutenção
-         * @return Retorna um dos enumeradores de EstadoManutencao
+         * @brief Retorna o estado atual da manutenção.
+         * @return Estado da manutenção.
          */
         EstadoManutencao getEstado() const;
 
         /**
-         * @brief Define o estado atual da manutenção.
-         * @param e Estado da manutencao em 'EstadoManutencao'.
+         * @brief Altera o estado da manutenção.
+         * @param e Novo estado.
          */
         void setEstado(EstadoManutencao e);
 
         /**
-         * @brief Método capaz de escrever no atributo reparo qual é o reparo a ser feito
-         * @param r String com o reparo
+         * @brief Registra a descrição do reparo realizado.
+         * @param r Descrição do reparo.
          */
-        void registrarReparo(std::string r);
+        void registrarReparo(const std::string &r);
 
         /**
-         * @brief Marca a data de início da manutenção, e deixa a obra fora do catálogo
+         * @brief Inicia uma manutenção pendente.
+         * Altera o estado para EM_ANDAMENTO e mantém a obra indisponível.
          */
         void iniciar();
 
         /**
-         * @brief Marca a data de término da manutenção e coloca a obra de volta no catálogo
+         * * @brief Conclui uma manutenção em andamento.
+         * Altera o estado para CONCLUIDA, remove a marcação de dano
+         * da obra e torna a obra novamente disponível.
          */
         void concluir();
 
         /**
-         * @brief Destrutor de manutencao
+         * @brief Destrutor de Manutencao.
+         * Não destrói a obra nem o técnico associados.
          */
         ~Manutencao() = default;
 };

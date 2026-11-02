@@ -51,7 +51,7 @@
         std::cout << "Usuario: " << usuario->getNome() << std::endl;
         std::cout << "Data de retirada: " << retirada.getData() << std::endl;
         std::cout << "Data de devolucao: " << devolucao.getData() << std::endl;
-        std::cout << "Status: " << (ativo ? "Ativo" : "Encerrado") << std::endl;
+        std::cout << "Estado: " << (ativo ? "Ativo" : "Encerrado") << std::endl;
     }
 
     void Emprestimo::renovarEmprestimo() {

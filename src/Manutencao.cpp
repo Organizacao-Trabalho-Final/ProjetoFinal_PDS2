@@ -1,11 +1,8 @@
-#include <iostream>
 #include <string>
-#include <chrono>
-#include <ctime>
 #include "Obra.hpp"
 #include "Manutencao.hpp"
 
-    Manutencao::Manutencao(Obra *o, TecnicoManutencao *tm, std::string d, Data i):
+    Manutencao::Manutencao(Obra *o, TecnicoManutencao *tm, const std::string &d, const Data &i):
     obra(o), tecnico(tm), dano(d), inicio(i), estado(EstadoManutencao::PENDENTE) {}
 
     Obra* Manutencao::getObra() const {
@@ -36,24 +33,23 @@
         estado = e;
     }
 
-    void Manutencao::registrarReparo(std::string r) {
+    void Manutencao::registrarReparo(const std::string &r) {
         reparo = r;
     }
 
     void Manutencao::iniciar() {
-        /*auto agora = std::chrono::system_clock::now();
-        std::time_t tempo = std::chrono::system_clock::to_time_t(agora);
-        std::tm * atual = std::localtime(&tempo);
-
-        int dia = atual->mday;
-        int mes = atual->mon + 1;
-        int ano = atual->year + 1900;*/
-
+        if (obra == nullptr || estado != EstadoManutencao::PENDENTE) {
+            return;
+        }
         obra->setDisponivel(false);
         estado = EstadoManutencao::EM_ANDAMENTO;
     }
 
     void Manutencao::concluir() {
+        if (obra == nullptr || estado != EstadoManutencao::EM_ANDAMENTO) {
+            return;
+        }
         estado = EstadoManutencao::CONCLUIDA;
+        obra->setDanificado(false);
         obra->setDisponivel(true);
     }
