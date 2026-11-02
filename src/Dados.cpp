@@ -19,17 +19,31 @@
 #include "TecnicoManutencao.hpp"
 #include "Bibliotecario.hpp"
 
-    Dados::Dados(Usuarios * usuario, Catalogo * catalogo) : usuarios(usuario), catalogo(catalogo), manutencao() {}
+    Dados::Dados(Usuarios *u, Catalogo *c):
+    usuarios(u), catalogo(c) {}
 
-    Usuarios * Dados::getUsuarios() const {
+    Usuarios* Dados::getUsuarios() {
         return usuarios;
     }
 
-    Catalogo * Dados::getCatalogo() const {
+    const Usuarios* Dados::getUsuarios() const {
+        return usuarios;
+    }
+
+    Catalogo* Dados::getCatalogo() {
         return catalogo;
     }
 
-    void Dados::salvarEmprestimos(std::ofstream &out, const std::vector<Emprestimo*> &emprestimos) {
+    const Catalogo* Dados::getCatalogo() const {
+        return catalogo;
+    }
+
+    Dados::~Dados() {
+        delete usuarios;
+        delete catalogo;
+    }
+
+    void Dados::salvarEmprestimos(std::ofstream &out, const std::vector<Emprestimo*> &emprestimos) const {
         for (Emprestimo *e : emprestimos) {
             out << e->getObra().getID() << ";"
                 << e->getRetirada().getDia() << ";"
@@ -42,74 +56,102 @@
         }
     }
 
-    void Dados::carregarEmprestimos(std::ifstream &in, Pessoa* _pessoa, Catalogo* catalogo) {
-        
-        int _idObra;
-        int _dia;
-        int _mes;
-        int _ano;
-        bool _ativo;
+    void Dados::carregarEmprestimos(std::ifstream &in, Pessoa *pessoa) {
+        int idObra;
+        int dia;
+        int mes;
+        int ano;
+        bool ativo;
+        int numeroEmprestimos;
 
-        Obra* _obra;
-        Emprestimo* _emprestimo;
-        std::vector<Emprestimo*> _emprestimos;
+        Obra *obra;
+        Emprestimo *emprestimo;
+        std::vector<Emprestimo*> emprestimos;
 
-        int _numeroEmprestimos;
-        in >> _numeroEmprestimos;
-        in.ignore(1, ';');
-
-        for(int i = 0; i < _numeroEmprestimos; i++) {
-
-            in >>_idObra;
-            in.ignore(1, ';');
-            in >>_dia;
-            in.ignore(1, ';');
-            in >>_mes;
-            in.ignore(1, ';');
-            in >>_ano;
-            in.ignore(1, ';');
-            
-            _obra = this->catalogo->buscarPorId(_idObra);
-            Data data1(_dia, _mes, _ano);
-            
-            in >>_dia;
-            in.ignore(1, ';');
-            in >>_mes;
-            in.ignore(1, ';');
-            in >>_ano;
-            in.ignore(1, ';');
-
-            Data data2(_dia, _mes, _ano);
-
-            in >>_ativo;
-            in.ignore(1, ';');
-
-            _emprestimo = new Emprestimo(*_obra, *_pessoa, data1);
-            _emprestimo->setDevolucao(data2);
-            _emprestimo->setAtivo(_ativo);
-
-            _emprestimos.push_back(_emprestimo);
-
+        if (pessoa == nullptr || catalogo == nullptr) {
+            in.setstate(std::ios::failbit);
+            return;
+        }
+        if (!(in >> numeroEmprestimos) || numeroEmprestimos < 0) {
+            in.setstate(std::ios::failbit);
+            return;
         }
 
-        _pessoa->setEmprestimos(_emprestimos);
+        in.ignore(1, ';');
+
+        for (int i = 0; i < numeroEmprestimos; i++) {
+            if (!(in >> idObra)) {
+                break;
+            }
+            in.ignore(1, ';');
+            if (!(in >> dia)) break;
+            in.ignore(1, ';');
+            if (!(in >> mes)) break;
+            in.ignore(1, ';');
+            if (!(in >> ano)) break;
+            in.ignore(1, ';');
+
+            Data data1(dia, mes, ano);
+
+            if (!(in >> dia)) break;
+            in.ignore(1, ';');
+            if (!(in >> mes)) break;
+            in.ignore(1, ';');
+            if (!(in >> ano)) break;
+            in.ignore(1, ';');
+
+            Data data2(dia, mes, ano);
+
+            if (!(in >> ativo)) break;
+            in.ignore(1, ';');
+
+            obra = catalogo->buscarPorId(idObra);
+
+            if (obra == nullptr) {
+                std::cerr << "Obra não encontrada ao carregar empréstimo: "
+                        << idObra << std::endl;
+                in.setstate(std::ios::failbit);
+                break;
+            }
+
+            emprestimo = new Emprestimo(*obra, *pessoa, data1);
+            emprestimo->setDevolucao(data2);
+            emprestimo->setAtivo(ativo);
+            emprestimos.push_back(emprestimo);
+        }
+        if (!in) {
+            for (Emprestimo *e : emprestimos) {
+                delete e;
+            }
+            return;
+        }
+        pessoa->setEmprestimos(emprestimos);
     }
 
-    void Dados::SalvarDados() {
+    void Dados::salvarDados() {
+        if (usuarios == nullptr || catalogo == nullptr) {
+            std::cerr << "Não foi possível salvar os dados: usuários ou catálogo não inicializados."
+                    << std::endl;
+            return;
+        }
+
         std::ofstream arquivoUsuarios("usuario.txt");
-        if(!arquivoUsuarios.is_open()) {
+        if (!arquivoUsuarios.is_open()) {
             std::cerr << "Erro ao abrir o arquivo para salvar os dados -> Usuarios." << std::endl;
             return;
         }
 
         std::ofstream arquivoObras("obras.txt");
-        if(!arquivoObras.is_open()) {
+        if (!arquivoObras.is_open()) {
             std::cerr << "Erro ao abrir o arquivo para salvar os dados -> Obras." << std::endl;
             return;
         }
 
-        for(Obra *o : catalogo->listarObras()) {
-            if(Artigo *a = dynamic_cast<Artigo*>(o)) {
+        for (Obra *o : catalogo->listarObras()) {
+            if (o == nullptr) {
+                continue;
+            }
+            if (Artigo *a = dynamic_cast<Artigo*>(o)) {
                 arquivoObras << "Artigo" << ";";
                 arquivoObras << a->getTitulo() << ";";
                 arquivoObras << a->getAutor() << ";";
@@ -118,7 +160,7 @@
                 arquivoObras << a->isDanificado() << ";";
                 arquivoObras << a->getArea() << ";";
                 arquivoObras << a->getAno() << std::endl;
-            } else if(Livro *l = dynamic_cast<Livro*>(o)) {
+            } else if (Livro *l = dynamic_cast<Livro*>(o)) {
                 arquivoObras << "Livro" << ";";
                 arquivoObras << l->getTitulo() << ";";
                 arquivoObras << l->getAutor() << ";";
@@ -128,15 +170,18 @@
                 arquivoObras << l->getGenero() << ";";
                 arquivoObras << l->getEdicao() << std::endl;
             } else {
-                std::cerr << "Tipo de obra desconhecido. Não foi possível salvar os dados." << std::endl;
+                std::cerr << "Tipo de obra desconhecido. Não foi possível salvar os dados."
+                        << std::endl;
             }
-        } 
+        }
 
-        const std::vector<std::pair<Pessoa*, int>> &usuarios_salvar = usuarios->getUsuarios();
+        const std::vector<std::pair<Pessoa*, int>> &usuariosSalvar = usuarios->getUsuarios();
 
-        for(const std::pair<Pessoa*, int> &usuario : usuarios_salvar) {  
-            
-            if(Estudante * estudante = dynamic_cast<Estudante*>(usuario.first)) {
+        for (const std::pair<Pessoa*, int> &usuario : usuariosSalvar) {
+            if (usuario.first == nullptr) {
+                continue;
+            }
+            if (Estudante *estudante = dynamic_cast<Estudante*>(usuario.first)) {
                 arquivoUsuarios << "Estudante" << ";";
                 arquivoUsuarios << usuario.second << ";";
                 arquivoUsuarios << estudante->getNome() << ";";
@@ -147,29 +192,27 @@
 
                 salvarEmprestimos(arquivoUsuarios, estudante->getEmprestimos());
                 arquivoUsuarios << std::endl;
-
-            } else if(Professor * professor = dynamic_cast<Professor*>(usuario.first)) {
+            } else if (Professor *professor = dynamic_cast<Professor*>(usuario.first)) {
                 arquivoUsuarios << "Professor" << ";";
                 arquivoUsuarios << usuario.second << ";";
                 arquivoUsuarios << professor->getNome() << ";";
                 arquivoUsuarios << professor->getCPF() << ";";
                 arquivoUsuarios << professor->getArea() << ";";
                 arquivoUsuarios << professor->getNumEmprestimos() << ";";
-                
+
                 salvarEmprestimos(arquivoUsuarios, professor->getEmprestimos());
                 arquivoUsuarios << std::endl;
-
-            } else if(TecnicoManutencao * tecnico = dynamic_cast<TecnicoManutencao*>(usuario.first)) {
+            } else if (TecnicoManutencao *tecnico = dynamic_cast<TecnicoManutencao*>(usuario.first)) {
                 arquivoUsuarios << "TecnicoManutencao" << ";";
                 arquivoUsuarios << usuario.second << ";";
                 arquivoUsuarios << tecnico->getNome() << ";";
                 arquivoUsuarios << tecnico->getCPF() << ";";
                 arquivoUsuarios << tecnico->getNumEmprestimos() << ";";
-                
-                salvarEmprestimos(arquivoUsuarios, tecnico->getEmprestimos());
 
+                salvarEmprestimos(arquivoUsuarios, tecnico->getEmprestimos());
                 arquivoUsuarios << tecnico->getManutencoes().size() << ";";
-                for(Manutencao *m : tecnico->getManutencoes()) {
+
+                for (Manutencao *m : tecnico->getManutencoes()) {
                     arquivoUsuarios << m->getObra()->getID() << ";";
                     arquivoUsuarios << m->getTecnico()->getCPF() << ";";
                     arquivoUsuarios << m->getDano() << ";";
@@ -177,224 +220,265 @@
                     arquivoUsuarios << m->getInicio().getDia() << ";";
                     arquivoUsuarios << m->getInicio().getMes() << ";";
                     arquivoUsuarios << m->getInicio().getAno() << ";";
-                    arquivoUsuarios << static_cast<int>(m->getEstado()) <<";";
+                    arquivoUsuarios << static_cast<int>(m->getEstado()) << ";";
                 }
                 arquivoUsuarios << std::endl;
-
-            } else if(Bibliotecario * bibliotecario = dynamic_cast<Bibliotecario*>(usuario.first)) {
+            } else if (Bibliotecario *bibliotecario = dynamic_cast<Bibliotecario*>(usuario.first)) {
                 arquivoUsuarios << "Bibliotecario" << ";";
                 arquivoUsuarios << usuario.second << ";";
                 arquivoUsuarios << bibliotecario->getNome() << ";";
                 arquivoUsuarios << bibliotecario->getCPF() << ";";
                 arquivoUsuarios << bibliotecario->getNumEmprestimos() << ";";
-                
+
                 salvarEmprestimos(arquivoUsuarios, bibliotecario->getEmprestimos());
                 arquivoUsuarios << std::endl;
-
             } else {
-                std::cerr << "Tipo de usuário desconhecido. Não foi possível salvar os dados." << std::endl;
+                std::cerr << "Tipo de usuário desconhecido. Não foi possível salvar os dados."
+                        << std::endl;
             }
         }
 
         arquivoUsuarios.close();
         arquivoObras.close();
+
+        if (!arquivoUsuarios || !arquivoObras) {
+            std::cerr << "Erro durante a gravação dos arquivos de dados." << std::endl;
+        }
     }
 
-    void Dados::CarregarDados() {
-
+    void Dados::carregarDados() {
         std::ifstream arquivoUsuarios("usuario.txt");
-        if(!arquivoUsuarios.is_open()) {
+        if (!arquivoUsuarios.is_open()) {
             std::cerr << "Erro ao abrir o arquivo para ler dados -> Usuarios." << std::endl;
             return;
         }
+
         std::ifstream arquivoObras("obras.txt");
-        if(!arquivoObras.is_open()) {
+        if (!arquivoObras.is_open()) {
             std::cerr << "Erro ao abrir o arquivo para ler dados -> Obras." << std::endl;
             return;
         }
 
-        delete this->catalogo;
-        delete this->usuarios;
+        delete usuarios;
+        delete catalogo;
+        catalogo = new Catalogo();
+        usuarios = new Usuarios();
 
-        this->catalogo = new Catalogo();
-        this->usuarios = new Usuarios();
+        int id;
+        int idObra;
+        int dia;
+        int mes;
+        int ano;
+        int edicao;
+        bool ativo;
+        bool danificado;
+        bool disponivel;
 
-        int _id;
-        int _idObra;
-        int _dia;
-        int _mes;
-        int _ano;
-        int _edicao;
-        bool _ativo;
-        bool _danificado;
-        bool _disponivel;
-        std::string _nome;
-        std::string _area;
-        std::string _cpf;
-        std::string _genero;
-        std::string _titulo;
-        std::string _autor;
-        std::string _curso;
-        std::string _matricula;
-        std::string _dano;
-        std::string _reparo;   
+        std::string nome;
+        std::string area;
+        std::string cpf;
+        std::string genero;
+        std::string titulo;
+        std::string autor;
+        std::string curso;
+        std::string matricula;
+        std::string dano;
+        std::string reparo;
+        std::string tipo;
 
-        //Data _data;
-        //Data _data2;
-        Obra * _obra;
-        Pessoa * _pessoa;
+        Obra *obra;
+        Pessoa *pessoa;
 
-        TecnicoManutencao * _tecnico;
+        int estado;
+        int numeroManutencao;
 
-        std::string _tipo;
-
-        int _estado;
-        int _numeroManutencao;
-
-        Emprestimo * _emprestimo;
-
-        while (std::getline(arquivoObras, _tipo, ';')) {
-
-            if(_tipo == "Artigo") {
-                std::getline(arquivoObras, _titulo, ';');
-                std::getline(arquivoObras, _autor, ';');
-                arquivoObras >> _id;
+        while (std::getline(arquivoObras, tipo, ';')) {
+            if (tipo == "Artigo") {
+                std::getline(arquivoObras, titulo, ';');
+                std::getline(arquivoObras, autor, ';');
+                arquivoObras >> id;
                 arquivoObras.ignore(1, ';');
-                arquivoObras >> _disponivel;
+                arquivoObras >> disponivel;
                 arquivoObras.ignore(1, ';');
-                arquivoObras >> _danificado;
+                arquivoObras >> danificado;
                 arquivoObras.ignore(1, ';');
-                std::getline(arquivoObras, _area, ';');
-                arquivoObras >> _ano;
+                std::getline(arquivoObras, area, ';');
+                arquivoObras >> ano;
 
-                this->catalogo->cadastrarObra(new Artigo(_titulo, _autor, _id, _area, _ano));
-                _obra = this->catalogo->buscarPorTitulo(_titulo);
-                _obra->setDanificado(_danificado);
-                _obra->setDisponivel(_disponivel);
-
-            } else if(_tipo == "Livro") {
-                std::getline(arquivoObras, _titulo, ';');
-                std::getline(arquivoObras, _autor, ';');
-                arquivoObras >> _id;
-                arquivoObras.ignore(1, ';');
-                arquivoObras >> _disponivel;
-                arquivoObras.ignore(1, ';');
-                arquivoObras >> _danificado;
-                arquivoObras.ignore(1, ';');
-                std::getline(arquivoObras, _genero, ';');
-                arquivoObras >> _edicao;
-
-                this->catalogo->cadastrarObra(new Livro(_titulo, _autor, _id, _genero, _edicao));
-                _obra = this->catalogo->buscarPorTitulo(_titulo);
-                _obra->setDisponivel(_disponivel);
-                _obra->setDanificado(_danificado);
-
-            }
-
-            arquivoObras.ignore(
-                std::numeric_limits<std::streamsize>::max(),
-                '\n'
-            );
-        }
-
-        while (std::getline(arquivoUsuarios, _tipo, ';')) {
-
-            std::vector<Emprestimo*> _emprestimos(0);
-
-        if(_tipo == "Estudante") {
-
-                arquivoUsuarios >> _id;
-                arquivoUsuarios.ignore(1, ';');
-                std::getline(arquivoUsuarios, _nome, ';');
-                std::getline(arquivoUsuarios, _cpf, ';');
-                std::getline(arquivoUsuarios, _curso, ';');
-                std::getline(arquivoUsuarios, _matricula, ';');
-
-                this->usuarios->adicionarUsuario(new Estudante(_nome, _cpf, _curso, _matricula), _id);
-                _pessoa = this->usuarios->buscarUsuarioId(_id);
-                
-                carregarEmprestimos(arquivoUsuarios, _pessoa, this->catalogo);
-
-        } else if(_tipo == "Professor") {
-
-                arquivoUsuarios >> _id;
-                arquivoUsuarios.ignore(1, ';');
-                std::getline(arquivoUsuarios, _nome, ';');
-                std::getline(arquivoUsuarios, _cpf, ';');
-                std::getline(arquivoUsuarios, _area, ';');
-
-                this->usuarios->adicionarUsuario(new Professor(_nome, _cpf, _area), _id);
-                _pessoa = this->usuarios->buscarUsuarioId(_id);
-
-                carregarEmprestimos(arquivoUsuarios, _pessoa, this->catalogo);
-
-        } else if(_tipo == "Bibliotecario") {
-
-                arquivoUsuarios >> _id;
-                arquivoUsuarios.ignore(1, ';');
-                std::getline(arquivoUsuarios, _nome, ';');
-                std::getline(arquivoUsuarios, _cpf, ';');
-
-                this->usuarios->adicionarUsuario(new Bibliotecario(_nome, _cpf), _id);
-                _pessoa = this->usuarios->buscarUsuarioId(_id);
-
-                carregarEmprestimos(arquivoUsuarios, _pessoa, this->catalogo);
-
-        } else if(_tipo == "TecnicoManutencao") {
-
-                Manutencao * _manutencao;
-                std::vector<Manutencao*> _manutencoes(0);
-
-                arquivoUsuarios >> _id;
-                arquivoUsuarios.ignore(1, ';');
-                std::getline(arquivoUsuarios, _nome, ';');
-                std::getline(arquivoUsuarios, _cpf, ';');
-
-                this->usuarios->adicionarUsuario(new TecnicoManutencao(_nome, _cpf), _id);
-                _pessoa = this->usuarios->buscarUsuarioId(_id);
-
-                carregarEmprestimos(arquivoUsuarios, _pessoa, this->catalogo);
-
-                arquivoUsuarios >> _numeroManutencao;
-                arquivoUsuarios.ignore(1, ';');
-
-                for(int i = 0; i < _numeroManutencao; i++) {
-
-                    arquivoUsuarios >> _idObra;
-                    arquivoUsuarios.ignore(1, ';');
-                    std::getline(arquivoUsuarios, _cpf, ';');
-                    std::getline(arquivoUsuarios, _dano, ';');
-                    std::getline(arquivoUsuarios, _reparo, ';');
-                    arquivoUsuarios >> _dia;
-                    arquivoUsuarios.ignore(1, ';');
-                    arquivoUsuarios >> _mes;
-                    arquivoUsuarios.ignore(1, ';');
-                    arquivoUsuarios >> _ano;
-                    arquivoUsuarios.ignore(1, ';');
-                    arquivoUsuarios >> _estado;
-
-                    Data data(_dia, _mes, _ano);
-                    _obra = this->catalogo->buscarPorId(_idObra);
-                    
-                    _manutencao  = new Manutencao(_obra, static_cast<TecnicoManutencao*>(_pessoa), _dano, data);
-                    _manutencao->registrarReparo(_reparo);
-                    _manutencao->setEstado(static_cast<EstadoManutencao>(_estado));
-                    _manutencoes.push_back(_manutencao);
-
+                if (!arquivoObras) {
+                    std::cerr << "Erro ao ler os dados de um artigo." << std::endl;
+                    return;
                 }
 
-                TecnicoManutencao* _tecnico = static_cast<TecnicoManutencao*>(_pessoa);
-                _tecnico->setManutencoes(_manutencoes);
+                Artigo *artigo = new Artigo(titulo, autor, id, area, ano);
 
-        }
-            
-            arquivoUsuarios.ignore(
-                std::numeric_limits<std::streamsize>::max(),
-                '\n'
-            );
+                if (catalogo->cadastrarObra(artigo)) {
+                    artigo->setDanificado(danificado);
+                    artigo->setDisponivel(disponivel);
+                } else {
+                    delete artigo;
+                    std::cerr << "Não foi possível cadastrar o artigo de ID "
+                            << id << "." << std::endl;
+                }
+            } else if (tipo == "Livro") {
+                std::getline(arquivoObras, titulo, ';');
+                std::getline(arquivoObras, autor, ';');
+                arquivoObras >> id;
+                arquivoObras.ignore(1, ';');
+                arquivoObras >> disponivel;
+                arquivoObras.ignore(1, ';');
+                arquivoObras >> danificado;
+                arquivoObras.ignore(1, ';');
+                std::getline(arquivoObras, genero, ';');
+                arquivoObras >> edicao;
+
+                if (!arquivoObras) {
+                    std::cerr << "Erro ao ler os dados de um livro." << std::endl;
+                    return;
+                }
+
+                Livro *livro = new Livro(titulo, autor, id, genero, edicao);
+
+                if (catalogo->cadastrarObra(livro)) {
+                    livro->setDisponivel(disponivel);
+                    livro->setDanificado(danificado);
+                } else {
+                    delete livro;
+                    std::cerr << "Não foi possível cadastrar o livro de ID "
+                            << id << "." << std::endl;
+                }
+            }
+            arquivoObras.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         }
 
+        while (std::getline(arquivoUsuarios, tipo, ';')) {
+            if (tipo == "Estudante") {
+                arquivoUsuarios >> id;
+                arquivoUsuarios.ignore(1, ';');
+                std::getline(arquivoUsuarios, nome, ';');
+                std::getline(arquivoUsuarios, cpf, ';');
+                std::getline(arquivoUsuarios, curso, ';');
+                std::getline(arquivoUsuarios, matricula, ';');
+
+                if (!arquivoUsuarios) {
+                    std::cerr << "Erro ao ler os dados de um estudante." << std::endl;
+                    return;
+                }
+
+                usuarios->adicionarUsuario(new Estudante(nome, cpf, curso, matricula), id);
+                pessoa = usuarios->buscarUsuarioId(id);
+                carregarEmprestimos(arquivoUsuarios, pessoa);
+            } else if (tipo == "Professor") {
+                arquivoUsuarios >> id;
+                arquivoUsuarios.ignore(1, ';');
+                std::getline(arquivoUsuarios, nome, ';');
+                std::getline(arquivoUsuarios, cpf, ';');
+                std::getline(arquivoUsuarios, area, ';');
+
+                if (!arquivoUsuarios) {
+                    std::cerr << "Erro ao ler os dados de um professor." << std::endl;
+                    return;
+                }
+
+                usuarios->adicionarUsuario(new Professor(nome, cpf, area), id);
+                pessoa = usuarios->buscarUsuarioId(id);
+                carregarEmprestimos(arquivoUsuarios, pessoa);
+            } else if (tipo == "Bibliotecario") {
+                arquivoUsuarios >> id;
+                arquivoUsuarios.ignore(1, ';');
+                std::getline(arquivoUsuarios, nome, ';');
+                std::getline(arquivoUsuarios, cpf, ';');
+
+                if (!arquivoUsuarios) {
+                    std::cerr << "Erro ao ler os dados de um bibliotecário." << std::endl;
+                    return;
+                }
+
+                usuarios->adicionarUsuario(new Bibliotecario(nome, cpf), id);
+                pessoa = usuarios->buscarUsuarioId(id);
+                carregarEmprestimos(arquivoUsuarios, pessoa);
+            } else if (tipo == "TecnicoManutencao") {
+                arquivoUsuarios >> id;
+                arquivoUsuarios.ignore(1, ';');
+                std::getline(arquivoUsuarios, nome, ';');
+                std::getline(arquivoUsuarios, cpf, ';');
+
+                if (!arquivoUsuarios) {
+                    std::cerr << "Erro ao ler os dados de um técnico de manutenção." << std::endl;
+                    return;
+                }
+
+                usuarios->adicionarUsuario(new TecnicoManutencao(nome, cpf), id);
+                pessoa = usuarios->buscarUsuarioId(id);
+                carregarEmprestimos(arquivoUsuarios, pessoa);
+
+                if (!arquivoUsuarios) {
+                    std::cerr << "Erro ao carregar os empréstimos do técnico." << std::endl;
+                    return;
+                }
+                if (!(arquivoUsuarios >> numeroManutencao) || numeroManutencao < 0) {
+                    std::cerr << "Quantidade de manutenções inválida." << std::endl;
+                    return;
+                }
+
+                arquivoUsuarios.ignore(1, ';');
+                std::vector<Manutencao*> manutencoes;
+                TecnicoManutencao *tecnico = static_cast<TecnicoManutencao*>(pessoa);
+
+                for (int i = 0; i < numeroManutencao; i++) {
+                    arquivoUsuarios >> idObra;
+                    arquivoUsuarios.ignore(1, ';');
+                    std::getline(arquivoUsuarios, cpf, ';');
+                    std::getline(arquivoUsuarios, dano, ';');
+                    std::getline(arquivoUsuarios, reparo, ';');
+                    arquivoUsuarios >> dia;
+                    arquivoUsuarios.ignore(1, ';');
+                    arquivoUsuarios >> mes;
+                    arquivoUsuarios.ignore(1, ';');
+                    arquivoUsuarios >> ano;
+                    arquivoUsuarios.ignore(1, ';');
+                    arquivoUsuarios >> estado;
+                    arquivoUsuarios.ignore(1, ';');
+
+                    if (!arquivoUsuarios ||
+                        estado < static_cast<int>(EstadoManutencao::PENDENTE) ||
+                        estado > static_cast<int>(EstadoManutencao::CONCLUIDA)) {
+
+                        std::cerr << "Erro ao ler uma manutenção do técnico." << std::endl;
+
+                        for (Manutencao *m : manutencoes) {
+                            delete m;
+                        }
+                        return;
+                    }
+
+                    Data data(dia, mes, ano);
+                    obra = catalogo->buscarPorId(idObra);
+
+                    if (obra == nullptr) {
+                        std::cerr << "Obra não encontrada ao carregar manutenção: "
+                                << idObra << std::endl;
+
+                        for (Manutencao *m : manutencoes) {
+                            delete m;
+                        }
+                        return;
+                    }
+
+                    Manutencao *manutencao = new Manutencao(obra, tecnico, dano, data);
+                    manutencao->registrarReparo(reparo);
+                    manutencao->setEstado(static_cast<EstadoManutencao>(estado));
+                    manutencoes.push_back(manutencao);
+                }
+                tecnico->setManutencoes(manutencoes);
+            }
+
+            if (!arquivoUsuarios) {
+                std::cerr << "Erro ao carregar os dados de um usuário." << std::endl;
+                return;
+            }
+            arquivoUsuarios.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        }
         arquivoUsuarios.close();
         arquivoObras.close();
-
     }
