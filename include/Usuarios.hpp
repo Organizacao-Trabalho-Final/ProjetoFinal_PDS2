@@ -52,21 +52,21 @@ class Usuarios {
          * @param id ID do usuário a ser buscado.
          * @return Ponteiro para o objeto Pessoa encontrado ou nullptr se não encontrado.
          */
-        Pessoa *buscarUsuarioId(int id) const;
+        Pessoa *buscarUsuarioId(const int id) const;
 
         /**
          * @brief Busca um usuário pelo CPF.
          * @param cpf CPF do usuário a ser buscado.
          * @return Ponteiro para o objeto Pessoa encontrado ou nullptr se não encontrado.
          */
-        Pessoa * buscarUsuarioCPF(std::string &cpf) const;
+        Pessoa * buscarUsuarioCPF(const std::string &cpf) const;
 
         /**
          * @brief Busca um usuário pelo índice no vetor de usuários.
          * @param index Índice do usuário a ser buscado.
          * @return Par contendo o ponteiro para Pessoa e seu ID, ou {nullptr, -1} se não encontrado.
          */
-        std::pair<Pessoa*, int>& buscarUsuarioIndex(int index) const;
+        std::pair<Pessoa*, int> buscarUsuarioIndex(int index) const;
 
         /**
          * @brief Retorna o vetor de usuários.
@@ -79,7 +79,7 @@ class Usuarios {
          * @param cpf CPF do usuário.
          * @return Ocupação do usuário como string.
          */
-        std::string getOcupacao(std::string &cpf) const;
+        std::string getOcupacao(const std::string &cpf) const;
 
         /**
          * @brief Retorna a ocupação de um usuário pelo índice no vetor de usuários

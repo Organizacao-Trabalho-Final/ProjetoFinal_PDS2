@@ -1,5 +1,5 @@
+#include <cstddef>
 #include "Usuarios.hpp"
-
 #include "Pessoa.hpp"
 #include "Estudante.hpp"
 #include "Professor.hpp"
@@ -39,7 +39,7 @@
         return nullptr;
     }
 
-    Pessoa* Usuarios::buscarUsuarioId(int id) const {
+    Pessoa* Usuarios::buscarUsuarioId(const int id) const {
         for (const auto &usuario : usuarios) {
             if (usuario.first != nullptr && usuario.second == id) {
                 return usuario.first;
@@ -48,7 +48,7 @@
         return nullptr;
     }
 
-    Pessoa* Usuarios::buscarUsuarioCPF(std::string &cpf) const {
+    Pessoa* Usuarios::buscarUsuarioCPF(const std::string &cpf) const {
         for (const auto &usuario : usuarios) {
             if (usuario.first != nullptr && usuario.first->getCPF() == cpf) {
                 return usuario.first;
@@ -57,8 +57,8 @@
         return nullptr;
     }
 
-    std::pair<Pessoa*, int>& Usuarios::buscarUsuarioIndex(int index) const {
-        if (index < 0 || static_cast<std::size_t(index) >= usuarios.size()) {
+    std::pair<Pessoa*, int> Usuarios::buscarUsuarioIndex(int index) const {
+        if (index < 0 || static_cast<std::size_t>(index) >= usuarios.size()) {
             return std::make_pair(static_cast<Pessoa*>(nullptr), -1);
         }
         return usuarios[index];
@@ -68,7 +68,7 @@
         return usuarios;
     }
 
-    std::string Usuarios::getOcupacao(std::string &cpf) const {
+    std::string Usuarios::getOcupacao(const std::string &cpf) const {
         Pessoa* p = buscarUsuarioCPF(cpf);
         if (p == nullptr) {
             return "ERRO";
