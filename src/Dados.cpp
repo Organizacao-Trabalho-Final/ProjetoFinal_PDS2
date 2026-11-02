@@ -168,7 +168,7 @@
                 
                 salvarEmprestimos(arquivoUsuarios, tecnico->getEmprestimos());
 
-                arquivoUsuarios << tecnico->getMaxManutencoes() << ";";
+                arquivoUsuarios << tecnico->getManutencoes().size() << ";";
                 for(Manutencao *m : tecnico->getManutencoes()) {
                     arquivoUsuarios << m->getObra()->getID() << ";";
                     arquivoUsuarios << m->getTecnico()->getCPF() << ";";
