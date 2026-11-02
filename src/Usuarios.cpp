@@ -1,102 +1,113 @@
+#include <cstddef>
 #include "Usuarios.hpp"
-
 #include "Pessoa.hpp"
 #include "Estudante.hpp"
 #include "Professor.hpp"
 #include "Bibliotecario.hpp"
 #include "TecnicoManutencao.hpp"
 
-Usuarios::Usuarios() : usuarios(0) {}
+    Usuarios::Usuarios(): usuarios(0) {}
 
-void Usuarios::adicionarUsuario(Pessoa *usuario, int _id) {
-    usuarios.push_back(std::make_pair(usuario, _id));
-}
-
-void Usuarios::removerUsuario(const std::string & nome) {
-    for (auto it = usuarios.begin(); it != usuarios.end(); ++it) {
-        if (it->first->getNome() == nome) {
-            usuarios.erase(it);
+    void Usuarios::adicionarUsuario(Pessoa *u, int id) {
+        if (u == nullptr) {
             return;
         }
+        for (const auto &cadastrado : usuarios) {
+            if (cadastrado.first == u) {
+                return;
+            }
+        }
+        usuarios.push_back(std::make_pair(u, id));
     }
-}
 
-Pessoa * Usuarios::buscarUsuarioNome(const std::string & nome) const {
-    for (const auto & usuario : usuarios) {
-        if (usuario.first->getNome() == nome) {
-            return usuario.first;
+    void Usuarios::removerUsuario(const std::string &nome) {
+        for (auto it = usuarios.begin(); it != usuarios.end(); ++it) {
+            if (it->first->getNome() == nome) {
+                delete it->first;
+                usuarios.erase(it);
+                return;
+            }
         }
     }
-    return nullptr;
-}
 
-Pessoa * Usuarios::buscarUsuarioId(int id) const {
-    for (const auto & usuario : usuarios) {
-        if (usuario.second == id) {
-            return usuario.first;
+    Pessoa* Usuarios::buscarUsuarioNome(const std::string &nome) const {
+        for (const auto &usuario : usuarios) {
+            if (usuario.first != nullptr && usuario.first->getNome() == nome) {
+                return usuario.first;
+            }
         }
+        return nullptr;
     }
-    return nullptr;
-}
 
-Pessoa * Usuarios::buscarUsuarioCPF(std::string _cpf) const {
-    for (const auto & usuario : usuarios) {
-        if (usuario.first->getCPF() == _cpf) {
-            return usuario.first;
+    Pessoa* Usuarios::buscarUsuarioId(const int id) const {
+        for (const auto &usuario : usuarios) {
+            if (usuario.first != nullptr && usuario.second == id) {
+                return usuario.first;
+            }
         }
+        return nullptr;
     }
-    return nullptr;
-}
 
-std::pair<Pessoa*, int>& Usuarios::buscarUsuarioIndex(int index) {
-    if(index < 0 || index > usuarios.size()) {
-        std::pair<Pessoa*, int> * erro = new std::pair<Pessoa*, int>;
-        erro->first = nullptr;
-        erro->second = -1;
-        return *erro;
-    }
-    for (auto & usuario : usuarios) {
-        if (usuario.first == usuarios[index].first) {
-            return usuario;
+    Pessoa* Usuarios::buscarUsuarioCPF(const std::string &cpf) const {
+        for (const auto &usuario : usuarios) {
+            if (usuario.first != nullptr && usuario.first->getCPF() == cpf) {
+                return usuario.first;
+            }
         }
+        return nullptr;
     }
-    std::pair<Pessoa*, int> * erro = new std::pair<Pessoa*, int>;;
-    erro->first = nullptr;
-    erro->second = -1;
-    return *erro;
-}
 
-const std::vector<std::pair<Pessoa*, int>>& Usuarios::getUsuarios() const {
-    return usuarios;
-}
+    std::pair<Pessoa*, int> Usuarios::buscarUsuarioIndex(int index) const {
+        if (index < 0 || static_cast<std::size_t>(index) >= usuarios.size()) {
+            return std::make_pair(static_cast<Pessoa*>(nullptr), -1);
+        }
+        return usuarios[index];
+    }
 
-std::string Usuarios::getOcupacao(std::string _cpf) const {
-    Pessoa* pessoa = buscarUsuarioCPF(_cpf);
-    if (Estudante* e = dynamic_cast<Estudante*>(pessoa)) {
-        return "Estudante";
-    } else if (Professor* p = dynamic_cast<Professor*>(pessoa)) {
-        return "Professor";
-    } else if (Bibliotecario* b = dynamic_cast<Bibliotecario*>(pessoa)) {
-        return "Bibliotecario";
-    } else if (TecnicoManutencao* t = dynamic_cast<TecnicoManutencao*>(pessoa)) {
-        return "TecnicoManutencao";
+    const std::vector<std::pair<Pessoa*, int>>& Usuarios::getUsuarios() const {
+        return usuarios;
     }
-    return "ERRO";
-}
 
-std::string Usuarios::getOcupacao(int index) const {
-    if(index < 0 || index > usuarios.size()) {
-        return "ERRO -> Index Inválido";
+    std::string Usuarios::getOcupacao(const std::string &cpf) const {
+        Pessoa* p = buscarUsuarioCPF(cpf);
+        if (p == nullptr) {
+            return "ERRO";
+        }
+        if (dynamic_cast<Estudante*>(p) != nullptr) {
+            return "Estudante";
+        } else if (dynamic_cast<Professor*>(p) != nullptr) {
+            return "Professor";
+        } else if (dynamic_cast<Bibliotecario*>(p) != nullptr) {
+            return "Bibliotecario";
+        } else if (dynamic_cast<TecnicoManutencao*>(p) != nullptr) {
+            return "TecnicoManutencao";
+        }
+        return "ERRO";
     }
-    Pessoa* pessoa = usuarios[index].first;
-    if (Estudante* e = dynamic_cast<Estudante*>(pessoa)) {
-        return "Estudante";
-    } else if (Professor* p = dynamic_cast<Professor*>(pessoa)) {
-        return "Professor";
-    } else if (Bibliotecario* b = dynamic_cast<Bibliotecario*>(pessoa)) {
-        return "Bibliotecario";
-    } else if (TecnicoManutencao* t = dynamic_cast<TecnicoManutencao*>(pessoa)) {
-        return "TecnicoManutencao";
+
+    std::string Usuarios::getOcupacao(int index) const {
+        if(index < 0 || static_cast<std::size_t>(index) >= usuarios.size()) {
+            return "ERRO -> Index Inválido";
+        }
+        Pessoa* p = usuarios[index].first;
+        if (p == nullptr) {
+            return "ERRO";
+        }
+        if (dynamic_cast<Estudante*>(p) != nullptr) {
+            return "Estudante";
+        } else if (dynamic_cast<Professor*>(p) != nullptr) {
+            return "Professor";
+        } else if (dynamic_cast<Bibliotecario*>(p) != nullptr) {
+            return "Bibliotecario";
+        } else if (dynamic_cast<TecnicoManutencao*>(p) != nullptr) {
+            return "TecnicoManutencao";
+        }
+        return "ERRO";
     }
-    return "ERRO";
-}
+
+    Usuarios::~Usuarios() {
+        for (const auto &usuario : usuarios) {
+            delete usuario.first;
+        }
+        usuarios.clear();
+    }

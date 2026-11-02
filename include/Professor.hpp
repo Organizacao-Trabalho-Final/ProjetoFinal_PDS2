@@ -1,17 +1,18 @@
-#ifndef PROFESSOR_H
-#define PROFESSOR_H
+#ifndef PROFESSOR_HPP
+#define PROFESSOR_HPP
 
 /**
  * @file Professor.hpp
- * @brief Declaração da classe Professor
- * @date 2026-10-12
+ * @brief Contrato da classe Professor.
  */
 #include <string>
 #include "Pessoa.hpp"
 
 /**
  * @class Professor
- * @brief Cria a estrutura da classe Professor
+ * @brief Representa um Professor e suas regras específicas como usuário.
+ * 
+ * Herda os atributos e comportamentos da classe Pessoa.
  */
 class Professor : public Pessoa {
     private:
@@ -19,39 +20,35 @@ class Professor : public Pessoa {
 
     public:
         /**
-         * @brief Contrutor da classe Professor
-         * @param n string a ser passada para "nome", herdada de Pessoa
-         * @param c string a ser passada para "CPF", herdada de Pessoa
-         * @param a string a ser passada para "area"  
+         * @brief Constroi um objeto Professor.
+         * @param n Nome do professor.
+         * @param c CPF do professor.
+         * @param a Area de atuação do professor.  
          */
         Professor(std::string n, std::string c, std::string a);
 
         /**
-         * @brief Usado para ler a string armazenada em area
-         * @return Retorna a variável "area"
+         * @brief Retorna a área de atuação do professor.
+         * @return String contendo a área de atuação.
          */
         std::string getArea() const;
 
         /**
-         * @brief Usado para ler o prazo que o professor tem para a devolução da obra
-         * @return O valor em dias do prazo do empréstimo do professor
+         * @brief Retorna o prazo de empréstimo permitido ao professor.
+         * @return Prazo de empréstimo em dias.
          */
         int getPrazo() const override;
 
         /**
-         * @brief usado para ler o valor máximo de empréstimos
-         * @return retorna o valor máximo de empréstimos da pessoa
-         * @note Método virtual da classe Pessoa
+         * @brief Retorna o limite de empréstimos simultâneos do professor.
+         * @return Quantidade máxima de empréstimos ativos permitidos.
          */
         int getMaxEmprestimos() const override;
 
         /**
-         * 
-         *//**
-         * @brief método virtual constante que verifica se a pessoa pode pegar aquela obra eprestada
-         * @param o um ponteiro para obra
-         * @return retorna true se puder e false, caso contrário
-         * @note Método virtual da classe Pessoa
+         * @brief Verifica se o professor pode realizar o empréstimo de uma obra.
+         * @param o Ponteiro para a obra solicitada.
+         * @return true se o empréstimo puder ser realizado; false caso contrário.
          */
         bool podeEmprestar(const Obra *o) const override;
 };

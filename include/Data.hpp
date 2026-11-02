@@ -1,63 +1,65 @@
-#ifndef DATA_H
-#define DATA_H
+#ifndef DATA_HPP
+#define DATA_HPP
 
 /**
  * @file Data.hpp
- * @brief Declaração da classe Data
- * @date 2026-10-13
+ * @brief Contrato da classe Data.
  */
 #include <string>
 
 /**
  * @class Data
- * @brief Cria a estrutura da calsse Data
+ * @brief Representa uma data e fornece operações de validação e cálculo entre datas.
  */
 class Data {    
-    private :
-        int dia; ///< Dia do mês
-        int mes; ///< Mes do ano
-        int ano; ///< Ano
+    private:
+        int dia;
+        int mes;
+        int ano;
 
-    public  :
+        /**
+        * @brief Verifica se a data fornecida é válida.
+        * @return False se é inválida e True se Válida.
+        */
+        bool isValida(int d, int m, int a) const;
 
         /**
         * @brief Verifica se o ano é bissexto.
-        * @param _ano Ano a verificar.
+        * @param a Ano a verificar.
         */
-        bool isBissexto(int _ano) const;
+        bool isBissexto(int a) const;
 
         /**
-        * @brief Função que retorna a quantidade de dias no mes em agum ano.
-        * @param _mes Mês do ano.
-        * @param _ano Ano.
+        * @brief Função que retorna a quantidade de dias de um mês de determinado ano.
+        * @param m Mês do ano.
+        * @param a Ano.
         * @return Quantidade de dias no mês.
         */
-        int  diaMes(int _mes, int _ano) const;
+        int  diaMes(int m, int a) const;
 
         /**
-        * @brief Converte uma data em dias no ano.
-        * @param _dia Dia do ano.
-        * @param _mes Mês do ano.
-        * @param _ano Ano.
-        * @return Dia no ano.
+        * @brief Calcula a posição de uma data dentro do ano.
+        * @param d Dia do ano.
+        * @param m Mês do ano.
+        * @param a Ano.
+        * @return Quantidade de dias decorridos no ano até a data informada.
         */
-        int  Dias(int _dia, int _mes, int _ano) const;
+        int dias(int d, int m, int a) const;
 
         /**
-        * @brief Converte a data em dias no ano.
-        * @return Dia no ano.
+        * @brief Calcula a posição de uma data dentro do ano.
+        * @return Dia do ano.
         */
-        int  Dias() const;
+        int dias() const;
 
         /**
-        * @brief A data muda para um dia a frente.
+        * @brief Avança a data em um dia.
         */
         void addDia();
 
-    public :
-
+    public:
         /**
-        * @brief Carrega o dia, mês e ano para os parÂmetros da classe.
+        * @brief Constrói um objeto Data.
         * @param d Dia do ano.
         * @param m Mês do ano.
         * @param a Ano.
@@ -71,7 +73,7 @@ class Data {
         int getDia() const;
 
         /**
-        * @brief Retorna o mÊs do ano.
+        * @brief Retorna o mês do ano.
         * @return Mês do ano.
         */
         int getMes() const;
@@ -83,22 +85,16 @@ class Data {
         int getAno() const;
 
         /**
-        * @brief Retorna a data em formato "std::string".
-        * @return data (string).
+        * @brief Retorna a data em formato de texto.
+        * @return Data no formato "dia/mes/ano".
         */
         std::string getData() const;
 
         /**
         * @brief Verifica se a data é válida.
-        * @return False se é inválida e True se Válida.
+        * @return true se a data for válida; false caso contrário.
         */
         bool isValida() const;
-
-        /**
-        * @brief Verifica se a data fornecida é válida.
-        * @return False se é inválida e True se Válida.
-        */
-        bool isValida(int _dia, int _mes, int _ano) const;
 
         /**
         * @brief Soma X dias a data atual.
@@ -112,7 +108,7 @@ class Data {
         * @param d Data.
         * @return Diferença entre as datas.
         */
-        int diferencaDatas(Data d) const;
+        int diferencaDatas(const Data &data) const;
 
         ~Data() = default; ///< Destrutor padrão.
 };

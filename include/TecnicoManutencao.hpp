@@ -2,21 +2,22 @@
 #define TECNICOMANUTENCAO_HPP
 
 /**
- * @file TecnicoManutencao
- * @brief Declaração da calsse TecnicoManutencao
- * @date 2026-10-13
+ * @file TecnicoManutencao.hpp
+ * @brief Contrato da classe TecnicoManutencao.
  */
-#include <iostream>
+
 #include <string>
 #include <vector>
 #include "Pessoa.hpp"
 
 class Manutencao;
-class Obra;
 
 /**
  * @class TecnicoManutencao
- * @brief Cria a estrutura da classe TecnicoManutencao
+ * @brief Representa um técnico responsável pelas manutenções
+ * da biblioteca e e permite consultar esses dados.
+ *
+ * Herda os atributos e comportamentos da classe Pessoa.
  */
 class TecnicoManutencao : public Pessoa {
     private:
@@ -25,53 +26,55 @@ class TecnicoManutencao : public Pessoa {
 
     public:
         /**
-         * @brief Contrutor da classe TecnicoManutencao
-         * @param n String com o nome da pessoa
-         * @param c String com o CPF da pessoa
+         * @brief Constrói um objeto TecnicoManutencao.
+         * @param n Nome do técnico.
+         * @param c CPF do técnico.
          */
         TecnicoManutencao(std::string n, std::string c);
 
         /**
-         * @brief Método que retorna as manutenções do técnico.
-         * @return Referência para vetor 'std::vector<Manutencao*>&'.
+         * @brief Retorna a lista de manutenções associadas ao técnico.
+         * @return Referência ao vetor de ponteiros para Manutencao.
          */
-        std::vector<Manutencao*>& getManutencoes() const;
+        const std::vector<Manutencao*>& getManutencoes() const;
 
         /**
-         * @brief Método a quantidade de manutenções realizadas pelo técnico.
-         * @return Número de manutenções.
-         */
-        int getMaxManutencoes() const;
-
-        /**
-         * @brief Adiciona uma manutenção a lista de manutenções a fazer
-         * @param m ponteiro para um objeto do tipo Manutencao
+         * @brief Adiciona uma manutenção à lista do técnico.
+         * @param m Ponteiro para a manutenção a ser associada.
          */
         void adicionarManutencao(Manutencao *m);
 
         /**
-         * @brief Adiciona todas as manutenções de um técnico.
-         * @param m Vetor de manutenções 'std::vector<Manutencao*>'.
+         * @brief Substitui a lista de manutenções associadas ao técnico.
+         * @param m Vetor de ponteiros para as manutenções.
          */
-        void setManutencoes(std::vector<Manutencao*> m);
+        void setManutencoes(const std::vector<Manutencao*>& m);
 
         /**
-         * @brief Consulta a lista de Manutenções a fazer
-         * @return Retorna o id da manutenção ainda pendente
+         * @brief Consulta a quantidade de manutenções pendentes do técnico.
+         * @return Número de manutenções com estado PENDENTE.
          */
         int consultarManutencoesPendentes() const;
 
         /**
-         * @brief Registra qual reparo foi feito na obra
-         * @param m Ponteiro para um objeto do tipo Manutencao
-         * @param r String com qual reparo foi feito
+         * @brief Registra o reparo realizado em uma manutenção.
+         * @param m Ponteiro para a manutenção correspondente.
+         * @param r Descrição do reparo realizado.
          */
-        void registrarReparo(Manutencao *m, std::string r);
+        void registrarReparo(Manutencao *m, const std::string& r);
 
         /**
-         * @brief Deixa manutenção como concluída
-         * @param m Ponteiro para um objeto do tipo Manutencao
+         * @brief Conclui uma manutenção atribuída ao técnico.
+         * @param m Ponteiro para a manutenção a ser concluída.
          */
         void concluirManutencao(Manutencao *m);
+
+        /**
+         * @brief Destrói o técnico e libera as manutenções sob sua propriedade.
+         *
+         * @note Os objetos apontados pelo vetor manutencoes são destruídos
+         * junto com o técnico.
+         */
+        ~TecnicoManutencao() override;
 };
 #endif

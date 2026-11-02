@@ -41,7 +41,6 @@
 
     void Emprestimo::encerrarEmprestimo() {
         setAtivo(false);
-        obra->setDisponivel(true);
     }
 
     void Emprestimo::printEmprestimo() const {

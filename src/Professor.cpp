@@ -10,14 +10,13 @@
     }
         
     int Professor::getPrazo() const {
-        //????????????????????/!?!?!?!?!?!?!?!?!
-        //Que prazo??!?!?!?!?!?!?!?!?!
+        return 60;
     }
         
     int Professor::getMaxEmprestimos() const {
-        return Pessoa::getMaxEmprestimos();
+        return 5;
     }
 
     bool Professor::podeEmprestar(const Obra *o) const {
-        return o->isDisponivel();
+        return (o != nullptr && o->isDisponivel() && getEmprestimosAtivos() < getMaxEmprestimos());
     }

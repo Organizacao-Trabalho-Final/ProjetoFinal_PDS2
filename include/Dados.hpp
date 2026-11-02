@@ -1,61 +1,95 @@
 #ifndef DADOS_HPP
 #define DADOS_HPP
 
+/**
+ * @file Dados.hpp
+ * @brief Contrato da classe Dados.
+ */
+
 #include <vector>
 #include <fstream>
 
 class Usuarios;
 class Catalogo;
 class Pessoa;
-class Manutencao;
 class Emprestimo;
-class TecnicoManutencao;
 
+/**
+ * @class Dados
+ * @brief Usada para gereciamento dos dados do sistema.
+ * Gerencia a persistência das informações de usuários, obras, empréstimos
+ * e manutenções, utilizando arquivos de texto.
+ */
 class Dados {
+    private:
+        Usuarios *usuarios;
+        Catalogo *catalogo;
 
-    private :
-
-        Usuarios * usuarios;
-        Catalogo * catalogo;
-        std::vector<Manutencao*> manutencao;
-
-    public :
         /**
-         * @brief Construtor da classe Dados
-         * @param usuario Ponteiro para o objeto Usuarios
-         * @param catalogo Ponteiro para o objeto Catalogo
+         * @brief Salva os empréstimos de um usuário em um arquivo.
+         * @param out Fluxo de saída utilizado para a gravação.
+         * @param emprestimos Vetor de ponteiros para os empréstimos.
          */
-        Dados(Usuarios * usuario, Catalogo * catalogo);
+        void salvarEmprestimos(std::ofstream &out, const std::vector<Emprestimo*> &emprestimos) const;
+
         /**
-         * @brief Método utilizado para retornar os usuários cadastrados. 
+         * @brief Carrega os empréstimos de um usuário a partir de um arquivo.
+         * @param in Fluxo de entrada utilizado para a leitura.
+         * @param p Ponteiro para o usuário que receberá os empréstimos.
+         */
+        void carregarEmprestimos(std::ifstream &in, Pessoa* p);
+
+    public:
+        /**
+         * @brief Constroi um objeto Dados.
+         * @param u Ponteiro para o objeto Usuarios.
+         * @param c Ponteiro para o objeto Catalogo.
+         */
+        Dados(Usuarios* u, Catalogo* c);
+
+        /**
+         * @brief Retorna os usuários cadastrados. 
          * @return Ponteiro para os usuários cadastrados.
          */
-        Usuarios * getUsuarios() const;
+        Usuarios* getUsuarios();
+
         /**
-         * @brief Método utilizado para retornar o catálogo de itens.
-         * @return Ponteiro para o catálogo de itens.
+         * @brief Retorna os usuários cadastrados para consulta. 
+         * @return Ponteiro constante para os usuários cadastrados.
          */
-        Catalogo * getCatalogo() const;
+        const Usuarios* getUsuarios() const;
 
-    private :
+        /**
+         * @brief Retorna o catálogo de obras.
+         * @return Ponteiro para o catálogo de obras.
+         */
+        Catalogo* getCatalogo();
 
-        void salvarEmprestimos(std::ofstream &out, const std::vector<Emprestimo*> &emprestimos);
-        void carregarEmprestimos(std::ifstream &in, Pessoa* _pessoa, Catalogo* catalogo);
+        /**
+         * @brief Retorna o catálogo de obras.
+         * @return Ponteiro constante para o catálogo de obras.
+         */
+        const Catalogo* getCatalogo() const;
 
-    public :
+    public:
         /**
          * @brief Salva os dados de usuários e catálogos em um arquivo .txt
          */
-        void SalvarDados();
+        void salvarDados();
+
         /**
          * @brief Carrega os dados de usuários e catálogos a partir de um arquivo .txt
          */
-        void CarregarDados();
+        void carregarDados();
+
+        // Impedem cópias superficiais dos ponteiros pertencentes à classe.
+        Dados(const Dados&) = delete;
+        Dados& operator=(const Dados&) = delete;
+
         /**
-         * @brief Destrutor da classe Dados
+         * @brief Destrutor da classe Dados.
+         * Libera a memória dos objetos recebidos pelo construtor.
          */
-        ~Dados() = default;
-
+        ~Dados();
 };
-
 #endif
