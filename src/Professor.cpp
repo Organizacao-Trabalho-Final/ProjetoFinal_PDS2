@@ -10,7 +10,7 @@
     }
         
     int Professor::getPrazo() const {
-        return 60;
+        return 45;
     }
         
     int Professor::getMaxEmprestimos() const {

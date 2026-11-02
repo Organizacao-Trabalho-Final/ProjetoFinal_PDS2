@@ -1,10 +1,9 @@
-#ifndef EMPRESTIMO_H
-#define EMPRESTIMO_H
+#ifndef EMPRESTIMO_HPP
+#define EMPRESTIMO_HPP
 
 /**
  * @file Emprestimo.hpp
- * @brief declaração da classe Emprestimo
- * @date 2026-10-12
+ * @brief Contrato da classe Emprestimo.
  */
 #include "Data.hpp"
 
@@ -13,93 +12,98 @@ class Pessoa;
 
 /**
  * @class Emprestimo
- * @brief Cria a estrutura da classe Emprestimo
+ * @brief Representa o empréstimo de uma obra a um usuário.
+ *
+ * Armazena a obra emprestada, o usuário responsável, as datas de
+ * retirada e devolução e o estado atual do empréstimo.
  */
 class Emprestimo {
     private:
-        Obra *obra;
-        Pessoa *usuario;
-        Data retirada;
-        Data devolucao;
-        bool ativo;
+        Obra *obra; ///< Obra associada ao empréstimo.
+        Pessoa *usuario; ///< Usuário responsável pelo empréstimo.
+        Data retirada, devolucao; ///< Data de retirada + previsão de devolução da obra.
+        bool ativo; ///< Indica se o empréstimo está ativo.
 
     public:
-    /**
-     * @brief Construtor de Emprestimo
-     * @param o Referencia para uma Obra
-     * @param p Referencia para uma Pessoa
-     * @param d Objeto do tipo Data
-     */
-        Emprestimo(Obra &o, Pessoa &p, Data d);
+        /**
+         * @brief Constrói um objeto Emprestimo.
+         * @param o Obra que será emprestada.
+         * @param p Usuário responsável pelo empréstimo.
+         * @param d Data de retirada da obra.
+         */
+        Emprestimo(Obra &o, Pessoa &p, const Data d);
 
         /**
-         * @brief Setter que altera o valor de Ativo
-         * @param b Valor booleano passado para alterar "Ativo"
+         * @brief Altera o estado do empréstimo.
+         * @param b Novo estado do empréstimo.
          */
         void setAtivo(bool b);
 
         /**
-         * @brief Verifica se o emprestimo está ativo.
-         * @return retorna True se ativo e False caso contrário.
+         * @brief Informa se o empréstimo está ativo.
+         * @return true se o empréstimo estiver ativo; false caso contrário.
          */
         bool isAtivo() const;
 
         /**
-         * @brief Usado para ler o valor de "Obra"
-         * @return Retorna uma referencia para "Obra"
+         * @brief Retorna a obra associada ao empréstimo.
+         * @return Referência para a obra emprestada.
          */
         Obra& getObra();
 
         /**
-         * @brief Obtém o usuário assiciado a esse empréstimo
-         * @return Retorna uma referência para pessoa que não pode ser alterada
-         * @note A referencia é válida somente quando o objeto Pessoa Existir
+         * @brief Retorna o usuário responsável pelo empréstimo.
+         * @return Referência constante para o usuário.
          */
         const Pessoa& getUsuario() const;
 
         /**
-         * @brief Usado para ler qual a data de retirada daquele empréstimo
-         * @return Retorna a data que foi realizado o empréstimo
-         * @note O valor não é alterado pela funçao
+         * @brief Retorna a data de retirada da obra.
+         * @return Data de retirada.
          */
         Data getRetirada() const;
 
         /**
-         * @brief Usado para ler qual a data de devolução daquele empréstimo
-         * @return Retorna a data que deverá ser devolvido o empréstimo
-         * @note O valor não é alterado pela funçao
+         * @brief Retorna a data prevista para devolução da obra.
+         * @return Data prevista para devolução.
          */
         Data getDevolucao() const;
 
         /**
-         * @brief Define a data de devolução.
+         * @brief Altera a data prevista para devolução.
+         * @param d Nova data de devolução.
          */
         void setDevolucao(Data d);
 
         /**
-         * @brief Calcula o tempo de atraso da devolução de um empréstimo
-         * @return Retorna os dias de atraso
-         *  @note O valor não é alterado pela funçao
+         * @brief Calcula a quantidade de dias de atraso do empréstimo.
+         * @param d Data usada como referência para o cálculo.
+         * @return Quantidade de dias de atraso ou zero se não houver atraso.
          */
         int getAtraso(Data d) const;
 
         /**
-         * @brief Registra como devolução efetuada e coloca a obra disponível novamente
+         * @brief Encerra o empréstimo.
+         * Altera o estado do empréstimo para inativo.
          */
         void encerrarEmprestimo();
 
         /**
-         * @brief Prolonga o tempo que o emprestimo poderá existir sem que haja atraso
+         * @brief Renova o empréstimo.
+         * Adiciona à data de devolução um novo período correspondente
+         * ao prazo permitido para o usuário.
          */
         void renovarEmprestimo();
 
         /**
-         * @brief Imprime Nome da obra, ID, retirada, devolução e se está ativo.
+         * @brief Exibe as informações do empréstimo.
+         * Mostra a obra, o usuário, as datas de retirada e devolução
+         * e o estado atual do empréstimo.
          */
         void printEmprestimo() const;
 
         /**
-         * @brief destrutor de "Emprestimo"
+         * @brief Destrutor padrão da classe Emprestimo.
          */
         ~Emprestimo() = default;
 };

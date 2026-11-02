@@ -3,7 +3,7 @@
 #include "Pessoa.hpp"
 #include "Obra.hpp"
 
-    Emprestimo::Emprestimo(Obra &o, Pessoa &p, Data d):
+    Emprestimo::Emprestimo(Obra &o, Pessoa &p, const Data d):
     obra(&o), usuario(&p), retirada(d), devolucao(d.somarDias(p.getPrazo())), ativo(true) {}
 
     void Emprestimo::setAtivo(bool b) {
@@ -36,6 +36,9 @@
 
     int Emprestimo::getAtraso(Data d) const {
         int atraso = devolucao.diferencaDatas(d);
+        if (atraso < 0) {
+            return 0;
+        }
         return atraso;
     }
 
@@ -44,19 +47,16 @@
     }
 
     void Emprestimo::printEmprestimo() const {
-        std::string _nome = obra->getTitulo();
-        std::string _dev  = devolucao.getData();
-        std::string _ret  = retirada.getData();
-        int         _id   = obra->getID();
-        bool        _at   = ativo;
-        std::cout << "Obra: " << _nome << std::endl;
-        std::cout << "ID: " << _id << std::endl;
-        std::cout << "Retirada: " << _ret << std::endl;
-        std::cout << "Data para devolução: " << _dev << std::endl;
-        std::cout << "Ativo: " << _at << std::endl;
+        std::cout << "Obra: " << obra->getTitulo() << std::endl;
+        std::cout << "Usuario: " << usuario->getNome() << std::endl;
+        std::cout << "Data de retirada: " << retirada.getData() << std::endl;
+        std::cout << "Data de devolucao: " << devolucao.getData() << std::endl;
+        std::cout << "Status: " << (ativo ? "Ativo" : "Encerrado") << std::endl;
     }
 
     void Emprestimo::renovarEmprestimo() {
-        //Renovar por mais quanto tempo ????!??!!!?? 
-        //Quato tempo!?!!??
+        if (!ativo) {
+            return;
+        }
+        devolucao = devolucao.somarDias(usuario->getPrazo());
     }
