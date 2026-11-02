@@ -1,10 +1,9 @@
-#ifndef CATALOGO_H
-#define CATALOGO_H
+#ifndef CATALOGO_HPP
+#define CATALOGO_HPP
 
 /**
  * @file Catalogo.hpp
- * @brief Declaração da classe Catalogo
- * @date 2026-10-13
+ * @brief Contrato da classe Catalogo.
  */
 #include <string>
 #include <vector>
@@ -12,85 +11,74 @@
 
 /**
  * @class Catalogo
- * @brief Cria a estrutura da classe Catalogo
+ * @brief Gerencia as obras cadastradas no sistema.
  */
 class Catalogo {
-private:
-    std::vector<Obra*> obrasCadastradas;
-    
-    /**
-     * @brief verifica se tem alguma obra duplicado
-     * @return Retorna true se tiver, ou falso se não tiver
-     */
-    bool verificarDuplicata(int id) const;
+    private:
+        std::vector<Obra*> obrasCadastradas;
+        
+        /**
+         * @brief Verifica se já existe uma obra com determinado ID.
+         * @param id Identificador da obra.
+         * @return true se o ID já estiver cadastrado; false caso contrário.
+         */
+        bool verificarDuplicata(int id) const;
 
-public:
-    /**
-     * @brief Construtor padrão de Catalogo
-     * @note é inicializado sem a passagem de parâmetros
-     */
-    Catalogo();
+    public:
+        /**
+         * @brief Constrói um catálogo vazio.
+         */
+        Catalogo();
 
-    /**
-     * @brief cadastra uma obra no vetor para ponteiros de Obra, ou seja, adiciona a obra ao catálogo
-     * @param o Ponteiro para um objeto do tipo Obra
-     * @return Retorna true se foi cadastrado ou salse caso contrário
-     */
-    bool cadastrarObra(Obra *o);
+        /**
+         * @brief Cadastra uma obra no catálogo.
+         * @param o Ponteiro para a obra a ser cadastrada.
+         * @return true se o cadastro for realizado; false caso contrário.
+         */
+        bool cadastrarObra(Obra *o);
 
-    /**
-     * @brief Remove a obra do catálogo, ou seja, do vetor de ponteiros para Obra
-     * @param id Identificação daquela obra
-     * @return Retorna true se foi removido ou false caso contrário
-     */
-    bool removerObra(int id);
+        /**
+         * @brief Remove uma obra do catálogo.
+         * @param id ID da obra.
+         * @return true se a obra for removida; false se não for encontrada.
+         */
+        bool removerObra(int id);
 
-    /**
-     * @brief Altera o título de alguma Obra do catálogo
-     * @param id Identificação daquela obra
-     * @param t String com o novo título
-     * @return Retorna true se foi alterado ou false caso contrário
-     */
-    bool alterarTituloObra(int id, const std::string& t);
+        /**
+         * @brief Busca uma obra pelo título.
+         * @param t Título procurado.
+         * @return Ponteiro para a primeira obra encontrada ou nullptr.
+         */
+        Obra* buscarPorTitulo(const std::string& t) const;
 
-    /**
-     * @brief Altera o título de alguma obra no catálogo
-     * @param id Identificação daquela obra
-     * @param a String com o novo nome do autor
-     * @return Retorna true se foi alterado ou false caso contrário
-     */
-    bool alterarAutorObra(int id, const std::string& a);
+        /**
+         * @brief Busca uma obra pelo ID.
+         * @param id ID da obra.
+         * @return Ponteiro para a obra encontrada ou nullptr.
+         */
+        Obra* buscarPorId(int id) const;
 
-    /**
-     * @brief Procura por uma obra no catálogo pelo seu título
-     * @param t String com o título da obra
-     * @return Retorna um ponteiro para a obra
-     */
-    Obra* buscarPorTitulo(const std::string& t) const;
+        /**
+         * @brief Busca as obras de determinado autor.
+         * @param a Nome do autor.
+         * @return Vetor contendo as obras encontradas.
+         */
+        std::vector<Obra*> buscarPorAutor(const std::string& a) const;
 
-    /**
-     * @brief Procura por uma obra no catálogo pelo ID único.
-     * @param _id ID único da Obra.
-     * @return Retorna um ponteiro para a obra
-     */
-    Obra* buscarPorId(int _id) const;
+        /**
+         * @brief Retorna as obras cadastradas no catálogo.
+         * @return Referência constante para o vetor de obras.
+         */
+        std::vector<Obra*> listarObras() const;
 
-    /**
-     * @brief Procura por uma obra pelo seu autor
-     * @param a String com o nome do autor
-     * @return Retorna um vetor de ponteiros para Obra
-     */
-    std::vector<Obra*> buscarPorAutor(const std::string& a) const;
+        // Impedem cópias superficiais dos ponteiros pertencentes à classe.
+        Catalogo(const Catalogo&) = delete;
+        Catalogo& operator=(const Catalogo&) = delete;
 
-    /**
-     * @brief Lista todas as obras presentes no catálogo
-     * @return Retorna um vetor de pontieros para Obra
-     */
-    std::vector<Obra*> listarObras() const;
-
-    /**
-     * @brief Destrutor de Catálogo
-     */
-    ~Catalogo() = default;
+        /**
+         * @brief Destrutor de Catálogo.
+         * Libera as obras cadastradas.
+         */
+        ~Catalogo();
 };
 #endif

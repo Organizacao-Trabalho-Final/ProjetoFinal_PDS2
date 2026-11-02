@@ -17,7 +17,6 @@ class Pessoa;
  * @brief Gerencia o cadastro e a consulta dos usuários do sistema.
  */
 class Usuarios {
-
     private:
         std::vector<std::pair<Pessoa*, int>> usuarios;
 
