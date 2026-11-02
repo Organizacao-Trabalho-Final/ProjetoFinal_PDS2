@@ -3,17 +3,21 @@
 #include <stdexcept>
 #include <iostream>
 
-    Artigo::Artigo(std::string t, std::string a, int id, std::string _area, int _ano):
-    Obra(t, a, id), area(_area), ano(_ano) {}
+    Artigo::Artigo(const std::string &t, const std::string &a, int id, const std::string &ar, int an):
+    Obra(t, a, id), area(ar), ano(an) {
+        if (ano < 1 || ano > 9999) {
+            throw std::invalid_argument("Ano invalido -> ANO > 0 | ANO com ate 4 digitos");
+        }
+    }
 
     void Artigo::setAno(int a) {
-        if(a < 0 || a > 9999) {
+        if(a < 1 || a > 9999) {
             throw std::invalid_argument("Ano inválido -> ANO > 0 | ANO com 4 digitos");
         }
         ano = a;
     }
 
-    void Artigo::setArea(std::string a) {
+    void Artigo::setArea(const std::string &a) {
         area = a;
     }
 

@@ -1,17 +1,23 @@
+#include <stdexcept>
 #include <iostream>
 #include <string>
 #include "Livro.hpp"
 
-    Livro::Livro(std::string t, std::string a, int id, std::string g, int e):
-    Obra(t, a, id), genero(g), edicao(e) {}
-
-    void Livro::setEdicao(int e) {
-        if (e > 0) {
-            edicao = e;
+    Livro::Livro(const std::string &t, const std::string &a, int id, const std::string &g, int e):
+    Obra(t, a, id), genero(g), edicao(e) {
+        if (e <= 0) {
+            throw std::invalid_argument("Edicao deve ser maior que zero.");
         }
     }
 
-    void Livro::setGenero(std::string g) {
+    void Livro::setEdicao(int e) {
+        if (e <= 0) {
+        throw std::invalid_argument("Edicao deve ser maior que zero");
+    }
+        edicao = e;
+    }
+
+    void Livro::setGenero(const std::string &g) {
         genero = g;
     }
 
@@ -24,7 +30,7 @@
     }
 
     void Livro::printObra() const {
-        std::cout << "Titulo: " << getTitulo();
+        std::cout << "Titulo: " << getTitulo() << std::endl;
         std::cout << "Autor: " << getAutor() << std::endl;
         std::cout << "Genero: " << getGenero() << std::endl;
         std::cout << "Edição: " << getEdicao() << std::endl;

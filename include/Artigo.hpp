@@ -1,17 +1,19 @@
-#ifndef ARTIGO_H
-#define ARTIGO_H
+#ifndef ARTIGO_HPP
+#define ARTIGO_HPP
 
 /**
  * @file Artigo.hpp
- * @brief Declaração da classe Artigo
- * @date 2026-10-15
+ * @brief Contrato da classe Artigo
  */
 #include <string>
 #include "Obra.hpp"
 
 /**
  * @class Artigo
- * @brief Cria a estrutura da classe Artigo
+ * @brief Representa um artigo cadastrado no sistema.
+ *
+ * Herda os atributos e comportamentos gerais de Obra e acrescenta
+ * área e ano de publicação.
  */
 class Artigo : public Obra {
     private:
@@ -20,41 +22,41 @@ class Artigo : public Obra {
 
     public:
         /**
-         * @brief Construtor da classe Artigo
-         * @param t String contendo o título do artigo
-         * @param a String contendo o nome do autor do artigo
-         * @param id Identificação do Artigo
-         * @param ar Área do conteúdo do artigo
-         * @param an Ano de publicação do artigo
+         * @brief Constrói um objeto Artigo.
+         * @param t Título do artigo.
+         * @param a Autor do artigo.
+         * @param id Identificação do artigo.
+         * @param ar Área do conteúdo do artigo.
+         * @param an Ano de publicação do artigo.
          */
-        Artigo(std::string t, std::string a, int id, std::string ar, int an);
+        Artigo(const std::string &t, const std::string &a, int id, const std::string &ar, int an);
 
         /**
-         * @brief Usado para mudar o valor em "ano"
-         * @param a O ano que ficará armazenado em "ano"
+         * @brief Altera o ano de publicação do artigo.
+         * @param a Novo ano.
          */
         void setAno(int a);
 
         /**
-         * @brief Usado para mudar o valor armazendao em "area"
-         * @param a String com a área do artigo
+         * @brief Altera a área do artigo.
+         * @param a Nova área.
          */
-        void setArea(std::string a);
+        void setArea(const std::string &a);
 
         /**
-         * @brief Usado para ler o que está em "ano"
-         * @return Retorna "ano"
+         * @brief Retorna o ano de publicação do artigo.
+         * @return Ano de publicação.
          */
         int getAno() const;
 
         /**
-         * @brief Usado para ler a string armazenada em "ano"
-         * @return Retorna "area"
+         * @brief Retorna a área do artigo.
+         * @return Área do artigo.
          */
         std::string getArea() const;
 
         /**
-         * @brief Método virtual usado para imprimir os dados de uma obra
+         * @brief Exibe as informações do artigo.
          */
         void printObra() const override;
 };

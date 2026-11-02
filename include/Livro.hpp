@@ -1,18 +1,19 @@
-#ifndef LIVRO_H
-#define LIVRO_H
-
+#ifndef LIVRO_HPP
+#define LIVRO_HPP
 
 /**
  * @file Livro.hpp
- * @brief declaração da classe Livro
- * @date 2026-10-11
+ * @brief Contrato da classe Livro.
  */
 #include <string>
 #include "Obra.hpp"
 
 /**
  * @class Livro
- * @brief cria a estrutura da classe Livro como herança de Obra
+ * @brief Representa um livro cadastrado no sistema.
+ *
+ * Herda os atributos e comportamentos gerais de Obra e acrescenta
+ * gênero e edição.
  */
 class Livro : public Obra {
     private:
@@ -21,42 +22,41 @@ class Livro : public Obra {
 
     public:
         /**
-         * @brief Construtor de "Livro"
-         * @param t string que será passado para "titulo"
-         * @param a string que será passada para "autor"
-         * @param id valor que será passado para "id"
-         * @param g valor que será passado para "genero"
-         * @param e valor que será passado para "edição"
+         * @brief Constrói um objeto Livro.
+         * @param t Título do livro.
+         * @param a Autor do livro.
+         * @param id Identificador da obra.
+         * @param g Gênero do livro.
+         * @param e Edição do livro.
          */
-        Livro(std::string t, std::string a, int id, std::string g, int e);
+        Livro(const std::string &t, const std::string &a, int id, const std::string &g, int e);
 
         /**
-         * @brief setter que faz a variável "edicao" receber o valor passado por parâmetro
-         * @param e valor passado para ser associado a variável "edicao"
+         * @brief Altera a edição do livro.
+         * @param e Nova edição, que deve ser maior que zero.
          */
         void setEdicao(int e);
 
         /**
-         * @brief setter que faz a variável "genero" receber o valor passado por parâmetro
-         * @param g valor passado para ser associado a variável "genero"
+         * @brief Altera o gênero do livro.
+         * @param g Novo gênero do livro.
          */
-        void setGenero(std::string g);
+        void setGenero(const std::string &g);
 
         /**
-         * @brief usado para ler o valor constante armazenado em edicao
-         * @return retorna o valor da variavel "edicao"
+         * @brief Retorna a edição do livro.
+         * @return Edição do livro.
          */
         int getEdicao() const;
 
         /**
-         * @brief usado para ler a string armazenada em "genero"
-         * @return retorna a string armazenada em "genero"
+         * @brief Retorna o gênero do livro.
+         * @return Gênero do livro.
          */
         std::string getGenero() const;
 
         /**
-         * @brief método virtual puro de "Obra" que imprime as informações da obra
-         * @note necessário implementar em todas as classes derivadas
+         * @brief Exibe as informações do livro.
          */
         void printObra() const override;
 };
