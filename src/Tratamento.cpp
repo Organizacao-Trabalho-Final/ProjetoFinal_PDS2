@@ -1,4 +1,6 @@
 #include "Tratamento.hpp"
+#include <cctype>
+#include <stdexcept>
 
     void Tratamento::setMinNum(int m) {
         this->min_num = m;
@@ -16,7 +18,7 @@
         this->min_string = m;
     }
 
-    void Tratamento::setCaracterInvalidos(std::string c) {
+    void Tratamento::setCaracterInvalidos(const std::string &c) {
         this->caracter_invalidos = c;
     }
 
@@ -78,10 +80,11 @@
 
     bool Tratamento::isStringValido(const std::string &s, std::string tipo) {
         this->isVazio(s, tipo);
-        if (s.length() > this->max_string) {
+        int tamanho = static_cast<int>(s.length());
+        if (tamanho > this->max_string) {
             throw std::invalid_argument(tipo + " muito grande -> precisa ser menor que " + 
                         std::to_string(this->max_string) + " caracteres");
-        } else if (s.length() < this->min_string) {
+        } else if (tamanho < this->min_string) {
             throw std::invalid_argument(tipo + " muito pequeno -> precisa ser maior que " + 
                         std::to_string(this->min_string) + " caracteres");
         }
@@ -98,10 +101,11 @@
 
     bool Tratamento::isStringValido(const std::string &s, int min, int max, bool pode, std::string tipo) {
         this->isVazio(s, tipo);
-        if (s.length() > max) {
+        int tamanho = static_cast<int>(s.length());
+        if (tamanho > max) {
             throw std::invalid_argument(tipo + " muito grande -> precisa ser menor que " + 
                         std::to_string(max) + " caracteres");
-        } else if (s.length() < min) {
+        } else if (tamanho < min) {
             throw std::invalid_argument(tipo + " muito pequeno -> precisa ser maior que " + 
                         std::to_string(min) + " caracteres");
         }
@@ -177,6 +181,7 @@
         if (tipo.empty()){ 
             tipo = "STR";
         }
+        this->isVazio(s, tipo);
         for (char c : s) {
             if (!std::isdigit(static_cast<unsigned char>(c))) {
                 throw std::invalid_argument(tipo + " deve conter apenas números");
@@ -186,6 +191,9 @@
     }
 
     bool Tratamento::somenteNumeros(const std::string &s) {
+        if (s.empty()) {
+            return false;
+        }
         for (char c : s) {
             if (!std::isdigit(static_cast<unsigned char>(c))) {
                 return false;
@@ -196,10 +204,11 @@
 
     bool Tratamento::validarCPF(const std::string &c) {
         this->isVazio(c, "CPF");
+        int tamanho = static_cast<int>(c.length());
         if (!this->somenteNumeros(c)) {
             throw std::invalid_argument("O CPF deve conter apenas números");
         }
-        if (c.length() != 11) {
+        if (tamanho != 11) {
             throw std::invalid_argument("O CPF deve conter 11 digitos");
         } 
         return true;
@@ -207,10 +216,11 @@
 
     bool Tratamento::validarMatricula(const std::string &m) {
         this->isVazio(m, "Matricula");
+        int tamanho = static_cast<int>(m.length());
         if (!this->somenteNumeros(m)) {
-            throw std::invalid_argument("A matrciula deve conter apenas números");
+            throw std::invalid_argument("A matriciula deve conter apenas números");
         }
-        if (m.length() != 10) {
+        if (tamanho != 10) {
             throw std::invalid_argument("A matricula deve conter 10 digitos");
         }
         return true;
@@ -218,10 +228,11 @@
 
     bool Tratamento::validarQtdEX(const std::string &s, std::string tipo) {
         this->isVazio(s, tipo);
-        if (s.length() > this->max_string) {
+        int tamanho = static_cast<int>(s.length());
+        if (tamanho > this->max_string) {
             throw std::invalid_argument(tipo + " muito grande -> precisa ser menor que " + 
                         std::to_string(this->max_string) + " caracteres");
-        } else if (s.length() < this->min_string) {
+        } else if (tamanho < this->min_string) {
             throw std::invalid_argument(tipo + " muito pequeno -> precisa ser maior que " + 
                         std::to_string(this->min_string) + " caracteres");
         }
@@ -229,9 +240,10 @@
     }
 
     bool Tratamento::validarQtd(const std::string &s) {
-        if (s.length() > this->max_string) {
+        int tamanho = static_cast<int>(s.length());
+        if (tamanho > this->max_string) {
             return false;
-        } else if (s.length() < this->min_string) {
+        } else if (tamanho < this->min_string) {
             return false;
         }
         return true;
@@ -239,10 +251,11 @@
 
     bool Tratamento::validarQtdEX(const std::string &s, int min, int max, std::string tipo) {
         this->isVazio(s, tipo);
-        if (s.length() > max) {
+        int tamanho = static_cast<int>(s.length());
+        if (tamanho > max) {
             throw std::invalid_argument(tipo + " muito grande -> precisa ser menor que " + 
                         std::to_string(max) + " caracteres");
-        } else if (s.length() < min) {
+        } else if (tamanho < min) {
             throw std::invalid_argument(tipo + " muito pequeno -> precisa ser maior que " + 
                         std::to_string(min) + " caracteres");
         }
@@ -250,9 +263,10 @@
     }
 
     bool Tratamento::validarQtd(const std::string &s, int min, int max) {
-        if (s.length() > max) {
+        int tamanho = static_cast<int>(s.length());
+        if (tamanho > max) {
             return false;
-        } else if (s.length() < min) {
+        } else if (tamanho < min) {
             return false;
         }
         return true;
