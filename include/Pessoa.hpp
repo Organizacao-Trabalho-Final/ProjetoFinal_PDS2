@@ -1,10 +1,9 @@
-#ifndef PESSOA_H
-#define PESSOA_H
+#ifndef PESSOA_HPP
+#define PESSOA_HPP
 
 /**
  * @file Pessoa.hpp
- * @brief declaraçao da classe Pessoa
- * @date 2026-10-11
+ * @brief Contrato da classe Pessoa.
  */
 #include <string>
 #include <vector>
@@ -14,7 +13,9 @@ class Emprestimo;
 
 /**
  * @class Pessoa
- * @brief cria a estrutura da classe Pessoa
+ * @brief Representa uma pessoa que interage com o sistema da biblioteca.
+ *
+ * Superclasse de Bibliotecario, Professor, Estudante e TecnicoManutencao.
  */
 class Pessoa {
     private:
@@ -24,88 +25,92 @@ class Pessoa {
 
     public:
         /**
-         * @brief Construtor de Pessoa
-         * @param n o nome da pessoa
-         * @param c o CPF da pessoa
+         * @brief Constói um objeto Pessoa.
+         * @param n Nome da pessoa.
+         * @param c CPF da pessoa.
          */
-        Pessoa(std::string n, std::string c);
+        Pessoa(const std::string &n, const std::string &c);
 
         /** 
-         * @brief usado para ler a string armazenada em nome
-         * @return retorna a variável "nome"
+         * @brief Retorna o nome da pessoa.
+         * @return Nome da pessoa.
          */
         std::string getNome() const;
 
         /**
-         * @brief usado para ler a string armazenada em "CPF"
-         * @return retorna "CPF"
+         * @brief Retorna o CPF da pessoa.
+         * @return CPF da pessoa.
          */
         std::string getCPF() const;
 
         /**
-         * @brief usado para ler o valor armazenado em "prazo"
-         * @return retorna o prazo para a devolução
+         * @brief Retorna o prazo de empréstimo permitido para a pessoa.
+         * @return Prazo em dias.
          */
         virtual int getPrazo() const;
 
         /**
-         * @brief usado para ler o valor máximo de empréstimos
-         * @return retorna o valor máximo de empréstimos da pessoa
+         * @brief Retorna a quantidade máxima de empréstimos simultâneos.
+         * @return Limite de empréstimos.
          */
         virtual int getMaxEmprestimos() const;
 
         /**
-         * @brief Método para capturar a qunatidade de empréstimos de uma pessoa.
+         * @brief Retorna a quantidade total de empréstimos registrados.
          * @return Quantidade de empréstimos.
          */
         int getNumEmprestimos() const;
 
         /**
-         * @brief Método para bucar e retornar a quantidade de empréstimos Ativos.
-         * @return Quantidade de empréstimos Ativos.
+         * @brief Retorna a quantidade de empréstimos ativos.
+         * @return Quantidade de empréstimos ativos.
          */
         int getEmprestimosAtivos() const;
 
         /**
-         * @brief Carrega todos os empréstimos de uma pessoa.
-         * @param e Vetor de empréstimos 'std::vector<Emprestimo*>'.
+         * @brief Substitui os empréstimos de uma pessoa.
+         * @param e Vetor de empréstimos.
          */
-        void setEmprestimos(std::vector<Emprestimo*> e);
+        void setEmprestimos(std::vector<Emprestimo*> &e);
 
          /**
-         * @brief Método virtual constante que retorna o vetor de ponteiros para os empréstimos da pessoa
-         * @return Referência para vetor de 'std::vector<Emprestimo*>'.
+         * @brief Retorna o vetor de ponteiros para os empréstimos da pessoa.
+         * @return Referência para vetor de empréstimos.
          */
-        virtual const std::vector<Emprestimo*>& getEmprestimos() const;
+        const std::vector<Emprestimo*>& getEmprestimos() const;
 
         /**
-         * @brief método virtual constante que verifica se a pessoa pode pegar aquela obra eprestada
-         * @param o um ponteiro para obra
-         * @return retorna true se puder e false, caso contrário
+         * @brief Verifica se a pessoa pode realizar o empréstimo de uma obra.
+         * @param o Ponteiro para a obra.
+         * @return true se o empréstimo puder ser realizado, false caso contrário.
          */
         virtual bool podeEmprestar(const Obra *o) const;
 
         /**
-         * @brief Lista os empréstimos ativos da pessoa
-         * @return retorna o vetor com os ponteiros para os empréstimos que ainda estão ativos
+         * @brief Retorna os empréstimos ativos da pessoa.
+         * @return Vetor contendo os empréstimos ativos.
          */
-        std::vector<Emprestimo*> consultarAtivos();
+        std::vector<Emprestimo*> consultarAtivos() const;
 
         /**
-         * @brief lista todos os empréstimos ja registrados para a pessoa
-         * @return retorna um vetor com ponteiros para todos os empréstimos, ativos e encerrados
+         * @brief Exibe e retorna o histórico de empréstimos da pessoa.
+         * @return Vetor contendo todos os empréstimos registrados.
          */
-        std::vector<Emprestimo*> historicoEmprestimos();
+        std::vector<Emprestimo*> historicoEmprestimos() const;
 
         /**
-         * @brief registra um emprestimo no vetor de empréstimos
-         * @param e ponteiro para empréstimo
+         * @brief Registra um empréstimo para a pessoa.
+         * @param e Ponteiro para o empréstimo.
          */
         void registrarEmprestimo(Emprestimo *e);
+
+        // Impedem cópias superficiais dos ponteiros pertencentes à classe.
+        Pessoa(const Pessoa&) = delete;
+        Pessoa& operator=(const Pessoa&) = delete;
     
         /**
-         * @brief método destrutor virtual de pessoa, importante para herança polimórfica
+         * @brief Destrutor virtual da classe Pessoa.
          */
-        virtual ~Pessoa() = default;
+        virtual ~Pessoa();
 };
 #endif

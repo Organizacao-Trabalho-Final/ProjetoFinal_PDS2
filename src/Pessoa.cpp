@@ -1,11 +1,12 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include <stdexcept>
 #include "Obra.hpp"
 #include "Pessoa.hpp"
 #include "Emprestimo.hpp"
 
-    Pessoa::Pessoa(std::string n, std::string c):
+    Pessoa::Pessoa(const std::string &n, const std::string &c):
     nome(n), CPF(c), emprestimos(0) {}
 
     std::string Pessoa::getNome() const {
@@ -25,20 +26,31 @@
     }
 
     int Pessoa::getNumEmprestimos() const {
-        return emprestimos.size();
+        return static_cast<int>(emprestimos.size());
     }
 
     int Pessoa::getEmprestimosAtivos() const {
         int count = 0;
-        for(Emprestimo* e : emprestimos) {
-            if(e->isAtivo()) 
+        for (Emprestimo* e : emprestimos) {
+            if (e != nullptr && e->isAtivo()) 
                 count++;
         }
         return count;
     }
 
-    void Pessoa::setEmprestimos(std::vector<Emprestimo*> e) {
-        emprestimos = e;
+    void Pessoa::setEmprestimos(std::vector<Emprestimo*> &e) {
+        if (&e == &emprestimos) {
+            return;
+        }
+        for (Emprestimo *atual : emprestimos) {
+            delete atual;
+        }
+        emprestimos.clear();
+        for (Emprestimo *novo : e) {
+            if (novo != nullptr) {
+                emprestimos.push_back(novo);
+            }
+        }
     }
 
     const std::vector<Emprestimo*>& Pessoa::getEmprestimos() const {
@@ -46,23 +58,24 @@
     }
 
     bool Pessoa::podeEmprestar(const Obra *o) const {
-        return o->isDisponivel();
+        return (o != nullptr && o->isDisponivel());
     }
 
-    std::vector<Emprestimo*> Pessoa::consultarAtivos() {
-        bool ativo;
-        std::vector<Emprestimo*> ativos(0);
-        for(Emprestimo * e : emprestimos) {
-            ativo = e->isAtivo();
-            if(ativo) {
+    std::vector<Emprestimo*> Pessoa::consultarAtivos() const {
+        std::vector<Emprestimo*> ativos;
+        for (Emprestimo * e : emprestimos) {
+            if (e != nullptr && e->isAtivo()) {
                 ativos.push_back(e);
             }
         }
         return ativos;
     }
 
-    std::vector<Emprestimo*> Pessoa::historicoEmprestimos() {
-        for(Emprestimo * e : emprestimos) {
+    std::vector<Emprestimo*> Pessoa::historicoEmprestimos() const {
+        for (Emprestimo *e : emprestimos) {
+            if (e == nullptr) {
+                continue;
+            }
             std::cout << "||======================================================||" << std::endl;
             e->printEmprestimo();
             std::cout << "||======================================================||" << std::endl;
@@ -74,5 +87,16 @@
         if(e == nullptr) {
             throw std::invalid_argument("Ponteiro para Emprestimo nulo -> e = 'nullptr'");
         }
+        for (Emprestimo *atual : emprestimos) {
+            if (atual == e) {
+                return;
+            }
+        }
         emprestimos.push_back(e);
+    }
+
+    Pessoa::~Pessoa() { // Liberação de memória
+        for (Emprestimo *e : emprestimos) {
+            delete e;
+        }
     }
