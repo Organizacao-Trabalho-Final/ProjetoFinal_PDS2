@@ -10,9 +10,10 @@
 
 /**
  * @class Professor
- * @brief Representa um Professor e suas regras específicas como usuário.
+ * @brief Representa um Professor como usuário da biblioteca.
  * 
- * Herda os atributos e comportamentos da classe Pessoa.
+ * Herda os atributos e comportamentos da classe Pessoa e acrescenta
+ * a área de atuação e regras específicas de empréstimo.
  */
 class Professor : public Pessoa {
     private:
@@ -25,7 +26,7 @@ class Professor : public Pessoa {
          * @param c CPF do professor.
          * @param a Area de atuação do professor.  
          */
-        Professor(std::string n, std::string c, std::string a);
+        Professor(const std::string &n, const std::string &c, const std::string &a);
 
         /**
          * @brief Retorna a área de atuação do professor.
@@ -47,7 +48,11 @@ class Professor : public Pessoa {
 
         /**
          * @brief Verifica se o professor pode realizar o empréstimo de uma obra.
-         * @param o Ponteiro para a obra solicitada.
+         *
+         * O professor pode pegar obras disponíveis enquanto respeitar
+         * seu limite de empréstimos ativos.
+         *
+         * @param o Ponteiro para a obra.
          * @return true se o empréstimo puder ser realizado; false caso contrário.
          */
         bool podeEmprestar(const Obra *o) const override;

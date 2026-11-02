@@ -1,17 +1,19 @@
-#ifndef ESTUDANTE_H
-#define ESTUDANTE_H
+#ifndef ESTUDANTE_HPP
+#define ESTUDANTE_HPP
 
 /**
  * @file Estudante.hpp
- * @brief Declaração da classe Estudante
- * @date 2026-10-12
+ * @brief Contrato da classe Estudante
  */
 #include <string>
 #include "Pessoa.hpp"
 
 /**
  * @class Estudante
- * @brief Cria a estrutura da classe Estudante
+ * @brief Representa um estudante cadastrado no sistema da biblioteca.
+ *
+ * Herda os dados e comportamentos gerais de Pessoa e acrescenta
+ * curso, matrícula e regras específicas de empréstimo.
  */
 class Estudante : public Pessoa {
     private:
@@ -20,44 +22,46 @@ class Estudante : public Pessoa {
 
     public:
         /**
-         * @brief Construtor de "Estudante"
-         * @param n String a ser passada para "nome", herdada de Pessoa
-         * @param cpf String a ser passada para "CPF", herdada de Pessoa
-         * @param c String a ser passada para "curso"
-         * @param m String a ser passada para "matricula"
+         * @brief Constrói um objeto Estudante.
+         * @param n Nome do estudante.
+         * @param cpf CPF do estudante.
+         * @param c Curso do estudante.
+         * @param m Matrícula do estudante.
          */
-        Estudante(std::string n, std::string cpf, std::string c, std::string m);
+        Estudante(const std::string &n, const std::string &cpf, const std::string &c, const std::string &m);
 
         /**
-         * @brief Usado para ler a string armazenada em "curso"
-         * @return Retorna a variável "curso"
+         * @brief Retorna o curso do estudante.
+         * @return Curso do estudante.
          */
         std::string getCurso() const;
 
         /**
-         * @brief Usado para ler a string armazenada em "matricula"
-         * @return Retorna a variável "matricula"
+         * @brief Retorna a matrícula do estudante.
+         * @return Matrícula do estudante.
          */
         std::string getMatricula() const;
 
         /**
-         * @brief Usado para ler o prazo do empréstimo daquele estudante
-         * @return Retorna a quantidade de dias que o estudante ainda tem de prazo
-         * @note método virtual, de Pessoa em que o valor não pode ser alterado
+         * @brief Retorna o prazo de empréstimo permitido ao estudante.
+         * @return Prazo de empréstimo em dias.
          */
         int getPrazo() const override;
 
         /**
-         * @brief Usado para ler o valor máximo de emp´restimos daquele estudante
-         * @return Retorna a quantidade máximade empréstimos que aquele estudante fez 
-         * @note método virtual, de Pessoa em que o valor não pode ser alterado
+         * @brief Retorna o número máximo de empréstimos simultâneos permitidos.
+         * @return Quantidade máxima de empréstimos.
          */
         int getMaxEmprestimos() const override;
 
         /**
-         * @brief Método booleano que diz se uma obra está disponível para empréstimos
-         * @param o Um ponteiro para Obra como parâmetro que não pode ser alterado pela função
-         * @return Retorna true se a Obra esiver disponível ou false caso contrário
+         * @brief Verifica se o estudante pode realizar o empréstimo de uma obra.
+         *
+         * O estudante pode pegar apenas livros disponíveis e deve respeitar
+         * seu limite de empréstimos ativos.
+         *
+         * @param o Ponteiro para a obra.
+         * @return true se o empréstimo puder ser realizado, false caso contrário.
          */
         bool podeEmprestar(const Obra *o) const override;
 };

@@ -2,7 +2,7 @@
 #include "Obra.hpp"
 #include "Professor.hpp"
 
-    Professor::Professor(std::string n, std::string c, std::string a):
+    Professor::Professor(const std::string &n, const std::string &c, const std::string &a):
     Pessoa(n, c), area(a) {}
 
     std::string Professor::getArea() const {
