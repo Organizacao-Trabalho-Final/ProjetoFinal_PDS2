@@ -21,6 +21,7 @@ class Obra;
 class TecnicoManutencao : public Pessoa {
     private:
         std::vector<Manutencao*> manutencoes;
+        static const int MAX_MANUTENCOES = 20;
 
     public:
         /**

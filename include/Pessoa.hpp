@@ -61,7 +61,7 @@ class Pessoa {
         int getNumEmprestimos() const;
 
         /**
-         * @brief Método para bucar e retornar os empréstimos Ativos.
+         * @brief Método para bucar e retornar a quantidade de empréstimos Ativos.
          * @return Quantidade de empréstimos Ativos.
          */
         int getEmprestimosAtivos() const;
@@ -87,7 +87,7 @@ class Pessoa {
 
         /**
          * @brief Lista os empréstimos ativos da pessoa
-         * @return retorna o vetor com os ponteiros para os empréstimos que ainda não foram devolvidos
+         * @return retorna o vetor com os ponteiros para os empréstimos que ainda estão ativos
          */
         std::vector<Emprestimo*> consultarAtivos();
 
