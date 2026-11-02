@@ -1,7 +1,6 @@
-#include <string>
 #include "Obra.hpp"
 
-    Obra::Obra(std::string t, std::string a, int id):
+    Obra::Obra(const std::string &t, const std::string &a, int id):
     titulo(t), autor(a), id(id), disponivel(true), danificado(false) {}
 
     void Obra::setDanificado(bool d) {
@@ -12,11 +11,11 @@
         disponivel = d;
     }
 
-    void Obra::setTitulo(std::string t) {
+    void Obra::setTitulo(const std::string &t) {
         titulo = t;
     }
 
-    void Obra::setAutor(std::string a) {
+    void Obra::setAutor(const std::string &a) {
         autor = a;
     } 
 
