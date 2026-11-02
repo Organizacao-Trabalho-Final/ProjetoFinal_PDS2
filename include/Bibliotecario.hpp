@@ -3,7 +3,7 @@
 
 /**
  * @file Bibliotecario.hpp
- * @brief Declaração da classe Bibliotecario.
+ * @brief Contrato da classe Bibliotecario.
  */
 
 #include <string>
