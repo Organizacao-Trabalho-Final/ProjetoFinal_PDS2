@@ -4,10 +4,7 @@
 ## Responsabilidades
 - Informações do livro (Gênero, Edição)
 - Exibir as informações específicas do livro, sobrescrevendo printObra().
-- Permitir a atualização da edição cadastrada.
+- Permitir a atualização da edição e do gênero.
 
 ## Colaborações
-- Emprestimo
-- Catálogo
-- Professor
-- Estudante
+- Obra

@@ -2,13 +2,11 @@
 - Subclasse de Pessoa
 
 ## Responsabilidades
-- Informações do estudante (Curso, matrícula)
-- Procurar obras no catálogo
-- Informar se o estudante pode realizar novos empréstimos
-- Solicitar empréstimo de livros
-- Informar período de empréstimo adequado para estudantes
-- Consultar data de devolução
-- Informar máximo de emprestimos ativos simultaneos
+- Informações do estudante (Curso, matrícula).
+- Verificar se o estudante pode realizar novos empréstimos.
+- Informar período de empréstimo adequado para estudantes.
+- Informar máximo de emprestimos ativos simultaneos.
+- Permitir empréstimo apenas de livros disponíveis.
 
 ## Colaborações
 - Empréstimo

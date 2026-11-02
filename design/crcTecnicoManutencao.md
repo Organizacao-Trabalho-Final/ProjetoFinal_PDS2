@@ -2,13 +2,11 @@
 - Subclasse de Pessoa
 
 ## Responsabilidades
-- Consultar número de manutenções pendentes
-- Identificar a obra associada à manutenção
-- Registrar o tipo de reparo realizado
-- Marcar manutenção como concluída
-- Autorizar a marcação da obra como disponível novamente
+- Consultar número de manutenções pendentes.
+- Armazenar as manutenções atribuídas ao técnico.
+- Registrar o tipo de reparo realizado.
+- Marcar manutenção como concluída.
 
 ## Colaborações
 - Manutenção
-- Obra
-- Catálogo
+- Pessoa
