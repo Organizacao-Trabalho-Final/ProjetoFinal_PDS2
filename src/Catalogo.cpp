@@ -60,7 +60,7 @@
         return obrasAutor;
     }
 
-    std::vector<Obra*> Catalogo::listarObras() const {
+    const std::vector<Obra*>& Catalogo::listarObras() const {
         return obrasCadastradas;
     }
 

@@ -15,7 +15,7 @@ class Manutencao;
 /**
  * @class TecnicoManutencao
  * @brief Representa um técnico responsável pelas manutenções
- * da biblioteca e e permite consultar esses dados.
+ * da biblioteca e permite consultar esses dados.
  *
  * Herda os atributos e comportamentos da classe Pessoa.
  */

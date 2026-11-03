@@ -3,7 +3,7 @@
 
 /**
  * @file Usuarios.hpp
- * @brief Contrato da classe Usuario.
+ * @brief Contrato da classe Usuarios.
  */
 
 #include <utility>

@@ -110,7 +110,7 @@ class Tratamento {
         bool isPositivo(int num, std::string tipo = "NUM");
 
         /**
-        * @brief Verifica se o número passado está dentro dos limites padrões defindos. Ex: MIN <= NUM <= MAX.
+        * @brief Verifica se o número passado está dentro dos limites padrões definidos. Ex: MIN <= NUM <= MAX.
         * @param num Número a ser analisado.
         * @param tipo Explicação do valor que será exibida nas exceções. Obs: não é obrigatório.
         * @return true se o número está dentro dos limites.
@@ -119,7 +119,7 @@ class Tratamento {
         bool isNumeroValido(int num, std::string tipo = "NUM");
 
         /**
-        * @brief Verifica se o número passado está dentro dos limites defindos na chamada da função. Ex: MIN <= NUM <= MAX.
+        * @brief Verifica se o número passado está dentro dos limites definidos na chamada da função. Ex: MIN <= NUM <= MAX.
         * @param num Número a ser analisado.
         * @param min Limite mínimo.
         * @param max Limite máximo.
@@ -130,7 +130,7 @@ class Tratamento {
         bool isNumeroValido(int num, int min, int max, std::string tipo = "NUM");
 
         /**
-         * @brief Verifica se a string está dentro dos limites de caractres definidos por padrão e se pode ou não conter números. Ex: MIN <= STRING <= MAX.
+         * @brief Verifica se a string está dentro dos limites de caracteres definidos por padrão e se pode ou não conter números. Ex: MIN <= STRING <= MAX.
          * @param s String a ser analisada.
          * @param tipo Explicação da string que será exibida nas exceções. Obs: não é obrigatório.
          * @return true se a string está dentro dos limites.
@@ -139,7 +139,7 @@ class Tratamento {
         bool isStringValido(const std::string &s, std::string tipo = "STR");
 
         /**
-        * @brief Verifica se a string está dentro dos limites de caractres definidos na chamada da função e se pode ou não conter números. Ex: MIN <= NUM <= MAX.
+        * @brief Verifica se a string está dentro dos limites de caracteres definidos na chamada da função e se pode ou não conter números. Ex: MIN <= NUM <= MAX.
         * @param s String a ser analisada.
         * @param min Limite mínimo de caracteres.
         * @param max Limite máximo de caracteres.

@@ -69,7 +69,7 @@ class Catalogo {
          * @brief Retorna as obras cadastradas no catálogo.
          * @return Referência constante para o vetor de obras.
          */
-        std::vector<Obra*> listarObras() const;
+        const std::vector<Obra*>& listarObras() const;
 
         // Impedem cópias superficiais dos ponteiros pertencentes à classe.
         Catalogo(const Catalogo&) = delete;

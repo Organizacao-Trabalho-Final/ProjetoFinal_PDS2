@@ -14,4 +14,4 @@ O objetivo é criar um sistema de gerenciamento de biblioteca que auxilie na org
 
 ## Por Que Escolhemos esse Tema:
 O tema foi escolhido porque ele permite a criação de diversas classes que utilizam herança, composição e polimorfismo e que auxiliam na missão de garantir o bom funcionamento das bibliotecas. Como sistema de gerenciamento, a coesão entre as classes é delicada e requer refinamento contínuo durante o desenvolvimento.
-Ademais, as bibliotecas são locais de incentivoà leitura e à cultura e têm funções fundamentais para a educação da população. Assim, um projeto que visa a melhoria desses lugares é importante para o grupo. A modernização das bibliotecas, instituições antigas e tradicionais na sociedade, contribui para que esses locais continuem abertos e funcionem com eficiência.
+Ademais, as bibliotecas são locais de incentivo à leitura e à cultura e têm funções fundamentais para a educação da população. Assim, um projeto que visa a melhoria desses lugares é importante para o grupo. A modernização das bibliotecas, instituições antigas e tradicionais na sociedade, contribui para que esses locais continuem abertos e funcionem com eficiência.

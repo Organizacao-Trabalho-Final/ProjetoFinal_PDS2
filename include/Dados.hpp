@@ -16,7 +16,7 @@ class Emprestimo;
 
 /**
  * @class Dados
- * @brief Usada para gereciamento dos dados do sistema.
+ * @brief Usada para gerenciamento dos dados do sistema.
  * Gerencia a persistência das informações de usuários, obras, empréstimos
  * e manutenções, utilizando arquivos de texto.
  */
@@ -70,8 +70,7 @@ class Dados {
          * @return Ponteiro constante para o catálogo de obras.
          */
         const Catalogo* getCatalogo() const;
-
-    public:
+        
         /**
          * @brief Salva os dados de usuários e catálogos em um arquivo .txt
          */
