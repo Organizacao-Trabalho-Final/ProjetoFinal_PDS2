@@ -1,0 +1,26 @@
+# Compilacao
+build/
+*.o
+*.out
+*.exe
+*.d
+
+# Executavel principal
+/biblioteca
+/src/main
+
+# Documentacao gerada
+docs/
+
+# Dados gerados durante a execucao
+usuario.txt
+obras.txt
+
+# VS Code
+.vscode/
+
+# Arquivos de cobertura de testes
+*.gcda
+*.gcno
+*.gcov
+coverage/

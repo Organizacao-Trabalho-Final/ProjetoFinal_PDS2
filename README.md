@@ -7,11 +7,11 @@
 - Santiago Hagenmuller Justo
 
 ## Descrição do Problema:
-Bibliotecas são lugares fundamentais para a sociedade e a cultura e, com isso, poderiam utilizar um software para facilitar seu funcionamento. Nesse contexto, muitas informações precisam ser registradas para garantir a segurança dos principais materiais das bibliotecas.
+Bibliotecas são lugares fundamentais para a sociedade e a cultura e, por isso, podem utilizar softwares para facilitar seu funcionamento. Nesse contexto, muitas informações precisam ser registradas para garantir a organização e a segurança do acervo da biblioteca.
 
 ## Objetivos Principais:
-O objetivo é criar um sistema de gerenciamento de biblioteca que auxilia na organização de suas várias funções. Esse é um sistema útil não apenas para o bibliotecário, mas também para os clientes e administradores do local, pois facilita o empréstimo de livros e guarda informações dos usuários e das obras, além de verificar o estado dos livros e encaminha-los para a manutenção caso necessário.
+O objetivo é criar um sistema de gerenciamento de biblioteca que auxilie na organização de suas várias funções. Esse é um sistema útil não apenas para o bibliotecário, mas também para os usuários e administradores do local, pois facilita o gerenciamento de empréstimos, guarda informações dos usuários e das obras, além de verificar o estado das obras e encaminhá-las para manutenção, caso necessário.
 
 ## Por Que Escolhemos esse Tema:
-O tema foi escolhido porque ele permite a criação de diversas classes que utilizam herança, composição e polimorfismo e que auxiliam na missão de garantir o bom funcionamento de bibliotecas. Como sistema de gerenciamento, a coesão entre as classes é delicada e requer refinamento contínuo do sistema durante o desenvolvimento.
-Ademais, as bibliotecas são locais de incentivo a leitura e cultura e têm funções fundamentais para a educação da população. Assim, um projeto que visa a melhoria desses lugares é importante para o grupo. A modernização de bibliotecas, sendo instituíções antigas e trandicionais na sociedade, ajuda esses locais a se manterem abertos e funcionando com eficiência.
+O tema foi escolhido porque ele permite a criação de diversas classes que utilizam herança, composição e polimorfismo e que auxiliam na missão de garantir o bom funcionamento das bibliotecas. Como sistema de gerenciamento, a coesão entre as classes é delicada e requer refinamento contínuo durante o desenvolvimento.
+Ademais, as bibliotecas são locais de incentivoà leitura e à cultura e têm funções fundamentais para a educação da população. Assim, um projeto que visa a melhoria desses lugares é importante para o grupo. A modernização das bibliotecas, instituições antigas e tradicionais na sociedade, contribui para que esses locais continuem abertos e funcionem com eficiência.
