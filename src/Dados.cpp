@@ -270,7 +270,6 @@
         int mes;
         int ano;
         int edicao;
-        bool ativo;
         bool danificado;
         bool disponivel;
 

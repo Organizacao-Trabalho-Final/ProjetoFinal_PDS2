@@ -1,8 +1,8 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 
-#include "doctest.h"
 #include <string>
 #include <vector>
+#include "doctest.h"
 #include "Emprestimo.hpp"
 #include "Professor.hpp"
 #include "Obra.hpp"

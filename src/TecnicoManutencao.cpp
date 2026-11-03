@@ -39,7 +39,7 @@
     int TecnicoManutencao::consultarManutencoesPendentes() const{
         int qtd = 0;
         for (const Manutencao *m : manutencoes) {
-            if (m != nullptr & m->getEstado() == EstadoManutencao::PENDENTE) {
+            if (m != nullptr && m->getEstado() == EstadoManutencao::PENDENTE) {
                 qtd++;
             }
         }

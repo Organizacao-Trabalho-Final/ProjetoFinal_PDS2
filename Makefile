@@ -5,7 +5,7 @@ SRC_DIR = src
 INC_DIR = include
 OBJ_DIR = build
 
-LIBS = -I$(INC_DIR)
+LIBS = -I$(INC_DIR) -Ithird_party
 
 INCLUDE = $(wildcard $(INC_DIR)/*.hpp)
 SOURCE  = $(wildcard $(SRC_DIR)/*.cpp)
@@ -14,6 +14,8 @@ OBJECTS = $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SOURCE))
 TARGET = biblioteca
 
 all: $(TARGET)
+
+objects: $(OBJECTS)
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp $(INCLUDE) | $(OBJ_DIR)
 	$(CC) $(FLAGS) $(LIBS) $< -c -o $@
