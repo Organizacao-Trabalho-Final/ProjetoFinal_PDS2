@@ -1,101 +1,38 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 
-#include "../../third_party/doctest.h"
-#include "../../include/Data.hpp"
+#include "doctest.h"
+#include "Data.hpp"
 
 TEST_CASE("Teste Construtor - Data") {
-
     CHECK_THROWS(Data( 10,  13,   2006));
     CHECK_THROWS(Data( 32,  10,   2006));
     CHECK_THROWS(Data(-10,  10,  -2006));
-    CHECK_THROWS(Data( 00,  10,  -2006));
+    CHECK_THROWS(Data(  0,  10,  -2006));
     CHECK_THROWS(Data( 10,  10,      0));
     CHECK_THROWS(Data( 10,  10, -20060));
-    CHECK_THROWS(Data( 10, -06,   2006));
-    CHECK_THROWS(Data( 29,  02,   2001));
-    CHECK_THROWS(Data( 31,  04,   2006));
+    CHECK_THROWS(Data( 10,  -6,   2006));
+    CHECK_THROWS(Data( 29,   2,   2001));
+    CHECK_THROWS(Data( 31,   4,   2006));
+    CHECK_THROWS(Data( 29,   2,   2023));
+    CHECK_THROWS(Data( 31,   6,   2026));
+    CHECK_THROWS(Data( 31,  11,   2026));
 
+    CHECK_NOTHROW(Data(  1,   1,     1));
+    CHECK_NOTHROW(Data( 31,   1,  2000));
+    CHECK_NOTHROW(Data( 29,   2,  2024));
+    CHECK_NOTHROW(Data( 31,  12,  2026));
 }
 
-TEST_CASE("Teste função isBissexto - Data") {
+TEST_CASE("Teste getters - Data") {
+    Data data(15, 8, 2026);
 
-        Data data(10, 06, 1942);
-
-        CHECK(data.isBissexto(2016) ==  true);
-        CHECK(data.isBissexto(2020) ==  true);
-        CHECK(data.isBissexto(2024) ==  true);
-        CHECK(data.isBissexto(2023) == false);
-        CHECK(data.isBissexto(2025) == false);
-        CHECK(data.isBissexto(2026) == false);
-        CHECK(data.isBissexto(2028) ==  true);
-        CHECK(data.isBissexto(2035) == false);
-        CHECK(data.isBissexto(1900) == false);
-        CHECK(data.isBissexto(2037) == false);
-        CHECK(data.isBissexto(2038) == false);
-        CHECK_THROWS(data.isBissexto(-2000));
-        CHECK_THROWS(data.isBissexto(20242));
-
-}
-
-TEST_CASE("Teste função diaMes() - Data") {
-
-    Data data(10, 06, 1942);
-
-    CHECK(data.diaMes(2, 2025) == 28);
-    CHECK(data.diaMes(2, 2016) == 29);
-    CHECK(data.diaMes(3, 2000) == 31);
-    CHECK(data.diaMes(4, 2000) == 30);
-
-}
-
-TEST_CASE("Teste função Dias() - Data") {
-
-    Data data(10, 06, 1942);
-
-    CHECK(data.Dias(31, 12, 2016) == 366);
-    CHECK(data.Dias(31, 12, 2038) == 365);
-    CHECK(data.Dias(31, 05, 2016) == 152);
-    CHECK(data.Dias(24, 01, 2000) == 24 );
-    CHECK(data.Dias(05, 04, 2023) == 95 );
-    CHECK_THROWS(data.Dias(05,  04, 20240));
-    CHECK_THROWS(data.Dias(-05, 04,  2024));
-    CHECK_THROWS(data.Dias(05,  -1,  2024));
-    CHECK_THROWS(data.Dias(05,  04, -2024));
-    CHECK_THROWS(data.Dias(05,  13,  2024));
-    CHECK_THROWS(data.Dias(29,  02,  2038));
-
-}
-
-TEST_CASE("Teste função diaMes() - Data") {
-
-    Data data(10, 06, 1942);
-
-    CHECK(data.diaMes(2, 2025) == 28);
-    CHECK(data.diaMes(2, 2016) == 29);
-    CHECK(data.diaMes(3, 2000) == 31);
-    CHECK(data.diaMes(4, 2000) == 30);
-
-}
-
-TEST_CASE("Teste função isValida() - Data") {
-
-    Data data(30, 06, 1942);
-
-    CHECK(data.isValida(30, 06, 1942) == true);
-    CHECK(data.isValida(30, 06, -1942) == false);
-    CHECK(data.isValida(30, 06, 19420) == false);
-    CHECK(data.isValida(00, 06, 1942) == false);
-    CHECK(data.isValida(30, 13, 1942) == false);
-    CHECK(data.isValida(-10, 06, 1942) == false);
-    CHECK(data.isValida(-15, -03, 1942) == false);
-    CHECK(data.isValida(-30, 06, 19420) == false);
-    CHECK(data.isValida(29, 02, 2038) == false);
-    CHECK(data.isValida(28, 02, 2038) == true);
-
+    CHECK(data.getDia() == 15);
+    CHECK(data.getMes() == 8);
+    CHECK(data.getAno() == 2026);
+    CHECK(data.getData() == "15/8/2026");
 }
 
 TEST_CASE("Teste função somarDias() - Data") {
-
     Data data1(10, 6, 1942);
     data1 = data1.somarDias(10);
 
@@ -134,25 +71,77 @@ TEST_CASE("Teste função somarDias() - Data") {
     CHECK(data2.getMes() == 1);
     CHECK(data2.getAno() == 1943);
 
+    Data data3(31, 12, 2026);
+    data3 = data3.somarDias(1);
+
+    CHECK(data3.getDia() == 1);
+    CHECK(data3.getMes() == 1);
+    CHECK(data3.getAno() == 2027);
+
+    Data data4(1, 1, 2026);
+    data4 = data4.somarDias(365);
+
+    CHECK(data4.getDia() == 1);
+    CHECK(data4.getMes() == 1);
+    CHECK(data4.getAno() == 2027);
+
+    Data data5(1, 1, 2024);
+    data5 = data5.somarDias(366);
+
+    CHECK(data5.getDia() == 1);
+    CHECK(data5.getMes() == 1);
+    CHECK(data5.getAno() == 2025);
+
     CHECK_THROWS(data2.somarDias(-10));
     CHECK_THROWS(data2.somarDias(0));
-
 }
 
-TEST_CASE("Teste função difenrencaDatas() - Data") {
+TEST_CASE("Teste anos bissexto - Data") {
+    Data data1(28, 2, 2024);
+    data1 = data1.somarDias(1);
 
-    Data data1(30, 06, 1942);
+    CHECK(data1.getDia() == 29);
+    CHECK(data1.getMes() == 2);
+    CHECK(data1.getAno() == 2024);
+
+    data1 = data1.somarDias(1);
+
+    CHECK(data1.getDia() == 1);
+    CHECK(data1.getMes() == 3);
+    CHECK(data1.getAno() == 2024);
+
+    CHECK_NOTHROW(Data(29, 2, 2000));
+    CHECK_THROWS(Data(29, 2, 1900));
+    CHECK_NOTHROW(Data(29, 2, 2024));
+    CHECK_THROWS(Data(29, 2, 2023));
+}
+
+TEST_CASE("Teste fevereiro em ano não bissexto - Data") {
+    Data data(28, 2, 2023);
+    data = data.somarDias(1);
+
+    CHECK(data.getDia() == 1);
+    CHECK(data.getMes() == 3);
+    CHECK(data.getAno() == 2023);
+}
+
+TEST_CASE("Teste função diferencaDatas() - Data") {
+    Data data1(30, 6, 1942);
 
     CHECK(data1.diferencaDatas(Data(30, 6, 1942)) == 0);
     CHECK(data1.diferencaDatas(Data(30, 7, 1942)) == 30);
     CHECK(data1.diferencaDatas(Data(10, 8, 1942)) == 41);
 
-
+    CHECK(Data(31, 12, 2026).diferencaDatas(Data(1, 1, 2027)) == 1);
+    CHECK(Data(30, 12, 2026).diferencaDatas(Data(2, 1, 2027)) == 3);
+    CHECK(Data(28, 2, 2024).diferencaDatas(Data(1, 3, 2024)) == 2);
+    CHECK(Data(28, 2, 2023).diferencaDatas(Data(1, 3, 2023)) == 1);
+    CHECK(Data(1, 1, 2026).diferencaDatas(Data(1, 1, 2027)) == 365);
+    CHECK(Data(1, 1, 2024).diferencaDatas(Data(1, 1, 2025)) == 366);
+    CHECK(Data(10, 1, 2026).diferencaDatas(Data(5, 1, 2026)) == -5);
 }
 
-
-
-
-
-
-
+TEST_CASE("Teste função isValida() - Data") {
+    Data data(10, 6, 1942);
+    CHECK(data.isValida());
+}

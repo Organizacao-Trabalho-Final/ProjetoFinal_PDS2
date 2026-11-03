@@ -64,19 +64,6 @@
         return 0;
     }
 
-    int Data::dias(int d, int m, int a) const {
-        if (!isValida(d, m, a)) {
-            throw std::invalid_argument("Data invalida");
-        }
-
-        int dias = 0;
-        for (int i = 1; i < m; i++) {
-            dias += diaMes(i, a);
-        }
-        dias += d;
-        return dias;
-    }
-
     int Data::dias() const {
         int d = dia;
         int m = mes;
@@ -123,24 +110,6 @@
 
         int diam = diaMes(mes, ano);
         if (dia > diam) {
-            return false;
-        }
-        return true;
-    }
-
-    bool Data::isValida(int d, int m, int a) const {
-        if (d > 31 || d < 1) {
-            return false;
-        }
-        if (m < 1 || m > 12) {
-            return false;
-        }
-        if (a < 1 || a > 9999) {
-            return false;
-        }
-
-        int diames = diaMes(m, a);
-        if (d > diames) {
             return false;
         }
         return true;

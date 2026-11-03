@@ -18,12 +18,6 @@ class Data {
         int ano;
 
         /**
-        * @brief Verifica se a data fornecida é válida.
-        * @return False se é inválida e True se Válida.
-        */
-        bool isValida(int d, int m, int a) const;
-
-        /**
         * @brief Verifica se o ano é bissexto.
         * @param a Ano a verificar.
         */
@@ -39,15 +33,6 @@ class Data {
 
         /**
         * @brief Calcula a posição de uma data dentro do ano.
-        * @param d Dia do ano.
-        * @param m Mês do ano.
-        * @param a Ano.
-        * @return Quantidade de dias decorridos no ano até a data informada.
-        */
-        int dias(int d, int m, int a) const;
-
-        /**
-        * @brief Calcula a posição de uma data dentro do ano.
         * @return Dia do ano.
         */
         int dias() const;
@@ -60,7 +45,7 @@ class Data {
     public:
         /**
         * @brief Constrói um objeto Data.
-        * @param d Dia do ano.
+        * @param d Dia do mês.
         * @param m Mês do ano.
         * @param a Ano.
         */
@@ -105,7 +90,7 @@ class Data {
 
         /**
         * @brief Calcula a diferença de uma Data com a atual.
-        * @param d Data.
+        * @param d Data a ser comparada.
         * @return Diferença entre as datas.
         */
         int diferencaDatas(const Data &data) const;
