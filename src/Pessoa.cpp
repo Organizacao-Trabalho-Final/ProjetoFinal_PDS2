@@ -96,12 +96,13 @@
     }
 
     std::vector<Emprestimo*> Pessoa::historicoEmprestimos() const {
-        for (Emprestimo *e : emprestimos) {
-            if (e == nullptr) {
+        for (size_t i=0; i<emprestimos.size(); i++) {
+            if (emprestimos[i] == nullptr) {
+                //emprestimos[i].erase(emprestimos[i].begin() + i);
                 continue;
             }
             std::cout << "||======================================================||" << std::endl;
-            e->printEmprestimo();
+            emprestimos[i]->printEmprestimo();
             std::cout << "||======================================================||" << std::endl;
         }
         return emprestimos;
