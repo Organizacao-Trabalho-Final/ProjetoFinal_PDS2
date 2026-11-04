@@ -7,7 +7,7 @@
 #include "Emprestimo.hpp"
 
     Pessoa::Pessoa(const std::string &n, const std::string &c):
-    nome(n), CPF(c), emprestimos(0) {}
+    nome(n), CPF(c) {}
 
     std::string Pessoa::getNome() const {
         return nome;
@@ -42,14 +42,38 @@
         if (&e == &emprestimos) {
             return;
         }
-        for (Emprestimo *atual : emprestimos) {
-            delete atual;
-        }
-        emprestimos.clear();
-        for (Emprestimo *novo : e) {
-            if (novo != nullptr) {
-                emprestimos.push_back(novo);
+        int aux0 = 0;
+        if(e.size() == 0){
+            for(Emprestimo* g : emprestimos){
+                delete g;
             }
+            emprestimos.clear();
+        }
+        for(size_t i=0; i<emprestimos.size(); i++){
+            for(size_t j=0; j<e.size(); j++){
+                if(emprestimos[i] == e[j]){
+                    aux0++;
+                }
+            }
+            if(aux0 == 0){
+                delete emprestimos[i];
+                emprestimos.erase(emprestimos.begin()+i);
+                i--;
+            }
+            aux0 = 0;
+        }
+        //emprestimos.clear();
+        int aux = 0;
+        
+        for (size_t i=0; i<e.size(); i++) {
+            for(size_t j=0; j<emprestimos.size(); j++){
+                if(e[i] == emprestimos[j])
+                    aux++;
+            }
+            if(aux == 0 && e[i] != nullptr){
+                emprestimos.push_back(e[i]);
+            }
+            aux = 0;
         }
     }
 
