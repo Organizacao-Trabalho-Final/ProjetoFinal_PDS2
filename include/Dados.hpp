@@ -24,6 +24,7 @@ class Dados {
     private:
         Usuarios *usuarios;
         Catalogo *catalogo;
+        friend struct TesteDados;
 
         /**
          * @brief Salva os empréstimos de um usuário em um arquivo.
