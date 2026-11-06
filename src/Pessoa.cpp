@@ -2,6 +2,7 @@
 #include <vector>
 #include <iostream>
 #include <stdexcept>
+#include <algorithm>
 #include "Obra.hpp"
 #include "Pessoa.hpp"
 #include "Emprestimo.hpp"
@@ -42,39 +43,21 @@
         if (&e == &emprestimos) {
             return;
         }
-        int aux0 = 0;
-        if(e.size() == 0){
-            for(Emprestimo* g : emprestimos){
-                delete g;
-            }
-            emprestimos.clear();
-        }
-        for(size_t i=0; i<emprestimos.size(); i++){
-            for(size_t j=0; j<e.size(); j++){
-                if(emprestimos[i] == e[j]){
-                    aux0++;
-                }
-            }
-            if(aux0 == 0){
-                delete emprestimos[i];
-                emprestimos.erase(emprestimos.begin()+i);
-                i--;
-            }
-            aux0 = 0;
-        }
-        //emprestimos.clear();
-        int aux = 0;
         
-        for (size_t i=0; i<e.size(); i++) {
-            for(size_t j=0; j<emprestimos.size(); j++){
-                if(e[i] == emprestimos[j])
-                    aux++;
+        std::vector<Emprestimo*> novos;
+        novos.reserve(e.size());
+
+        for (Emprestimo* novo : e) {
+            if (novo != nullptr && std::find(novos.begin(), novos.end(), novo) == novos.end()) {
+                novos.push_back(novo);
             }
-            if(aux == 0 && e[i] != nullptr){
-                emprestimos.push_back(e[i]);
-            }
-            aux = 0;
         }
+        for (Emprestimo* atual : emprestimos) {
+            if (atual != nullptr && std::find(novos.begin(), novos.end(), atual) == novos.end()) {
+                delete atual;
+            }
+        }
+        emprestimos.swap(novos);
     }
 
     const std::vector<Emprestimo*>& Pessoa::getEmprestimos() const {
@@ -98,7 +81,6 @@
     std::vector<Emprestimo*> Pessoa::historicoEmprestimos() const {
         for (size_t i=0; i<emprestimos.size(); i++) {
             if (emprestimos[i] == nullptr) {
-                //emprestimos[i].erase(emprestimos[i].begin() + i);
                 continue;
             }
             std::cout << "||======================================================||" << std::endl;
