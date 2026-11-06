@@ -6,6 +6,7 @@
 #include <limits>
 #include <istream>
 #include <utility>
+#include <stdexcept>
 #include "Estudante.hpp"
 #include "Emprestimo.hpp"
 #include "Professor.hpp"
@@ -45,6 +46,8 @@
 
     void Dados::salvarEmprestimos(std::ofstream &out, const std::vector<Emprestimo*> &emprestimos) const {
         for (Emprestimo *e : emprestimos) {
+            if(e == nullptr)
+                throw std::invalid_argument("Emprestimo nulo");
             out << e->getObra().getID() << ";"
                 << e->getRetirada().getDia() << ";"
                 << e->getRetirada().getMes() << ";"
