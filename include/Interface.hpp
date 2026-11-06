@@ -50,7 +50,6 @@ class Interface {
         int lerOpcao(int min, int max);
 
     public:
-
         /**
          * @brief Constrói um objeto Interface.
          * @param d Ponteiro para o objeto Dados utilizado pelo sistema.
@@ -58,7 +57,7 @@ class Interface {
         Interface(Dados *d);
 
         /**
-         * @brief Inicia a execução da interface do sistema.
+         * @brief Inicia a execução da interface do sistema em loop.
          *
          * Apresenta o menu principal e direciona o usuário para as
          * funcionalidades correspondentes à opção selecionada.

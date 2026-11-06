@@ -69,10 +69,10 @@
 
     bool Tratamento::isNumeroValido(int num, int min, int max, std::string tipo) {
         if (num < min) {
-            throw std::invalid_argument(tipo + " inválido -> " + tipo + " tem que ser maior que MIN | MIN: " +
+            throw std::invalid_argument(tipo + " inválido -> " + tipo + " tem que ser maior ou igual a MIN | MIN: " +
                 std::to_string(min));
         } else if (num > max) {
-            throw std::invalid_argument(tipo + " inválido -> " + tipo + " tem que ser menor que MAX | MAX: " +
+            throw std::invalid_argument(tipo + " inválido -> " + tipo + " tem que ser menor ou igual a MAX | MAX: " +
                 std::to_string(max));
         }
         return true;
