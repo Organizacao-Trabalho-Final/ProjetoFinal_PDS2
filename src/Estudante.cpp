@@ -21,7 +21,7 @@
     int Estudante::getMaxEmprestimos() const {
         return 3;
     }
-
+    
     bool Estudante::podeEmprestar(const Obra *o) const {
         if (o == nullptr) {
         return false;
@@ -31,4 +31,4 @@
             return false;
         }
         return (o->isDisponivel() && getEmprestimosAtivos() < getMaxEmprestimos());
-}
+    }
