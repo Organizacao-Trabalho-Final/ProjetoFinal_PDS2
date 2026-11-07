@@ -76,14 +76,14 @@ class Usuarios {
         /**
          * @brief Retorna a ocupação de um usuário pelo CPF.
          * @param cpf CPF do usuário.
-         * @return Ocupação do usuário como string.
+         * @return Ocupação do usuário como string, retorna "ERRO" se o usuário não for encontrado.
          */
         std::string getOcupacao(const std::string &cpf) const;
 
         /**
          * @brief Retorna a ocupação de um usuário pelo índice no vetor de usuários
          * @param index Índice do usuário
-         * @return Ocupação do usuário como string
+         * @return Ocupação do usuário como string, retorna "ERRO -> Index Inválido" se o índice for inválido.
          */
         std::string getOcupacao(int index) const;
 
