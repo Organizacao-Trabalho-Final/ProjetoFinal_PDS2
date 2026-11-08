@@ -30,7 +30,7 @@
             }
         }
         return false;
-    }
+    }   
 
     Obra* Catalogo::buscarPorTitulo(const std::string& t) const {
         for (Obra *o : obrasCadastradas) {

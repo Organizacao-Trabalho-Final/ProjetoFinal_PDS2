@@ -23,7 +23,7 @@ class Catalogo {
          * @return true se o ID já estiver cadastrado; false caso contrário.
          */
         bool verificarDuplicata(int id) const;
-
+        friend struct TesteCatalogo;
     public:
         /**
          * @brief Constrói um catálogo vazio.
