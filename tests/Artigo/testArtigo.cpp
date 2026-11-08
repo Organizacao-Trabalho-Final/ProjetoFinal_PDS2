@@ -135,17 +135,23 @@ TEST_CASE("Artigo - printObra"){
     int id1 = 11;
     int an = 2026;
     Artigo* a = new Artigo(t1, au1, id1, ar, an);
+    Artigo* b = new Artigo(t1, au1, id1, ar, an);
+
+    b->setDisponivel(false);
 
     std::stringstream cap;
     std::streambuf* original = std::cout.rdbuf(cap.rdbuf());
     a->printObra();
+    b->printObra();
 
     std::cout.rdbuf(original);
     std::stringstream buffer;
     buffer << cap.rdbuf();
     std::string txt = buffer.str();
 
-    CHECK(txt == "Titulo: Confissoes\nAutor: S.A\nArea: fisica\nAno: 2026\nID: 11\nDisponivel: Sim\n");
+    CHECK(txt == "Titulo: Confissoes\nAutor: S.A\nArea: fisica\nAno: 2026\nID: 11\nDisponivel: Sim\nTitulo: Confissoes\nAutor: S.A\nArea: fisica\nAno: 2026\nID: 11\nDisponivel: Não\n");
+    //CHECK(txt == "Titulo: Confissoes\nAutor: S.A\nArea: fisica\nAno: 2026\nID: 11\nDisponivel: Não\n");
 
+    delete b;
     delete a;
 }

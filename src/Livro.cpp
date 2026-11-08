@@ -12,11 +12,11 @@
 
     void Livro::setEdicao(int e) {
         if (e <= 0) {
-        throw std::invalid_argument("Edicao deve ser maior que zero");
-    }
+            throw std::invalid_argument("Edicao deve ser maior que zero");
+        }
         edicao = e;
     }
-
+    
     void Livro::setGenero(const std::string &g) {
         genero = g;
     }
