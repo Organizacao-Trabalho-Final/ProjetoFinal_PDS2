@@ -16,9 +16,10 @@ TEST_CASE("Artigo - construtor"){
         std::string ar = "fisica";
         std::string au1 = "S.A";
         int id1 = 11;
-        int an = 0;
+        int an = 2026;
 
-        CHECK_THROWS_AS(Artigo(t1, au1, id1, ar, an), std::invalid_argument);
+        CHECK_THROWS_AS(Artigo(t1, au1, id1, ar, 0), std::invalid_argument);
+        CHECK_THROWS_AS(Artigo(t1, au1, id1, ar, 10000), std::invalid_argument);
     }
 
     SUBCASE("Caso valido do construtor"){
@@ -32,6 +33,9 @@ TEST_CASE("Artigo - construtor"){
         CHECK_NOTHROW(Artigo(t1, au1, id1, ar, an));
 
         Artigo* a = new Artigo(t1, au1, id1, ar, an);
+
+        CHECK_NOTHROW(Artigo(t1, au1, id1, ar, 1));
+        CHECK_NOTHROW(Artigo(t1, au1, id1, ar, 9999));
 
         CHECK(a->getTitulo() == t1);
         CHECK(a->getAutor() == au1);
@@ -70,8 +74,10 @@ TEST_CASE("Artigo - setAno"){
         int an = 2026;
 
         Artigo* a = new Artigo(t1, au1, id1, ar, an);
-
+        CHECK_NOTHROW(a->setAno(9999));
+        CHECK_NOTHROW(a->setAno(1));
         CHECK_THROWS_AS(a->setAno(10000), std::invalid_argument);
+        CHECK_THROWS_AS(a->setAno(0), std::invalid_argument);
 
         delete a;
     }
@@ -89,6 +95,8 @@ TEST_CASE("Artigo - setArea"){
     a->setArea("ingles");
 
     CHECK(a->getArea() == "ingles");
+
+    delete a;
 }
 
 TEST_CASE("Artigo - getAno"){
@@ -101,6 +109,8 @@ TEST_CASE("Artigo - getAno"){
     Artigo* a = new Artigo(t1, au1, id1, ar, an);
 
     CHECK(a->getAno() == 2026);
+
+    delete a;
 }
 
 TEST_CASE("Artigo - getArea"){
@@ -113,6 +123,8 @@ TEST_CASE("Artigo - getArea"){
     Artigo* a = new Artigo(t1, au1, id1, ar, an);
 
     CHECK(a->getArea() == "fisica");
+
+    delete a;
 }
 
 TEST_CASE("Artigo - printObra"){
@@ -124,8 +136,6 @@ TEST_CASE("Artigo - printObra"){
     int an = 2026;
     Artigo* a = new Artigo(t1, au1, id1, ar, an);
 
-    CHECK(a->getArea() == "fisica");
-
     std::stringstream cap;
     std::streambuf* original = std::cout.rdbuf(cap.rdbuf());
     a->printObra();
@@ -136,4 +146,6 @@ TEST_CASE("Artigo - printObra"){
     std::string txt = buffer.str();
 
     CHECK(txt == "Titulo: Confissoes\nAutor: S.A\nArea: fisica\nAno: 2026\nID: 11\nDisponivel: Sim\n");
+
+    delete a;
 }
