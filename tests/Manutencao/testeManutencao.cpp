@@ -12,7 +12,7 @@ bool operator==(const Data& a, const Data& b) {
 }
 
 TEST_CASE("Teste construtor e getters - Manutencao") {
-    Livro l1("Dom Quixote", "Miguel de Cervantes", 1, "romanc", 3);
+    Livro l1("Dom Quixote", "Miguel de Cervantes", 1, "Romance", 3);
     TecnicoManutencao tm1("Nicolas", "01234567890");
     Data d1(10, 11, 2026);
     Manutencao m(&l1, &tm1, "Folha rasgada", d1);
@@ -33,7 +33,7 @@ TEST_CASE("Teste construtor e getters - Manutencao") {
 }
 
 TEST_CASE("Teste iniciar e concluir - Manutencao") {
-    Livro l2("O Pequeno Príncipe", "Antoine de Saint-Exupéry", 2, "infantil", 1);
+    Livro l2("O Pequeno Príncipe", "Antoine de Saint-Exupéry", 2, "Infantil", 1);
     TecnicoManutencao tm2("Max", "09876543210");
     Data d2(12, 11, 2026);
     Manutencao m2(&l2, &tm2, "Folha rasurada", d2);
@@ -58,7 +58,7 @@ TEST_CASE("Teste iniciar e concluir - Manutencao") {
     }
 
     SUBCASE("Iniciar e concluir com ordem inversa"){
-        Livro l4("1984", "George Orwell", 3, "distopia", 1);
+        Livro l4("1984", "George Orwell", 3, "Distopia", 1);
         TecnicoManutencao tm4("Santiago", "23456789012");
         Data d4(14, 11, 2026);
         Manutencao m4(&l4, &tm4, "Capa rasgada", d4);
@@ -85,7 +85,7 @@ TEST_CASE("Teste iniciar e concluir - Manutencao") {
 }
 
 TEST_CASE("Teste destrutor - Manutencao") {
-    Livro l5("O Senhor dos Anéis", "J.R.R. Tolkien", 4, "fantasia", 1);
+    Livro l5("O Senhor dos Anéis", "J.R.R. Tolkien", 4, "Fantasia", 1);
     TecnicoManutencao tm5("Rezeck", "34567890123");
     Data d5(15, 11, 2026);
     {
@@ -95,4 +95,22 @@ TEST_CASE("Teste destrutor - Manutencao") {
     }
     CHECK(l5.getTitulo() == "O Senhor dos Anéis");
     CHECK(tm5.getNome() == "Rezeck");
+}
+
+TEST_CASE("Manutenção associada ao técnico correto") {
+    Livro l1("Cálculo", "Stewart", 1, "Didático", 1);
+    TecnicoManutencao t1("Eris", "01234567890");
+    TecnicoManutencao t2("Alan", "12345678901");
+
+    Manutencao *m = new Manutencao(&l1, &t1, "Capa rasgada", Data(10, 11, 2026));
+    t1.adicionarManutencao(m);
+
+    CHECK_THROWS(t2.adicionarManutencao(m));
+    CHECK(t1.getManutencoes().size() == 1);
+    CHECK(t2.getManutencoes().empty());
+
+    std::vector<Manutencao*> lista = {m};
+    CHECK_THROWS(t2.setManutencoes(lista));
+    CHECK(t1.getManutencoes().size() == 1);
+    CHECK(t2.getManutencoes().empty());
 }

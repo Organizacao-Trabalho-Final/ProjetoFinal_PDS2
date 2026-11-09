@@ -1,6 +1,7 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <stdexcept>
 #include "TecnicoManutencao.hpp"
 #include "Manutencao.hpp"
 
@@ -15,6 +16,9 @@
         if (m == nullptr) {
             return;
         }
+        if (m->getTecnico() != this) {
+            throw std::invalid_argument("A manutenção não está associada a este técnico.");
+        }
         if (std::find(manutencoes.begin(), manutencoes.end(), m) != manutencoes.end()) {
             return;
         }
@@ -25,15 +29,33 @@
         if (&m == &manutencoes) {
             return;
         }
+
+        std::vector<Manutencao*> novas;
+        std::vector<Manutencao*> antigas;
+        for (Manutencao *nova : m) {
+            if (nova == nullptr) {
+                continue;
+            }
+            if (nova->getTecnico() != this) {
+                throw std::invalid_argument("Manutenção associada a outro técnico.");
+            }
+            if (std::find(novas.begin(), novas.end(), nova) == novas.end()) {
+                novas.push_back(nova);
+            }
+        }
+
         for (Manutencao *atual : manutencoes) {
-            if (std::find(m.begin(), m.end(), atual) == m.end()) {
+            if (atual != nullptr && std::find(antigas.begin(), antigas.end(), atual) == antigas.end()) {
+                antigas.push_back(atual);
+            }
+        }
+
+        for (Manutencao *atual : antigas) {
+            if (std::find(novas.begin(), novas.end(), atual) == novas.end()) {
                 delete atual;
             }
         }
-        manutencoes.clear();
-        for (Manutencao *nova : m) {
-            adicionarManutencao(nova);
-        }
+        manutencoes.swap(novas);
     }
 
     int TecnicoManutencao::consultarManutencoesPendentes() const{
