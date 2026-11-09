@@ -8,16 +8,20 @@
 
     Usuarios::Usuarios(): usuarios(0) {}
 
-    void Usuarios::adicionarUsuario(Pessoa *u, int id) {
+    bool Usuarios::adicionarUsuario(Pessoa *u, int id) {
         if (u == nullptr) {
-            return;
+            return false;
         }
         for (const auto &cadastrado : usuarios) {
             if (cadastrado.first == u) {
-                return;
+                return false;
+            }
+            if ((cadastrado.second == id || cadastrado.first->getCPF() == u->getCPF()) && cadastrado.first != nullptr) {
+                return false;
             }
         }
         usuarios.push_back(std::make_pair(u, id));
+        return true;
     }
 
     bool Usuarios::removerUsuario(const std::string &nome) {

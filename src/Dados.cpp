@@ -367,8 +367,12 @@
                     return;
                 }
 
-                usuarios->adicionarUsuario(new Estudante(nome, cpf, curso, matricula), id);
-                pessoa = usuarios->buscarUsuarioId(id);
+                pessoa = new Estudante(nome, cpf, curso, matricula);
+                if (!usuarios->adicionarUsuario(pessoa, id)) {
+                    delete pessoa;
+                    std::cerr << "CPF ou ID duplicado ao carregar estudante: " << id << std::endl;
+                    return;
+                }
                 carregarEmprestimos(arquivoUsuarios, pessoa);
             } else if (tipo == "Professor") {
                 arquivoUsuarios >> id;
@@ -382,8 +386,12 @@
                     return;
                 }
 
-                usuarios->adicionarUsuario(new Professor(nome, cpf, area), id);
-                pessoa = usuarios->buscarUsuarioId(id);
+                pessoa = new Professor(nome, cpf, area);
+                if (!usuarios->adicionarUsuario(pessoa, id)) {
+                    delete pessoa;
+                    std::cerr << "CPF ou ID duplicado ao carregar professor: " << id << std::endl;
+                    return;
+                }
                 carregarEmprestimos(arquivoUsuarios, pessoa);
             } else if (tipo == "Bibliotecario") {
                 arquivoUsuarios >> id;
@@ -396,8 +404,12 @@
                     return;
                 }
 
-                usuarios->adicionarUsuario(new Bibliotecario(nome, cpf), id);
-                pessoa = usuarios->buscarUsuarioId(id);
+                pessoa = new Bibliotecario(nome, cpf);
+                if (!usuarios->adicionarUsuario(pessoa, id)) {
+                    delete pessoa;
+                    std::cerr << "CPF ou ID duplicado ao carregar bibliotecário: " << id << std::endl;
+                    return;
+                }
                 carregarEmprestimos(arquivoUsuarios, pessoa);
             } else if (tipo == "TecnicoManutencao") {
                 arquivoUsuarios >> id;
@@ -410,8 +422,12 @@
                     return;
                 }
 
-                usuarios->adicionarUsuario(new TecnicoManutencao(nome, cpf), id);
-                pessoa = usuarios->buscarUsuarioId(id);
+                pessoa = new TecnicoManutencao(nome, cpf);
+                if (!usuarios->adicionarUsuario(pessoa, id)) {
+                    delete pessoa;
+                    std::cerr << "CPF ou ID duplicado ao carregar técnico de manutenção: " << id << std::endl;
+                    return;
+                }
                 carregarEmprestimos(arquivoUsuarios, pessoa);
 
                 if (!arquivoUsuarios) {

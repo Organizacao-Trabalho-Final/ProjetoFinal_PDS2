@@ -19,7 +19,7 @@ TEST_CASE("Teste Construtor - Usuarios") {
 TEST_CASE("Teste adicionarUsuario() e removerUsuario() - Usuarios") {
     Usuarios u2;
     Pessoa *p1 = new Professor("Rezeck", "01234567890", "DCC");
-    u2.adicionarUsuario(p1, 1);
+    CHECK(u2.adicionarUsuario(p1, 1));
 
     CHECK(u2.buscarUsuarioNome("Rezeck") == p1);
     CHECK(u2.buscarUsuarioId(1) == p1);
@@ -28,11 +28,21 @@ TEST_CASE("Teste adicionarUsuario() e removerUsuario() - Usuarios") {
     CHECK(u2.buscarUsuarioId(2) == nullptr);
     CHECK(u2.buscarUsuarioCPF("01234567891") == nullptr);
 
-    u2.adicionarUsuario(nullptr, 3);
+    CHECK_FALSE(u2.adicionarUsuario(nullptr, 3));
     CHECK(u2.buscarUsuarioId(3) == nullptr);
 
-    u2.adicionarUsuario(p1, 4);
+    CHECK_FALSE(u2.adicionarUsuario(p1, 4));
     CHECK(u2.buscarUsuarioId(4) == nullptr);
+
+    Pessoa *cpfDuplicado = new Professor("Outro Professor", "01234567890", "DCC");
+    CHECK_FALSE(u2.adicionarUsuario(cpfDuplicado, 2));
+    CHECK(u2.buscarUsuarioId(2) == nullptr);
+    delete cpfDuplicado;
+
+    Pessoa *idDuplicado = new Professor("Outro Professor", "11122233344", "DCC");
+    CHECK_FALSE(u2.adicionarUsuario(idDuplicado, 1));
+    CHECK(u2.buscarUsuarioCPF("11122233344") == nullptr);
+    delete idDuplicado;
 
     CHECK(u2.removerUsuario("Rezeck"));
     CHECK(u2.buscarUsuarioNome("Rezeck") == nullptr);

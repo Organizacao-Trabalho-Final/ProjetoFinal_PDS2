@@ -28,10 +28,12 @@ class Usuarios {
 
         /**
          * @brief Adiciona um usuário ao cadastro.
-         * @param usuario Ponteiro para o objeto Pessoa a ser adicionado.
+         * @param p Ponteiro para o objeto Pessoa a ser adicionado.
          * @param id ID do usuário a ser adicionado.
+         * @return true se cadastrado com sucesso, false se houver duplicidade ou ponteiro nulo.
+        * O ponteiro é transferido para Usuarios somente se o cadastro for realizado.
          */
-        void adicionarUsuario(Pessoa *p, int id);
+        bool adicionarUsuario(Pessoa *p, int id);
 
         /**
          * @brief Remove o primeiro usuário encontrado com o nome informado,
