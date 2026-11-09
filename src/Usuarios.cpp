@@ -1,4 +1,5 @@
 #include <cstddef>
+#include <limits>
 #include "Usuarios.hpp"
 #include "Pessoa.hpp"
 #include "Estudante.hpp"
@@ -6,7 +7,7 @@
 #include "Bibliotecario.hpp"
 #include "TecnicoManutencao.hpp"
 
-    Usuarios::Usuarios(): usuarios(0) {}
+    Usuarios::Usuarios(): usuarios(), proximoId(1) {}
 
     bool Usuarios::adicionarUsuario(Pessoa *u, int id) {
         if (u == nullptr) {
@@ -21,7 +22,21 @@
             }
         }
         usuarios.push_back(std::make_pair(u, id));
+        if (id >= proximoId && id < std::numeric_limits<int>::max()) {
+            proximoId = id + 1;
+        }
         return true;
+    }
+
+    int Usuarios::adicionarUsuario(Pessoa *u) {
+        if (u == nullptr) {
+            return 0;
+        }
+        int id = proximoId;
+        if (!adicionarUsuario(u, id)) {
+            return 0;
+        }
+        return id;
     }
 
     bool Usuarios::removerUsuario(const std::string &nome) {

@@ -18,6 +18,9 @@
             return false;
         }
         obrasCadastradas.push_back(o);
+        if (o->getID() >= proximoId) {
+            proximoId = o->getID() + 1;
+        }
         return true;
     }
 
@@ -69,6 +72,16 @@
             proximoId++;
         }
         return proximoId++;
+    }
+
+    int Catalogo::getProximoId() const {
+        return proximoId;
+    }
+
+    void Catalogo::setProximoId(int id) {
+        if (id > proximoId) {
+            proximoId = id;
+        }
     }
 
     Catalogo::~Catalogo() { // Liberação de memória

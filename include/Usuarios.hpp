@@ -19,6 +19,7 @@ class Pessoa;
 class Usuarios {
     private:
         std::vector<std::pair<Pessoa*, int>> usuarios;
+        int proximoId;
 
     public:
         /**
@@ -28,12 +29,20 @@ class Usuarios {
 
         /**
          * @brief Adiciona um usuário ao cadastro.
-         * @param p Ponteiro para o objeto Pessoa a ser adicionado.
+         * @param p Ponteiro para o usuário.
          * @param id ID do usuário a ser adicionado.
          * @return true se cadastrado com sucesso, false se houver duplicidade ou ponteiro nulo.
-        * O ponteiro é transferido para Usuarios somente se o cadastro for realizado.
+         * O ponteiro é transferido para Usuarios somente se o cadastro for realizado.
          */
         bool adicionarUsuario(Pessoa *p, int id);
+
+        /**
+         * @brief Adiciona um usuário ao cadastro e gera automaticamente seu ID.
+         * @param p Ponteiro para o usuário.
+         * @return ID gerado ou 0 caso o cadastro não seja realizado.
+         * O ponteiro é transferido para Usuarios somente se o cadastro for realizado.
+         */
+        int adicionarUsuario(Pessoa *p);
 
         /**
          * @brief Remove o primeiro usuário encontrado com o nome informado,

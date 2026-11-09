@@ -123,3 +123,35 @@ TEST_CASE("Impedir remoção de técnico com histórico de manutenções") {
     CHECK_FALSE(usuarios.removerUsuario("Max"));
     CHECK(usuarios.buscarUsuarioNome("Max") == tecnico);
 }
+
+TEST_CASE("Teste geração automática de IDs - Usuarios") {
+    Usuarios usuarios;
+    Pessoa *p1 = new Professor("Rezeck", "01234567890", "DCC");
+    int id1 = usuarios.adicionarUsuario(p1);
+
+    CHECK(id1 == 1);
+    CHECK(usuarios.buscarUsuarioId(1) == p1);
+
+    Pessoa *duplicado = new Professor("Outro professor", "01234567890", "DCC");
+    CHECK(usuarios.adicionarUsuario(duplicado) == 0);
+    delete duplicado;
+
+    Pessoa *p2 = new Estudante("Santiago", "11122233344", "Engenharia", "2026012345");
+    int id2 = usuarios.adicionarUsuario(p2);
+
+    CHECK(id2 == 2);
+    CHECK(usuarios.buscarUsuarioId(2) == p2);
+}
+
+TEST_CASE("Teste atualização do próximo ID - Usuarios") {
+    Usuarios usuarios;
+    Pessoa *p1 = new Professor("Rezeck", "01234567890", "DCC");
+
+    CHECK(usuarios.adicionarUsuario(p1, 10));
+
+    Pessoa *p2 = new Estudante("Daniel", "11122233344", "Engenharia", "2026012345");
+    int id = usuarios.adicionarUsuario(p2);
+
+    CHECK(id == 11);
+    CHECK(usuarios.buscarUsuarioId(11) == p2);
+}

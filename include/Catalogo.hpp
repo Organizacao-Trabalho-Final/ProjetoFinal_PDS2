@@ -32,6 +32,24 @@ class Catalogo {
          */
         bool removerObra(int id);
 
+        /**
+         * @brief Gera o próximo ID disponível para uma obra.
+         * @return ID gerado.
+         */
+        int gerarProximoId();
+
+        /**
+         * @brief Retorna o próximo ID disponível.
+         * @return Próximo ID.
+         */
+        int getProximoId() const;
+
+        /**
+         * @brief Atualiza o próximo ID disponível.
+         * @param id Novo próximo ID.
+         */
+        void setProximoId(int id);
+
         friend struct TesteCatalogo;
         friend class Dados;
 
@@ -74,12 +92,6 @@ class Catalogo {
          * @return Referência constante para o vetor de obras.
          */
         const std::vector<Obra*>& listarObras() const;
-
-        /**
-         * @brief Gera e retorna o próximo ID disponível.
-         * @return Identificador único da próxima obra.
-         */
-        int gerarProximoId();
 
         // Impedem cópias superficiais dos ponteiros pertencentes à classe.
         Catalogo(const Catalogo&) = delete;

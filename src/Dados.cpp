@@ -150,6 +150,7 @@
             return;
         }
 
+        arquivoObras << "ProximoId;" << catalogo->getProximoId() << std::endl;
         for (Obra *o : catalogo->listarObras()) {
             if (o == nullptr) {
                 continue;
@@ -295,7 +296,13 @@
         int numeroManutencao;
 
         while (std::getline(arquivoObras, tipo, ';')) {
-            if (tipo == "Artigo") {
+            if (tipo == "ProximoId") {
+                if (!(arquivoObras >> id) || id <= 0) {
+                    std::cerr << "Próximo ID de obras inválido." << std::endl;
+                    return;
+                }
+                catalogo->setProximoId(id);
+            } else if (tipo == "Artigo") {
                 std::getline(arquivoObras, titulo, ';');
                 std::getline(arquivoObras, autor, ';');
                 arquivoObras >> id;
