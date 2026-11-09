@@ -4,6 +4,10 @@
 #include "../../include/Usuarios.hpp"
 #include "../../include/Professor.hpp"
 #include "../../include/Estudante.hpp"
+#include "../../include/Livro.hpp"
+#include "../../include/Emprestimo.hpp"
+#include "../../include/TecnicoManutencao.hpp"
+#include "../../include/Manutencao.hpp"
 
 TEST_CASE("Teste Construtor - Usuarios") {
     Usuarios u1;
@@ -30,7 +34,7 @@ TEST_CASE("Teste adicionarUsuario() e removerUsuario() - Usuarios") {
     u2.adicionarUsuario(p1, 4);
     CHECK(u2.buscarUsuarioId(4) == nullptr);
 
-    u2.removerUsuario("Rezeck");
+    CHECK(u2.removerUsuario("Rezeck"));
     CHECK(u2.buscarUsuarioNome("Rezeck") == nullptr);
 }
 
@@ -80,4 +84,32 @@ TEST_CASE("Teste destrutor - Usuarios") {
         CHECK(destruidas == 0);
     }
     CHECK(destruidas == 2);
+}
+
+TEST_CASE("Impedir remoção de usuário com histórico de empréstimos") {
+    Livro obra("Calculo", "Stewart", 1, "Didatico", 1);
+    Usuarios usuarios;
+    Professor *prof = new Professor("Rezeck", "01234567890", "DCC");
+
+    usuarios.adicionarUsuario(prof, 1);
+    Emprestimo *e = new Emprestimo(obra, *prof, Data(10, 11, 2026));
+    e->setAtivo(false);
+    prof->registrarEmprestimo(e);
+
+    CHECK_FALSE(usuarios.removerUsuario("Rezeck"));
+    CHECK(usuarios.buscarUsuarioNome("Rezeck") == prof);
+}
+
+TEST_CASE("Impedir remoção de técnico com histórico de manutenções") {
+    Livro obra("Calculo", "Stewart", 1, "Didatico", 1);
+    Usuarios usuarios;
+    TecnicoManutencao *tecnico = new TecnicoManutencao("Max", "12345678901");
+    
+    usuarios.adicionarUsuario(tecnico, 1);
+    Manutencao *m = new Manutencao(&obra, tecnico, "Capa rasgada", Data(10, 11, 2026));
+    m->setEstado(EstadoManutencao::CONCLUIDA);
+    tecnico->adicionarManutencao(m);
+
+    CHECK_FALSE(usuarios.removerUsuario("Max"));
+    CHECK(usuarios.buscarUsuarioNome("Max") == tecnico);
 }

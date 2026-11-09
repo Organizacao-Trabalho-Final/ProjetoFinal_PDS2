@@ -20,14 +20,24 @@
         usuarios.push_back(std::make_pair(u, id));
     }
 
-    void Usuarios::removerUsuario(const std::string &nome) {
+    bool Usuarios::removerUsuario(const std::string &nome) {
         for (auto it = usuarios.begin(); it != usuarios.end(); ++it) {
-            if (it->first->getNome() == nome) {
-                delete it->first;
-                usuarios.erase(it);
-                return;
+            Pessoa *pessoa = it->first;
+            if (pessoa == nullptr || pessoa->getNome() != nome) {
+                continue;
             }
+            if (!pessoa->getEmprestimos().empty()) {
+                return false;
+            }
+            TecnicoManutencao *tecnico = dynamic_cast<TecnicoManutencao*>(pessoa);
+            if (tecnico != nullptr && !tecnico->getManutencoes().empty()) {
+                return false;
+            }
+            delete pessoa;
+            usuarios.erase(it);
+            return true;
         }
+        return false;
     }
 
     Pessoa* Usuarios::buscarUsuarioNome(const std::string &nome) const {

@@ -34,10 +34,12 @@ class Usuarios {
         void adicionarUsuario(Pessoa *p, int id);
 
         /**
-         * @brief Remove o primeiro usuário encontrado com o nome informado.
+         * @brief Remove o primeiro usuário encontrado com o nome informado,
+         * desde que não possua empréstimos ou manutenções associados.
          * @param nome Nome do usuário a ser removido.
+         * @return true se o usuário for removido, false se não encontrado ou tiver registros associados.
          */
-        void removerUsuario(const std::string &nome);
+        bool removerUsuario(const std::string &nome);
 
         /**
          * @brief Busca um usuário pelo nome.
@@ -58,7 +60,7 @@ class Usuarios {
          * @param cpf CPF do usuário a ser buscado.
          * @return Ponteiro para o objeto Pessoa encontrado ou nullptr se não encontrado.
          */
-        Pessoa * buscarUsuarioCPF(const std::string &cpf) const;
+        Pessoa *buscarUsuarioCPF(const std::string &cpf) const;
 
         /**
          * @brief Busca um usuário pelo índice no vetor de usuários.
