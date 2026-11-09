@@ -5,12 +5,17 @@
 #include "Manutencao.hpp"
 #include "TecnicoManutencao.hpp"
 #include "Obra.hpp"
+#include "Estudante.hpp"
+#include "Professor.hpp"
 
     Bibliotecario::Bibliotecario(const std::string &n, const std::string &c):
     Pessoa(n, c) {}
         
     Emprestimo* Bibliotecario::aprovarEmprestimo(Pessoa *p, Obra *o, Data d) {
         if (p == nullptr || o == nullptr) {
+            return nullptr;
+        }
+        if (dynamic_cast<Estudante*>(p) == nullptr && dynamic_cast<Professor*>(p) == nullptr) {
             return nullptr;
         }
         if (!o->isDanificado() && p->podeEmprestar(o)) {
@@ -23,12 +28,14 @@
     }
 
     bool Bibliotecario::aprovarRenovacao(Emprestimo *e, Data hj) {
-        if (e == nullptr || !e->isAtivo() || e->getAtraso(hj) > 0) {
+        if (e == nullptr || !e->isAtivo() || !e->isRenovacaoSolicitada()) {
             return false;
-        } else {
-            e->renovarEmprestimo();
-            return true;
         }
+        if (e->getAtraso(hj) > 0) {
+            e->cancelarSolicitacaoRenovacao();
+            return false;
+        }
+        return e->renovarEmprestimo();
     }
 
     void Bibliotecario::registrarDevolucao(Emprestimo *e) {

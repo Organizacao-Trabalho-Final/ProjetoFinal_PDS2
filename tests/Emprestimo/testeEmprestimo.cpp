@@ -28,7 +28,7 @@ TEST_CASE("Teste isAtivo e setAtivo - Emprestimo") {
     Emprestimo e3(l3, p3, Data(12, 11, 2026));
 
     CHECK(e3.isAtivo() == true);
-    e3.setAtivo(false);
+    e3.encerrarEmprestimo();
     CHECK(e3.isAtivo() == false);
 }
 
@@ -58,24 +58,6 @@ TEST_CASE("Teste encerrarEmprestimo - Emprestimo") {
     CHECK(e5.isAtivo() == true);
     e5.encerrarEmprestimo();
     CHECK(e5.isAtivo() == false);
-}
-
-TEST_CASE("Teste renovarEmprestimo - Emprestimo") {
-    Livro l6("Dom Casmurro", "Machado de Assis", 1, "Romance", 5);
-    Estudante p6("Fulano", "01234567890", "Engenharia", "2026012345");
-    Emprestimo e6(l6, p6, Data(12, 11, 2026));
-
-    CHECK(e6.getDevolucao().getData() == "12/12/2026");
-    e6.renovarEmprestimo();
-    CHECK(e6.getDevolucao().getData() == "11/1/2027");
-    e6.renovarEmprestimo();
-    CHECK(e6.getDevolucao().getData() == "10/2/2027");
-    e6.renovarEmprestimo();
-    CHECK(e6.getDevolucao().getData() == "12/3/2027");
-
-    e6.encerrarEmprestimo();
-    e6.renovarEmprestimo();
-    CHECK(e6.getDevolucao().getData() == "12/3/2027");
 }
 
 TEST_CASE("Teste printEmprestimo - Emprestimo") {
@@ -110,4 +92,26 @@ TEST_CASE("Teste Destrutor - Emprestimo") {
     CHECK(e8.getUsuario().getNome() == "Fulano");
     }
     CHECK(true);
+}
+
+TEST_CASE("Teste solicitarRenovacao - Emprestimo") {
+    Livro l6("Dom Casmurro", "Machado de Assis", 1, "Romance", 5);
+    Estudante p6("Fulano", "01234567890", "Engenharia", "2026012345");
+    Emprestimo e6(l6, p6, Data(12, 11, 2026));
+
+    CHECK(e6.isRenovacaoSolicitada() == false);
+    CHECK(e6.solicitarRenovacao() == true);
+    CHECK(e6.isRenovacaoSolicitada() == true);
+    CHECK(e6.solicitarRenovacao() == false);
+}
+
+TEST_CASE("Teste solicitar renovacao com emprestimo inativo") {
+    Livro l7("Dom Casmurro", "Machado de Assis", 1, "Romance", 5);
+    Estudante p7("Fulano", "01234567890", "Engenharia", "2026012345");
+    Emprestimo e7(l7, p7, Data(12, 11, 2026));
+    CHECK(e7.solicitarRenovacao() == true);
+
+    e7.encerrarEmprestimo();
+    CHECK(e7.isRenovacaoSolicitada() == false);
+    CHECK(e7.solicitarRenovacao() == false);
 }

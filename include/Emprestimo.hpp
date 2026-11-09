@@ -23,6 +23,23 @@ class Emprestimo {
         Pessoa *usuario; ///< Usuário responsável pelo empréstimo.
         Data retirada, devolucao; ///< Data de retirada + previsão de devolução da obra.
         bool ativo; ///< Indica se o empréstimo está ativo.
+        bool renovacaoSolicitada; ///< Indica a solicitação de renovação do empréstimo.
+
+        /**
+         * @brief Renova o empréstimo.
+         * @return true se o empréstimo for renovado, false caso contrário.
+         * Adiciona à data de devolução um novo período correspondente
+         * ao prazo permitido para o usuário.
+         */
+        bool renovarEmprestimo();
+
+        /**
+         * @brief Cancela a solicitação de renovação.
+         */
+        void cancelarSolicitacaoRenovacao();
+
+        friend class Bibliotecario;
+        friend class Dados;
 
     public:
         /**
@@ -41,7 +58,7 @@ class Emprestimo {
 
         /**
          * @brief Informa se o empréstimo está ativo.
-         * @return true se o empréstimo estiver ativo; false caso contrário.
+         * @return true se o empréstimo estiver ativo, false caso contrário.
          */
         bool isAtivo() const;
 
@@ -83,17 +100,23 @@ class Emprestimo {
         int getAtraso(Data d) const;
 
         /**
+         * @brief Solicita a renovação de um empréstimo.
+         * @return true se a solicitação for registrada, false caso
+         * o empréstimo esteja inativo ou já possua uma solicitação pendente.
+         */
+        bool solicitarRenovacao();
+
+        /**
+         * @brief Verifica se existe uma solicitação de renovação pendente.
+         * @return true se houver solicitação pendente, false se não.
+         */
+        bool isRenovacaoSolicitada() const;
+
+        /**
          * @brief Encerra o empréstimo.
          * Altera o estado do empréstimo para inativo.
          */
         void encerrarEmprestimo();
-
-        /**
-         * @brief Renova o empréstimo.
-         * Adiciona à data de devolução um novo período correspondente
-         * ao prazo permitido para o usuário.
-         */
-        void renovarEmprestimo();
 
         /**
          * @brief Exibe as informações do empréstimo.

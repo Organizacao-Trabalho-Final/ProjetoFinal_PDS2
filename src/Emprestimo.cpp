@@ -4,10 +4,13 @@
 #include "Obra.hpp"
 
     Emprestimo::Emprestimo(Obra &o, Pessoa &p, const Data d):
-    obra(&o), usuario(&p), retirada(d), devolucao(d.somarDias(p.getPrazo())), ativo(true) {}
+    obra(&o), usuario(&p), retirada(d), devolucao(d.somarDias(p.getPrazo())), ativo(true), renovacaoSolicitada(false) {}
 
     void Emprestimo::setAtivo(bool b) {
         ativo = b;
+        if (!ativo) {
+            renovacaoSolicitada = false;
+        }
     }
 
     bool Emprestimo::isAtivo() const {
@@ -42,6 +45,22 @@
         return atraso;
     }
 
+    bool Emprestimo::solicitarRenovacao() {
+        if (!ativo || renovacaoSolicitada) {
+            return false;
+        }
+        renovacaoSolicitada = true;
+        return true;
+    }
+
+    bool Emprestimo::isRenovacaoSolicitada() const {
+        return renovacaoSolicitada;
+    }
+
+    void Emprestimo::cancelarSolicitacaoRenovacao() {
+        renovacaoSolicitada = false;
+    }
+
     void Emprestimo::encerrarEmprestimo() {
         setAtivo(false);
     }
@@ -54,9 +73,11 @@
         std::cout << "Estado: " << (ativo ? "Ativo" : "Encerrado") << std::endl;
     }
 
-    void Emprestimo::renovarEmprestimo() {
-        if (!ativo) {
-            return;
+    bool Emprestimo::renovarEmprestimo() {
+        if (!ativo || !renovacaoSolicitada) {
+            return false;
         }
         devolucao = devolucao.somarDias(usuario->getPrazo());
+        renovacaoSolicitada = false;
+        return true;
     }
