@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <stdexcept>
 #include "doctest.h"
 #include "Emprestimo.hpp"
 #include "Professor.hpp"
@@ -12,7 +13,7 @@ Professor prof("Juriscreudo", "11122233344", "matematica");
 std::string nome = "girafales";
 std::string cpf = "1234567890";
 std::string a = "biologia";
-std::string ab;
+std::string ab = "historia";
 Professor profa(nome, cpf, a);
 Professor profs(nome, cpf, ab);
 TEST_CASE("Teste Professor - getArea"){
@@ -80,5 +81,9 @@ TEST_CASE("Teste Professor - podeEmprestar"){
     delete S;
 }
 
+TEST_CASE("Professor - validação do construtor") {
 
-// return (o != nullptr && o->isDisponivel() && getEmprestimosAtivos() < getMaxEmprestimos());
+    CHECK_THROWS_AS(Professor("Maria", "12345678901", ""), std::invalid_argument);
+    CHECK_NOTHROW(Professor("Maria", "12345678901", "Matemática"));
+
+}

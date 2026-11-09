@@ -24,7 +24,8 @@ class Professor : public Pessoa {
          * @brief Constroi um objeto Professor.
          * @param n Nome do professor.
          * @param c CPF do professor.
-         * @param a Area de atuação do professor.  
+         * @param a Area de atuação do professor. 
+         * @throws std::invalid_argument se a área estiver vazia. 
          */
         Professor(const std::string &n, const std::string &c, const std::string &a);
 

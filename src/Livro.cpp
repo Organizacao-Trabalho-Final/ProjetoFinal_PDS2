@@ -5,6 +5,9 @@
 
     Livro::Livro(const std::string &t, const std::string &a, int id, const std::string &g, int e):
     Obra(t, a, id), genero(g), edicao(e) {
+        if (genero.empty()) {
+            throw std::invalid_argument("Gênero do livro não pode ser vazio.");
+        }
         if (e <= 0) {
             throw std::invalid_argument("Edicao deve ser maior que zero.");
         }
@@ -18,6 +21,9 @@
     }
     
     void Livro::setGenero(const std::string &g) {
+        if (g.empty()) {
+            throw std::invalid_argument("Gênero do livro não pode ser vazio.");
+        }
         genero = g;
     }
 

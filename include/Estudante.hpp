@@ -27,6 +27,7 @@ class Estudante : public Pessoa {
          * @param cpf CPF do estudante.
          * @param c Curso do estudante.
          * @param m Matrícula do estudante.
+         * @throws std::invalid_argument se curso ou matrícula estiverem vazios.
          */
         Estudante(const std::string &n, const std::string &cpf, const std::string &c, const std::string &m);
 

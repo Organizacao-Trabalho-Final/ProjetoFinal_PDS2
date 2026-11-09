@@ -8,7 +8,7 @@
 #include <sstream>
 #include "Livro.hpp"
 
-TEST_CASE("Livro- construtor"){
+TEST_CASE("Livro - construtor"){
     
     std::string t1 = "Confissoes";
     std::string ar = "fisica";
@@ -21,6 +21,7 @@ TEST_CASE("Livro- construtor"){
 
         CHECK_THROWS_AS(Livro w(t1, au1, id1, g1, 0), std::invalid_argument);
         CHECK_THROWS_AS(Livro w(t1, au1, id1, g1, -1), std::invalid_argument);
+        CHECK_THROWS_AS(Livro w(t1, au1, id1, "", ed1), std::invalid_argument);
     }
 
     SUBCASE("caso valido do construtor"){
@@ -63,6 +64,8 @@ TEST_CASE("Livro - setGenero"){
     Livro i(t1, au1, id1, g1, ed1);
 
     i.setGenero("Ficcao");
+    CHECK(i.getGenero() == "Ficcao");
+    CHECK_THROWS_AS(i.setGenero(""), std::invalid_argument);
     CHECK(i.getGenero() == "Ficcao");
 
 }

@@ -3,6 +3,7 @@
 #include "doctest.h"
 
 #include <string>
+#include <stdexcept>
 #include "Estudante.hpp"
 #include "Obra.hpp"
 #include "Livro.hpp"
@@ -129,4 +130,12 @@ TEST_CASE("Estudante - podeEmprestar"){
 
         CHECK(e.podeEmprestar(&E) == true);
     }
+}
+
+TEST_CASE("Estudante - validação do construtor") {
+
+    CHECK_THROWS_AS(Estudante("Daniel", "11122233344", "", "111"), std::invalid_argument);
+    CHECK_THROWS_AS(Estudante("Daniel", "11122233344", "Matemática", ""), std::invalid_argument);
+    CHECK_NOTHROW(Estudante("Daniel", "11122233344", "Matemática", "111"));
+
 }

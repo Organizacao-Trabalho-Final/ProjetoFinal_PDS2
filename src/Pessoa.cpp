@@ -8,7 +8,14 @@
 #include "Emprestimo.hpp"
 
     Pessoa::Pessoa(const std::string &n, const std::string &c):
-    nome(n), CPF(c) {}
+    nome(n), CPF(c) {
+        if (nome.empty()) {
+            throw std::invalid_argument("Nome não pode ser vazio.");
+        }
+        if (CPF.empty()) {
+            throw std::invalid_argument("CPF não pode ser vazio.");
+        }
+    }
 
     std::string Pessoa::getNome() const {
         return nome;

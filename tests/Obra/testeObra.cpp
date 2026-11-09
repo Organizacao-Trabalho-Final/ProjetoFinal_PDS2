@@ -2,6 +2,7 @@
 
 #include "../../third_party/doctest.h"
 #include "../../include/Obra.hpp"
+#include <stdexcept>
 
 class TesteObra : public Obra {
     public:
@@ -15,10 +16,9 @@ TEST_CASE("Teste Construtor - Obra") {
     CHECK(o1.getAutor() == "Stewart");
     CHECK(o1.getID() == 3);
 
-    TesteObra o2("", "", 0);
-    CHECK(o2.getTitulo() == "");
-    CHECK(o2.getAutor() == "");
-    CHECK(o2.getID() == 0);
+    CHECK_THROWS_AS(TesteObra("Cálculo Vol1", "", 3), std::invalid_argument);
+    CHECK_THROWS_AS(TesteObra("Cálculo Vol1", "Stewart", 0), std::invalid_argument);
+    CHECK_THROWS_AS(TesteObra("Cálculo Vol1", "Stewart", -1), std::invalid_argument); 
 }
 
 TEST_CASE("Teste Setters e Getters - Obra") {
@@ -31,6 +31,10 @@ TEST_CASE("Teste Setters e Getters - Obra") {
     CHECK(o3.getAutor() == "Machado de Assis");
     CHECK(o3.isDisponivel() == false);
     CHECK(o3.isDanificado() == true);
+    CHECK_THROWS_AS(o3.setTitulo(""), std::invalid_argument);
+    CHECK_THROWS_AS(o3.setAutor(""), std::invalid_argument);
+    CHECK(o3.getTitulo() == "Dom Casmurro");
+    CHECK(o3.getAutor() == "Machado de Assis");
 }
 
 TEST_CASE("Teste isDisponivel - Obra"){

@@ -26,6 +26,7 @@ class Obra {
          * @param t Título da obra.
          * @param a Autor da obra.
          * @param id Identificação da obra.
+         * @throws std::invalid_argument se título ou autor estiverem vazios ou ID não for positivo.
          */
         Obra(const std::string &t, const std::string &a, int id);
 
@@ -44,12 +45,14 @@ class Obra {
         /**
          * @brief Substitui o título da obra.
          * @param t String do título.
+         * @throws std::invalid_argument se o título estiver vazio.
          */
         void setTitulo(const std::string &t);
 
         /**
         * @brief Substitui o autor da obra.
         * @param a String do autor.
+        * @throws std::invalid_argument se o autor estiver vazio.
          */
         void setAutor(const std::string &a);
 

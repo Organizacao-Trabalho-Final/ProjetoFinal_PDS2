@@ -5,6 +5,9 @@
 
     Artigo::Artigo(const std::string &t, const std::string &a, int id, const std::string &ar, int an):
     Obra(t, a, id), area(ar), ano(an) {
+        if (area.empty()) {
+            throw std::invalid_argument("Área do artigo não pode ser vazia.");
+        }
         if (ano < 1 || ano > 9999) {
             throw std::invalid_argument("Ano invalido -> ANO > 0 | ANO com ate 4 digitos");
         }
@@ -18,6 +21,9 @@
     }
 
     void Artigo::setArea(const std::string &a) {
+        if (a.empty()) {
+            throw std::invalid_argument("Área do artigo não pode ser vazia.");
+        }
         area = a;
     }
 

@@ -1,10 +1,18 @@
 #include <string>
+#include <stdexcept>
 #include "Estudante.hpp"
 #include "Obra.hpp"
 #include "Livro.hpp"
 
     Estudante::Estudante(const std::string &n, const std::string &cpf, const std::string &c, const std::string &m):
-    Pessoa(n, cpf), curso(c), matricula(m) {}
+    Pessoa(n, cpf), curso(c), matricula(m) {
+        if (curso.empty()) {
+            throw std::invalid_argument("Curso do estudante não pode ser vazio.");
+        }
+        if (matricula.empty()) {
+            throw std::invalid_argument("Matrícula do estudante não pode ser vazia.");
+        }
+    }
 
     std::string Estudante::getCurso() const {
         return curso;

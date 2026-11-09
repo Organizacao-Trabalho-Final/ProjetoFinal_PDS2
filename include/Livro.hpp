@@ -28,18 +28,21 @@ class Livro : public Obra {
          * @param id Identificador da obra.
          * @param g Gênero do livro.
          * @param e Edição do livro.
+         * @throws std::invalid_argument se o gênero estiver vazio ou a edição não for positiva.
          */
         Livro(const std::string &t, const std::string &a, int id, const std::string &g, int e);
 
         /**
          * @brief Altera a edição do livro.
          * @param e Nova edição, que deve ser maior que zero.
+         * @throws std::invalid_argument se o a edição for menor que 0.
          */
         void setEdicao(int e);
 
         /**
          * @brief Altera o gênero do livro.
          * @param g Novo gênero do livro.
+         * @throws std::invalid_argument se o gênero estiver vazio.
          */
         void setGenero(const std::string &g);
 

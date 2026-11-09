@@ -28,18 +28,21 @@ class Artigo : public Obra {
          * @param id Identificação do artigo.
          * @param ar Área do conteúdo do artigo.
          * @param an Ano de publicação do artigo.
+         * @throws std::invalid_argument se a área estiver vazia ou o ano for inválido.
          */
         Artigo(const std::string &t, const std::string &a, int id, const std::string &ar, int an);
 
         /**
          * @brief Altera o ano de publicação do artigo.
          * @param a Novo ano.
+         * @throws std::invalid_argument se o ano for inválido.
          */
         void setAno(int a);
 
         /**
          * @brief Altera a área do artigo.
          * @param a Nova área.
+         * @throws std::invalid_argument se a área estiver vazia.
          */
         void setArea(const std::string &a);
 

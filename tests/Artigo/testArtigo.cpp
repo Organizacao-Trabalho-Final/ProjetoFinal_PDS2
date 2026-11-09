@@ -20,6 +20,8 @@ TEST_CASE("Artigo - construtor"){
 
         CHECK_THROWS_AS(Artigo(t1, au1, id1, ar, 0), std::invalid_argument);
         CHECK_THROWS_AS(Artigo(t1, au1, id1, ar, 10000), std::invalid_argument);
+        CHECK_THROWS_AS(Artigo(t1, au1, id1, "", an), std::invalid_argument);
+
     }
 
     SUBCASE("Caso valido do construtor"){
@@ -93,9 +95,10 @@ TEST_CASE("Artigo - setArea"){
     Artigo* a = new Artigo(t1, au1, id1, ar, an);
 
     a->setArea("ingles");
-
     CHECK(a->getArea() == "ingles");
-
+    CHECK_THROWS_AS(a->setArea(""), std::invalid_argument);
+    CHECK(a->getArea() == "ingles");
+    
     delete a;
 }
 
