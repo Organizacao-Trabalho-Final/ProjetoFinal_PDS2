@@ -34,24 +34,28 @@ class Tratamento {
         /**
         * @brief Define limite máximo padrão para um número inteiro.
         * @param m Limite máximo.
+        * @throws std::invalid_argument se o limite for incosistente.
         */
         void setMaxNum(int m);
 
         /**
         * @brief Define limite mínimo padrão para um número inteiro.
         * @param m Limite mínimo.
+        * @throws std::invalid_argument se o limite for incosistente.
         */
         void setMinNum(int m);
 
         /**
         * @brief Define limite máximo de caracteres padrão para uma string.
         * @param m Limite máximo de caracteres.
+        * @throws std::invalid_argument se o limite for incosistente.
         */
         void setMaxString(int m);
 
         /**
         * @brief Define limite mínimo de caracteres padrão para uma string.
         * @param m Limite mínimo de caracteres.
+        * @throws std::invalid_argument se o limite for incosistente.
         */
         void setMinString(int m);
 
@@ -204,7 +208,7 @@ class Tratamento {
          * @brief Verifica se o CPF é válido, ou seja, se contém apenas números e possui 11 dígitos.
          * @param c CPF a ser analisado.
          * @return true se o CPF é válido.
-         * @throws std::invalid_argument caso não seja válido.
+         * @throws std::invalid_argument caso não seja válido ou tenha dígitos verificadores incorretos.
          */
         bool validarCPF(const std::string &c);
 
@@ -240,7 +244,7 @@ class Tratamento {
          * @param max Limite máximo de caracteres.
          * @param tipo Explicação da string que será exibida nas exceções. Obs: não é obrigatório.
          * @return true se a string está dentro dos limites.
-         * @throws std::invalid_argument caso não esteja dentro dos limites.
+         * @throws std::invalid_argument caso não esteja dentro dos limites ou caso os limites sejam inválidos.
          */
         bool validarQtdEX(const std::string &s, int min, int max, std::string tipo = "STR");
         
@@ -249,7 +253,7 @@ class Tratamento {
          * @param s String a ser analisada.
          * @param min Limite mínimo de caracteres.
          * @param max Limite máximo de caracteres.
-         * @return true se a string está dentro dos limites, false caso contrário.
+         * @return true se a string está dentro dos limites, false caso não esteja dentro dos limites ou caso os limites sejam inválidos.
          */
         bool validarQtd(const std::string &s, int min, int max);
 };

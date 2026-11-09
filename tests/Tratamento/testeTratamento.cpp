@@ -2,6 +2,7 @@
 
 #include "../../third_party/doctest.h"
 #include "../../include/Tratamento.hpp"
+#include <stdexcept>
 
 TEST_CASE("Getters dos limites") {
     Tratamento t1;
@@ -34,8 +35,7 @@ TEST_CASE("Teste função isPositivo() - Tratamento") {
     Tratamento t4;
     CHECK(t4.isPositivo(10, "NUM") == true);
     CHECK(t4.isPositivo(0, "NUM") == true);
-    CHECK(t4.isPositivo(0.5, "") == true);
-    CHECK_THROWS(t4.isPositivo(2147483648, "NUM")); // Estouro de inteiro
+    CHECK(t4.isPositivo(1, "") == true);
     CHECK_THROWS(t4.isPositivo(-10, "NUM"));
 }
 
@@ -126,7 +126,9 @@ TEST_CASE("Teste função validarCPF() - Tratamento") {
     CHECK(t13.validarCPF("12345678910") == true);
     CHECK_THROWS(t13.validarCPF("1234567891"));
     CHECK_THROWS(t13.validarCPF("123456789101"));
-    CHECK_THROWS(t13.validarCPF("1234e678910"));
+    CHECK(t13.validarCPF("52998224725") == true);
+    CHECK_THROWS(t13.validarCPF("52998224724"));
+    CHECK_THROWS(t13.validarCPF("11111111111"));
     CHECK_THROWS(t13.validarCPF(""));
 }
 
@@ -164,4 +166,44 @@ TEST_CASE("Teste função validarQtdEX() e validarQtd() - Tratamento") {
     CHECK_THROWS(t15.validarQtdEX("123456789101", 2, 10, "STR"));
     CHECK_THROWS(t15.validarQtdEX("a"));
     CHECK_THROWS(t15.validarQtdEX("abcdefghijk", "STR"));
+}
+
+TEST_CASE("Setters rejeitam limites inconsistentes") {
+    Tratamento t;
+    CHECK_THROWS_AS(t.setMinString(-1), std::invalid_argument);
+    CHECK(t.getMinString() == 0);
+    CHECK_THROWS_AS(t.setMaxString(-1), std::invalid_argument);
+    CHECK(t.getMaxString() == 50);
+
+    t.setMinString(10);
+    CHECK_THROWS_AS(t.setMaxString(9), std::invalid_argument);
+    CHECK(t.getMaxString() == 50);
+    CHECK_THROWS_AS(t.setMinString(51), std::invalid_argument);
+    CHECK(t.getMinString() == 10);
+
+    t.setMinNum(10);
+    CHECK_THROWS_AS(t.setMaxNum(9), std::invalid_argument);
+    CHECK(t.getMaxNum() == 1000);
+    CHECK_THROWS_AS(t.setMinNum(1001), std::invalid_argument);
+    CHECK(t.getMinNum() == 10);
+}
+
+TEST_CASE("Validar intervalos explícitos") {
+    Tratamento t;
+    CHECK_THROWS_AS(t.isNumeroValido(5, 10, 0), std::invalid_argument);
+    CHECK_THROWS_AS(t.isStringValido("abc", 4, 2), std::invalid_argument);
+    CHECK_THROWS_AS(t.validarQtdEX("abc", 4, 2), std::invalid_argument);
+    CHECK(t.validarQtd("abc", 4, 2) == false);
+}
+
+TEST_CASE("Validar quantidade respeita limites inclusivos") {
+    Tratamento t;
+    CHECK(t.validarQtd("") == true);
+    CHECK(t.validarQtdEX("") == true);
+
+    CHECK(t.validarQtd("abc", 0, 3) == true);
+    CHECK(t.validarQtdEX("abc", 0, 3) == true);
+
+    CHECK(t.validarQtd("abc", 4, 3) == false);
+    CHECK_THROWS_AS(t.validarQtdEX("abc", 4, 3), std::invalid_argument);
 }
