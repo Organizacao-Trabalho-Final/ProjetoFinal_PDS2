@@ -484,3 +484,39 @@
         arquivoUsuarios.close();
         arquivoObras.close();
     }
+
+    bool Dados::removerObra(int id) {
+        if (catalogo == nullptr || usuarios == nullptr) {
+            return false;
+        }
+
+        Obra *obra = catalogo->buscarPorId(id);
+        if (obra == nullptr) {
+            return false;
+        }
+
+        for (const auto &registro : usuarios->getUsuarios()) {
+            Pessoa *pessoa = registro.first;
+            if (pessoa == nullptr) {
+                continue;
+            }
+
+            // Verifica se existe algum empréstimo associado à obra.
+            for (Emprestimo *e : pessoa->getEmprestimos()) {
+                if (e != nullptr && &e->getObra() == obra) {
+                    return false;
+                }
+            }
+
+            // Verifica se existe alguma manutenção associada à obra.
+            TecnicoManutencao *tecnico = dynamic_cast<TecnicoManutencao*>(pessoa);
+            if (tecnico != nullptr) {
+                for (Manutencao *m : tecnico->getManutencoes()) {
+                    if (m != nullptr && m->getObra() == obra) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return catalogo->removerObra(id);
+    }

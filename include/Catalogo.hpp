@@ -16,6 +16,7 @@
 class Catalogo {
     private:
         std::vector<Obra*> obrasCadastradas;
+        int proximoId;
         
         /**
          * @brief Verifica se já existe uma obra com determinado ID.
@@ -23,7 +24,9 @@ class Catalogo {
          * @return true se o ID já estiver cadastrado; false caso contrário.
          */
         bool verificarDuplicata(int id) const;
+
         friend struct TesteCatalogo;
+
     public:
         /**
          * @brief Constrói um catálogo vazio.
@@ -70,6 +73,12 @@ class Catalogo {
          * @return Referência constante para o vetor de obras.
          */
         const std::vector<Obra*>& listarObras() const;
+
+        /**
+         * @brief Gera e retorna o próximo ID disponível.
+         * @return Identificador único da próxima obra.
+         */
+        int gerarProximoId();
 
         // Impedem cópias superficiais dos ponteiros pertencentes à classe.
         Catalogo(const Catalogo&) = delete;

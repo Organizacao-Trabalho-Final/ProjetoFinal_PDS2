@@ -83,6 +83,14 @@ class Dados {
          */
         void carregarDados();
 
+        /**
+         * @brief Remove uma obra do catálogo, caso não existam registros associados a ela.
+         * @param id Identificador da obra a ser removida.
+         * @return true se a obra for removida, false se não for encontrada
+         * ou estiver associada a empréstimos ou manutenções.
+         */
+        bool removerObra(int id);
+
         // Impedem cópias superficiais dos ponteiros pertencentes à classe.
         Dados(const Dados&) = delete;
         Dados& operator=(const Dados&) = delete;

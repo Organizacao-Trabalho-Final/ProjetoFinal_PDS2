@@ -9,6 +9,9 @@
 #include "Dados.hpp"
 #include "Tratamento.hpp"
 
+class Livro;
+class Artigo;
+
 /**
  * @class Interface
  * @brief Gerencia a interação entre o usuário e o sistema da biblioteca.
@@ -40,6 +43,28 @@ class Interface {
          * @brief Exibe e gerencia o menu de operações relacionadas às manutenções.
          */
         void menuManutencoes();
+
+        /**
+         * @brief Exibe e gerencia o menu de operações relacionadas às pesquisas de obra.
+         */
+        void menuPesquisa();
+
+        /**
+         * @brief Gerencia os menus de operações entre livros e artigos.
+         */
+        void menuAtualizacoes();
+
+        /**
+         * @brief Exibe e gerencia o menu de operações relacionadas às atualizações de dados de livros.
+         * @param l Ponteiro para o livro.
+         */
+        void menuAtualizacoesLivro(Livro *l);
+
+        /**
+         * @brief Exibe e gerencia o menu de operações relacionadas às atualizações de dados de artigos.
+         * @param a Ponteiro para o artigo.
+         */
+        void menuAtualizacoesArtigo(Artigo *a);
 
         /**
          * @brief Lê e valida uma opção numérica dentro de um intervalo.

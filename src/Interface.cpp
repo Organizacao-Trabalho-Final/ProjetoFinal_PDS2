@@ -5,6 +5,9 @@
 #include "Interface.hpp"
 #include "Dados.hpp"
 #include "Tratamento.hpp"
+#include "Catalogo.hpp"
+#include "Livro.hpp"
+#include "Artigo.hpp"
     
     Interface::Interface(Dados *d): dados(d) {
         if (d == nullptr) {
@@ -13,27 +16,334 @@
     }
     
     void Interface::menuObras() {
-        std::cout << "Menu de Obras" << std::endl;
+        int n;
+        do {
+            std::cout << "========== MENU DE OBRAS ==========\n" << std::endl;
+            std::cout << "1 - Pesquisar obra\n2 - Listar obras\n3 - Cadastrar obra\n4 - Atualizar obra\n5 - Remover obra\n0 - Voltar\n\nOpção:" << std::endl;
+        
+            n = lerOpcao(0, 5);
+            switch (n)
+            {
+            case 0:
+                return;
+            
+            case 1:
+                menuPesquisa();
+                break;
+
+            case 2: {
+                const std::vector<Obra*>& obras = dados->getCatalogo()->listarObras();
+                if (obras.empty()) {
+                    std::cout << "Nenhuma obra foi cadastrada até então." << std::endl;
+                } else {
+                    for (Obra *o : obras) {
+                        if (o != nullptr) {
+                            o->printObra();
+                        }
+                    }
+                }
+                break;
+            }
+            
+            case 3:
+                
+                break;
+
+            case 4:
+                menuAtualizacoes();
+                break;
+
+            case 5: {
+                int id;
+                std::cout << "Digite o número de identificação da obra: " << std::endl;
+                id = lerOpcao(1, std::numeric_limits<int>::max());
+                bool r = dados->removerObra(id);
+                if (r) {
+                    std::cout << "Obra removida com sucesso." << std::endl;
+                } else {
+                    std::cout << "Obra não encontrada ou não pôde ser removida." << std::endl;
+                }
+                break;
+            }
+            
+            default:
+                break;
+            }
+        } while (n != 0);
     }
     
     void Interface::menuUsuarios() {
-        std::cout << "Menu de Usuarios" << std::endl;
+        int n;
+        do {
+            std::cout << "========== MENU DE USUÁRIOS ==========\n" << std::endl;
+            std::cout << "1 - Cadastrar usuário\n2 - Consultar usuário\n3 - Remover usuário\n0 - Voltar\n\nOpção:" << std::endl;
+        
+            n = lerOpcao(0, 3);
+            switch (n)
+            {
+            case 0:
+                return;
+            
+            case 1:
+                
+                break;
+
+            case 2:
+                
+                break;
+            
+            case 3:
+                
+                break;
+            
+            default:
+                break;
+            }
+        } while (n != 0);
     }
     
     void Interface::menuEmprestimos() {
-        std::cout << "Menu de Emprestimos" << std::endl;
+        int n;
+        do {
+            std::cout << "========== MENU DE EMPRÉSTIMOS ==========\n" << std::endl;
+            std::cout << "1 - Realizar empréstimo\n2 - Consultar empréstimo\n3 - Devolver obra\n4 - Renovar empréstimo\n0 - Voltar\n\nOpção:" << std::endl;
+        
+            n = lerOpcao(0, 4);
+            switch (n)
+            {
+            case 0:
+                return;
+            
+            case 1:
+                
+                break;
+
+            case 2:
+                
+                break;
+            
+            case 3:
+                
+                break;
+
+            case 4:
+                
+                break;
+            
+            default:
+                break;
+            }
+        } while (n != 0);
     }
     
     void Interface::menuManutencoes() {
-        std::cout << "Menu de Manutencoes" << std::endl;
+        int n;
+        do {
+            std::cout << "========== MENU DE MANUTENÇÕES ==========\n" << std::endl;
+            std::cout << "1 - Encaminhar para manutenção\n2 - Consultar manutenção\n3 - Concluir manutenção\n0 - Voltar\n\nOpção:" << std::endl;
+        
+            n = lerOpcao(0, 3);
+            switch (n)
+            {
+            case 0:
+                return;
+            
+            case 1:
+                
+                break;
+
+            case 2:
+                
+                break;
+            
+            case 3:
+                
+                break;
+            
+            default:
+                break;
+            }
+        } while (n != 0);
+    }
+
+    void Interface::menuPesquisa() {
+        int n;
+        std::string str;
+        do {
+            std::cout << "========== MENU DE PESQUISA ==========\n" << std::endl;
+            std::cout << "1 - Pesquisar por título\n2 - Pesquisar por autor\n3 - Pesquisar por id\n0 - Voltar\n\nOpção:" << std::endl;
+        
+            n = lerOpcao(0, 3);
+            switch (n)
+            {
+            case 0:
+                return;
+            
+            case 1: {
+                std::cout << "Digite o título da obra: " << std::endl;
+                std::getline(std::cin, str);
+                Obra *o = dados->getCatalogo()->buscarPorTitulo(str);
+                if (o != nullptr) {
+                    o->printObra();
+                } else {
+                    std::cout << "Obra não encontrada." << std::endl;
+                }
+                break;
+            }
+
+            case 2: {
+                std::cout << "Digite o nome do autor da obra: " << std::endl;
+                std::getline(std::cin, str);
+                const std::vector<Obra*> obras = dados->getCatalogo()->buscarPorAutor(str);
+                if (obras.empty()) {
+                    std::cout << "Nennhuma obra desse autor foi encontrada." << std::endl;
+                } else {
+                    for (Obra *o : obras) {
+                        if (o != nullptr) {
+                            o->printObra();
+                        }
+                    }
+                }
+                break;
+            }
+            
+            case 3: {
+                int id = lerOpcao(1, std::numeric_limits<int>::max());
+                Obra *o = dados->getCatalogo()->buscarPorId(id);
+                if (o != nullptr) {
+                    o->printObra();
+                } else {
+                    std::cout << "Obra não encontrada." << std::endl;
+                }
+                break;
+            }
+            
+            default:
+                break;
+            }
+        } while (n != 0);
+    }
+
+    void Interface::menuAtualizacoes() {
+        std::cout << "Digite o número de identificação da obra a ser modificada: " << std::endl;
+        int id = lerOpcao(1, std::numeric_limits<int>::max());
+        
+        Obra *o = dados->getCatalogo()->buscarPorId(id);
+        if (Livro *l = dynamic_cast<Livro*>(o)) {
+            menuAtualizacoesLivro(l);
+        } else if (Artigo *a = dynamic_cast<Artigo*>(o)) {
+            menuAtualizacoesArtigo(a);
+        } else {
+            std::cout << "Obra não encontrada." << std::endl;
+        }
     }
     
+    void Interface::menuAtualizacoesLivro(Livro *l) {
+        int n;
+        std::string str;
+        do {
+            std::cout << "========== MENU DE ATUALIZAÇÕES DE LIVROS ==========\n" << std::endl;
+            std::cout << "1 - Atualizar título\n2 - Atualizar autor\n3 - Atualizar gênero\n4 - Atualizar edição\n0 - Voltar\n\nOpção:" << std::endl;
+            
+            n = lerOpcao(0, 4);
+            switch (n)
+            {
+            case 0:
+                return;
+            
+            case 1: {
+                std::cout << "Digite o novo título do livro: " << std::endl;
+                std::getline(std::cin, str);
+                if (!str.empty()) {
+                    l->setTitulo(str);
+                }
+                break;
+            }                
+
+            case 2: {
+                std::cout << "Digite o novo autor do livro: " << std::endl;
+                std::getline(std::cin, str);
+                if (!str.empty()) {
+                    l->setAutor(str);
+                }
+                break;
+            }
+            
+            case 3: {
+                std::cout << "Digite o novo gênero do livro: " << std::endl;
+                std::getline(std::cin, str);
+                if (!str.empty()) {
+                    l->setGenero(str);
+                }
+                break;
+            }
+
+            case 4: {
+                std::cout << "Digite a nova edição do livro: " << std::endl;
+                int e = lerOpcao(1, std::numeric_limits<int>::max());
+                l->setEdicao(e);
+                break;
+            }
+            
+            default:
+                break;
+            }
+        } while (n != 0);
+    }
+
+    void Interface::menuAtualizacoesArtigo(Artigo *a) {
+        int n;
+        std::string str;
+        do {
+            std::cout << "========== MENU DE ATUALIZAÇÕES DE ARTIGOS ==========\n" << std::endl;
+            std::cout << "1 - Atualizar título\n2 - Atualizar autor\n3 Atualizar área\n0 - Voltar\n\nOpção:" << std::endl;
+            
+            n = lerOpcao(0, 3);
+            switch (n)
+            {
+            case 0:
+                return;
+            
+            case 1: {
+                std::cout << "Digite o novo título do artigo: " << std::endl;
+                std::getline(std::cin, str);
+                if (!str.empty()) {
+                    a->setTitulo(str);
+                }
+                break;
+            }                
+
+            case 2: {
+                std::cout << "Digite o novo autor do artigo: " << std::endl;
+                std::getline(std::cin, str);
+                if (!str.empty()) {
+                    a->setAutor(str);
+                }
+                break;
+            }
+            
+            case 3: {
+                std::cout << "Digite a nova área do artigo: " << std::endl;
+                std::getline(std::cin, str);
+                if (!str.empty()) {
+                    a->setArea(str);
+                }
+                break;
+            }
+            
+            default:
+                break;
+            }
+        } while (n != 0);
+    }
+
     int Interface::lerOpcao(int min, int max) {
         int n;
         while (true) {
             if (std::cin >> n) {
                 try {
                     tratamento.isNumeroValido(n, min, max);
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                     return n;
                 } catch (const std::invalid_argument &e) {
                     std::cout << e.what() << std::endl;

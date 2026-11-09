@@ -2,7 +2,7 @@
 #include <vector>
 #include "Catalogo.hpp"
 
-    Catalogo::Catalogo(): obrasCadastradas() {}
+    Catalogo::Catalogo(): obrasCadastradas(), proximoId(1) {}
 
     bool Catalogo::verificarDuplicata(int id) const {
         for (Obra *o : obrasCadastradas) {
@@ -62,6 +62,13 @@
 
     const std::vector<Obra*>& Catalogo::listarObras() const {
         return obrasCadastradas;
+    }
+
+    int Catalogo::gerarProximoId() {
+        while (verificarDuplicata(proximoId)) {
+            proximoId++;
+        }
+        return proximoId++;
     }
 
     Catalogo::~Catalogo() { // Liberação de memória
