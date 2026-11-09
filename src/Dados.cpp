@@ -1,4 +1,3 @@
-#include "Dados.hpp"
 #include <iostream>
 #include <string>
 #include <vector>
@@ -7,6 +6,7 @@
 #include <istream>
 #include <utility>
 #include <stdexcept>
+#include "Dados.hpp"
 #include "Estudante.hpp"
 #include "Emprestimo.hpp"
 #include "Professor.hpp"
@@ -55,7 +55,8 @@
                 << e->getDevolucao().getDia() << ";"
                 << e->getDevolucao().getMes() << ";"
                 << e->getDevolucao().getAno() << ";"
-                << e->isAtivo() << ";";
+                << e->isAtivo() << ";"
+                << e->isRenovacaoSolicitada() << ";";
         }
     }
 
@@ -64,8 +65,9 @@
         int dia;
         int mes;
         int ano;
-        bool ativo;
         int numeroEmprestimos;
+        bool ativo;
+        bool renovacaoSolicitada;
 
         Obra *obra;
         Emprestimo *emprestimo;
@@ -108,6 +110,9 @@
             if (!(in >> ativo)) break;
             in.ignore(1, ';');
 
+            if (!(in >> renovacaoSolicitada)) break;
+            in.ignore(1, ';');
+
             obra = catalogo->buscarPorId(idObra);
 
             if (obra == nullptr) {
@@ -120,6 +125,12 @@
             emprestimo = new Emprestimo(*obra, *pessoa, data1);
             emprestimo->setDevolucao(data2);
             emprestimo->setAtivo(ativo);
+
+            if (renovacaoSolicitada && !emprestimo->solicitarRenovacao()) {
+                delete emprestimo;
+                in.setstate(std::ios::failbit);
+                break;
+            }
             emprestimos.push_back(emprestimo);
         }
         if (!in) {
@@ -136,6 +147,21 @@
             std::cerr << "Não foi possível salvar os dados: usuários ou catálogo não inicializados."
                     << std::endl;
             return;
+        }
+
+        for (const auto &usuario : usuarios->getUsuarios()) {
+            TecnicoManutencao *tecnico = dynamic_cast<TecnicoManutencao*>(usuario.first);
+            if (tecnico == nullptr) {
+                continue;
+            }
+
+            for (Manutencao *m : tecnico->getManutencoes()) {
+                if (m == nullptr || m->getObra() == nullptr ||
+                    m->getTecnico() != tecnico) {
+                    std::cerr << "Manutenção inconsistente. Não foi possível salvar os dados." << std::endl;
+                    return;
+                }
+            }
         }
 
         std::ofstream arquivoUsuarios("usuario.txt");
@@ -251,22 +277,27 @@
     }
 
     void Dados::carregarDados() {
+        Dados temp(new Usuarios(), new Catalogo());
+        if (!temp.carregarDadosInterno()) {
+            std::cerr << "Falha no carregamento. Os dados atuais foram preservados." << std::endl;
+            return;
+        }
+        std::swap(usuarios, temp.usuarios);
+        std::swap(catalogo, temp.catalogo);
+    }
+
+    bool Dados::carregarDadosInterno() {
         std::ifstream arquivoUsuarios("usuario.txt");
         if (!arquivoUsuarios.is_open()) {
             std::cerr << "Erro ao abrir o arquivo para ler dados -> Usuarios." << std::endl;
-            return;
+            return false;
         }
 
         std::ifstream arquivoObras("obras.txt");
         if (!arquivoObras.is_open()) {
             std::cerr << "Erro ao abrir o arquivo para ler dados -> Obras." << std::endl;
-            return;
+            return false;
         }
-
-        delete usuarios;
-        delete catalogo;
-        catalogo = new Catalogo();
-        usuarios = new Usuarios();
 
         int id;
         int idObra;
@@ -274,6 +305,7 @@
         int mes;
         int ano;
         int edicao;
+        int maiorId;
         bool danificado;
         bool disponivel;
 
@@ -299,7 +331,7 @@
             if (tipo == "ProximoId") {
                 if (!(arquivoObras >> id) || id <= 0) {
                     std::cerr << "Próximo ID de obras inválido." << std::endl;
-                    return;
+                    return false;
                 }
                 catalogo->setProximoId(id);
             } else if (tipo == "Artigo") {
@@ -316,7 +348,15 @@
 
                 if (!arquivoObras) {
                     std::cerr << "Erro ao ler os dados de um artigo." << std::endl;
-                    return;
+                    return false;
+                }
+
+                if (id <= 0) {
+                    return false;
+                }
+
+                if (id > maiorId) {
+                    maiorId = id;
                 }
 
                 Artigo *artigo = new Artigo(titulo, autor, id, area, ano);
@@ -326,8 +366,8 @@
                     artigo->setDisponivel(disponivel);
                 } else {
                     delete artigo;
-                    std::cerr << "Não foi possível cadastrar o artigo de ID "
-                            << id << "." << std::endl;
+                    std::cerr << "Não foi possível cadastrar o artigo de ID " << id << "." << std::endl;
+                    return false;
                 }
             } else if (tipo == "Livro") {
                 std::getline(arquivoObras, titulo, ';');
@@ -343,7 +383,15 @@
 
                 if (!arquivoObras) {
                     std::cerr << "Erro ao ler os dados de um livro." << std::endl;
-                    return;
+                    return false;
+                }
+
+                if (id <= 0) {
+                    return false;
+                }
+
+                if (id > maiorId) {
+                    maiorId = id;
                 }
 
                 Livro *livro = new Livro(titulo, autor, id, genero, edicao);
@@ -353,11 +401,23 @@
                     livro->setDanificado(danificado);
                 } else {
                     delete livro;
-                    std::cerr << "Não foi possível cadastrar o livro de ID "
-                            << id << "." << std::endl;
+                    std::cerr << "Não foi possível cadastrar o livro de ID " << id << "." << std::endl;
+                    return false;
                 }
+            } else {
+                std::cerr << "Tipo de obra desconhecido: " << tipo << std::endl;
+                return false;
             }
             arquivoObras.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        }
+
+        if (maiorId == std::numeric_limits<int>::max()) {
+            std::cerr << "Não existe próximo ID disponível." << std::endl;
+            return false;
+        }
+
+        if (catalogo->getProximoId() <= maiorId) {
+            catalogo->setProximoId(maiorId + 1);
         }
 
         while (std::getline(arquivoUsuarios, tipo, ';')) {
@@ -371,14 +431,14 @@
 
                 if (!arquivoUsuarios) {
                     std::cerr << "Erro ao ler os dados de um estudante." << std::endl;
-                    return;
+                    return false;
                 }
 
                 pessoa = new Estudante(nome, cpf, curso, matricula);
                 if (!usuarios->adicionarUsuario(pessoa, id)) {
                     delete pessoa;
                     std::cerr << "CPF ou ID duplicado ao carregar estudante: " << id << std::endl;
-                    return;
+                    return false;
                 }
                 carregarEmprestimos(arquivoUsuarios, pessoa);
             } else if (tipo == "Professor") {
@@ -397,7 +457,7 @@
                 if (!usuarios->adicionarUsuario(pessoa, id)) {
                     delete pessoa;
                     std::cerr << "CPF ou ID duplicado ao carregar professor: " << id << std::endl;
-                    return;
+                    return false;
                 }
                 carregarEmprestimos(arquivoUsuarios, pessoa);
             } else if (tipo == "Bibliotecario") {
@@ -408,14 +468,14 @@
 
                 if (!arquivoUsuarios) {
                     std::cerr << "Erro ao ler os dados de um bibliotecário." << std::endl;
-                    return;
+                    return false;
                 }
 
                 pessoa = new Bibliotecario(nome, cpf);
                 if (!usuarios->adicionarUsuario(pessoa, id)) {
                     delete pessoa;
                     std::cerr << "CPF ou ID duplicado ao carregar bibliotecário: " << id << std::endl;
-                    return;
+                    return false;
                 }
                 carregarEmprestimos(arquivoUsuarios, pessoa);
             } else if (tipo == "TecnicoManutencao") {
@@ -426,24 +486,24 @@
 
                 if (!arquivoUsuarios) {
                     std::cerr << "Erro ao ler os dados de um técnico de manutenção." << std::endl;
-                    return;
+                    return false;
                 }
 
                 pessoa = new TecnicoManutencao(nome, cpf);
                 if (!usuarios->adicionarUsuario(pessoa, id)) {
                     delete pessoa;
                     std::cerr << "CPF ou ID duplicado ao carregar técnico de manutenção: " << id << std::endl;
-                    return;
+                    return false;
                 }
                 carregarEmprestimos(arquivoUsuarios, pessoa);
 
                 if (!arquivoUsuarios) {
                     std::cerr << "Erro ao carregar os empréstimos do técnico." << std::endl;
-                    return;
+                    return false; 
                 }
                 if (!(arquivoUsuarios >> numeroManutencao) || numeroManutencao < 0) {
                     std::cerr << "Quantidade de manutenções inválida." << std::endl;
-                    return;
+                    return false;
                 }
 
                 arquivoUsuarios.ignore(1, ';');
@@ -467,10 +527,28 @@
 
                     if (!arquivoUsuarios ||
                         estado < static_cast<int>(EstadoManutencao::PENDENTE) ||
-                        estado > static_cast<int>(EstadoManutencao::CONCLUIDA)) {
+                        estado > static_cast<int>(EstadoManutencao::CONCLUIDA) ||
+                        cpf != tecnico->getCPF() ||
+                        (estado == static_cast<int>(EstadoManutencao::CONCLUIDA) && reparo.empty())) {
 
                         std::cerr << "Erro ao ler uma manutenção do técnico." << std::endl;
 
+                        for (Manutencao *m : manutencoes) {
+                            delete m;
+                        }
+                        return false;
+                    }
+
+                    if (cpf != tecnico->getCPF()) {
+                        std::cerr << "CPF da manutenção não corresponde ao técnico responsável." << std::endl;
+                        for (Manutencao *m : manutencoes) {
+                            delete m;
+                        }
+                        return;
+                    }
+
+                    if (cpf != tecnico->getCPF()) {
+                        std::cerr << "CPF da manutenção não corresponde ao técnico responsável." << std::endl;
                         for (Manutencao *m : manutencoes) {
                             delete m;
                         }
@@ -487,7 +565,7 @@
                         for (Manutencao *m : manutencoes) {
                             delete m;
                         }
-                        return;
+                        return false;
                     }
 
                     Manutencao *manutencao = new Manutencao(obra, tecnico, dano, data);
@@ -496,16 +574,83 @@
                     manutencoes.push_back(manutencao);
                 }
                 tecnico->setManutencoes(manutencoes);
+            } else {
+                std::cerr << "Tipo de usuário desconhecido: " << tipo << std::endl;
+                return false;
             }
-
             if (!arquivoUsuarios) {
                 std::cerr << "Erro ao carregar os dados de um usuário." << std::endl;
-                return;
+                return false;
             }
             arquivoUsuarios.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         }
+
+        std::vector<int> obrasEmprestadas;
+        std::vector<int> obrasEmManutencao;
+        for (const auto &registro : usuarios->getUsuarios()) {
+            Pessoa *p = registro.first;
+            if (p == nullptr) {
+                return false;
+            }
+
+            for (Emprestimo *e : p->getEmprestimos()) {
+                if (e == nullptr) {
+                    return false;
+                }
+                if (!e->isAtivo()) {
+                    continue;
+                }
+                if (dynamic_cast<Estudante*>(p) == nullptr && dynamic_cast<Professor*>(p) == nullptr) {
+                    return false;
+                }
+
+                Obra &o = e->getObra();
+                if (o.isDanificado()) {
+                    return false;
+                }
+                for (int id : obrasEmprestadas) {
+                    if (id == o.getID()) {
+                        return false;
+                    }
+                }
+                obrasEmprestadas.push_back(o.getID());
+                o.setDisponivel(false);
+            }
+        }
+
+        for (const auto &registro : usuarios->getUsuarios()) {
+            TecnicoManutencao *tecnico = dynamic_cast<TecnicoManutencao*>(registro.first);
+            if (tecnico == nullptr) {
+                continue;
+            }
+
+            for (Manutencao *m : tecnico->getManutencoes()) {
+                if (m == nullptr || m->getObra() == nullptr ||
+                    m->getTecnico() != tecnico) {
+                    return false;
+                }
+                if (m->getEstado() == EstadoManutencao::CONCLUIDA) {
+                    continue;
+                }
+                int id = m->getObra()->getID();
+                for (int emprestada : obrasEmprestadas) {
+                    if (emprestada == id) {
+                        return false;
+                    }
+                }
+                for (int manutencao : obrasEmManutencao) {
+                    if (manutencao == id) {
+                        return false;
+                    }
+                }
+                obrasEmManutencao.push_back(id);
+                m->getObra()->setDanificado(true);
+                m->getObra()->setDisponivel(false);
+            }
+        }
         arquivoUsuarios.close();
         arquivoObras.close();
+        return true;
     }
 
     bool Dados::removerObra(int id) {

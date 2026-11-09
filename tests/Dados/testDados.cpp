@@ -37,6 +37,12 @@ struct TesteDados2{
     }
 };
 
+struct TesteCatalogo {
+    static int getProximoId(const Catalogo& c) {
+        return c.getProximoId();
+    }
+};
+
 TEST_CASE("Dados - getUsuario"){
 
     SUBCASE("versao nao const"){
@@ -134,9 +140,37 @@ TEST_CASE("Dados - salvarEmprestimos"){
         le_arqv.close();
         std::remove(caminho.c_str());
 
-        std::string testa = "11;3;3;2008;17;4;2008;1;";
-
+        std::string testa = "11;3;3;2008;17;4;2008;1;0";
         CHECK(txt == testa);
+
+        SUBCASE("Empréstimo com renovação solicitada") {
+            Professor p3(n1, cpf1, ar);
+            Catalogo* ca1 = new Catalogo();
+            Usuarios* us1 = new Usuarios();
+            Dados da1(us1, ca1);
+
+            std::vector<Emprestimo*> e;
+            Emprestimo* e1 = new Emprestimo(A, p3, d1);
+            REQUIRE(e1->solicitarRenovacao());
+            e.push_back(e1);
+            std::string caminho = "salvaEm.txt";
+
+            {
+                std::ofstream escr_arqv(caminho);
+                REQUIRE(escr_arqv.is_open());
+                TesteDados::salvarEmprestimos(da1, escr_arqv, e);
+            }
+
+            std::ifstream le_arqv(caminho);
+            REQUIRE(le_arqv.is_open());
+            std::stringstream buffer;
+            buffer << le_arqv.rdbuf();
+
+            CHECK(buffer.str() == "11;3;3;2008;17;4;2008;1;1;");
+            le_arqv.close();
+            std::remove(caminho.c_str());
+            delete e1;
+        }
     }
 
     SUBCASE("vetor de emprestimos com elemento nullptr"){
@@ -405,8 +439,7 @@ TEST_CASE("Dados - salvarDados"){
         buffer << in.rdbuf();
         std::string txt = buffer.str();
 
-        std::string v = "Livro;Confissoes;S.A;11;1;0;Romance;21\n";
-
+        std::string v = "ProximoId;" + std::to_string(TesteCatalogo::getProximoId(*ca1)) + "\n" + "Livro;Confissoes;S.A;11;1;0;Romance;21\n";
         CHECK(txt == v);
     }
 
@@ -429,8 +462,7 @@ TEST_CASE("Dados - salvarDados"){
         buffer << in.rdbuf();
         std::string txt = buffer.str();
 
-        std::string v = "Artigo;Confissoes;S.A;11;1;0;fisica;2008\n";
-
+        std::string v = "ProximoId;" + std::to_string(TesteCatalogo::getProximoId(*ca1)) + "\n" + "Artigo;Confissoes;S.A;11;1;0;fisica;2008\n";
         CHECK(txt == v);
     }
 
@@ -453,7 +485,7 @@ TEST_CASE("Dados - salvarDados"){
 
         std::cerr.rdbuf(original);
 
-        CHECK(ver == "");
+        CHECK(ver == "ProximoId;" + std::to_string(TesteCatalogo::getProximoId(*ca1)) + "\n");
     }
 
     SUBCASE("Caso com obra desconhecida"){
@@ -609,7 +641,7 @@ TEST_CASE("Dados - carregarDados"){
         }
         da1.carregarDados();
 
-        auto obras = ca1->listarObras();
+        auto obras = da1.getCatalogo()->listarObras();
         REQUIRE(obras.size() == 1);
         Artigo* a = dynamic_cast<Artigo*>(obras[0]);
         REQUIRE(a != nullptr);
@@ -634,7 +666,7 @@ TEST_CASE("Dados - carregarDados"){
         }
         da1.carregarDados();
 
-        auto obras = ca1->listarObras();
+        auto obras = da1.getCatalogo()->listarObras();
         REQUIRE(obras.size() == 1);
         Livro* a = dynamic_cast<Livro*>(obras[0]);
         REQUIRE(a != nullptr);
@@ -659,7 +691,7 @@ TEST_CASE("Dados - carregarDados"){
         }
         da1.carregarDados();
 
-        auto obras = ca1->listarObras();
+        auto obras = da1.getCatalogo()->listarObras();
         REQUIRE(obras.size() == 2);
         Livro* a = dynamic_cast<Livro*>(obras[0]);
         Livro* b = dynamic_cast<Livro*>(obras[1]);
@@ -690,7 +722,7 @@ TEST_CASE("Dados - carregarDados"){
         }
         da1.carregarDados();
 
-        Pessoa* p = us1->buscarUsuarioId(11);
+        Pessoa* p = da1.getUsuarios()->buscarUsuarioId(11);
         REQUIRE(p != nullptr);
         Estudante* e = dynamic_cast<Estudante*> (p);
         REQUIRE(e != nullptr);
@@ -713,7 +745,7 @@ TEST_CASE("Dados - carregarDados"){
         }
         da1.carregarDados();
 
-        Pessoa* p = us1->buscarUsuarioId(11);
+        Pessoa* p = da1.getUsuarios()->buscarUsuarioId(11);
         REQUIRE(p != nullptr);
         Professor* e = dynamic_cast<Professor*> (p);
         REQUIRE(e != nullptr);
@@ -736,7 +768,7 @@ TEST_CASE("Dados - carregarDados"){
         }
         da1.carregarDados();
 
-        Pessoa* p = us1->buscarUsuarioId(11);
+        Pessoa* p = da1.getUsuarios()->buscarUsuarioId(11);
         REQUIRE(p != nullptr);
         Bibliotecario* e = dynamic_cast<Bibliotecario*> (p);
         REQUIRE(e != nullptr);
@@ -758,7 +790,7 @@ TEST_CASE("Dados - carregarDados"){
         }
         da1.carregarDados();
 
-        Pessoa* p = us1->buscarUsuarioId(11);
+        Pessoa* p = da1.getUsuarios()->buscarUsuarioId(11);
         REQUIRE(p != nullptr);
         TecnicoManutencao* e = dynamic_cast<TecnicoManutencao*> (p);
         REQUIRE(e != nullptr);
@@ -771,7 +803,6 @@ TEST_CASE("Dados - carregarDados"){
         Catalogo* ca1 = new Catalogo();
         Usuarios* us1 = new Usuarios();
         Dados da1(us1, ca1);
-        Livro* B = new Livro(t1, au1, id1, g1, ed1);
 
         {
             std::ofstream out("obras.txt");
@@ -783,17 +814,80 @@ TEST_CASE("Dados - carregarDados"){
         }
         da1.carregarDados();
 
-        Pessoa* p = us1->buscarUsuarioId(11);
+        Pessoa* p = da1.getUsuarios()->buscarUsuarioId(11);
         REQUIRE(p != nullptr);
         TecnicoManutencao* e = dynamic_cast<TecnicoManutencao*> (p);
         REQUIRE(e != nullptr);
 
-        Manutencao* mn = new Manutencao(B, e, "rasgo", d1);
+        REQUIRE(e->getManutencoes().size() == 1);
+        REQUIRE(e->getManutencoes().size() == 1);
+
+        Obra* obraCarregada = da1.getCatalogo()->buscarPorId(11);
+        REQUIRE(obraCarregada != nullptr);
+        CHECK(e->getManutencoes()[0]->getObra() == obraCarregada);
+    }
+
+    SUBCASE("Caso com CPF da manutencao diferente do tecnico") {
+        
+        Catalogo* ca1 = new Catalogo();
+        Usuarios* us1 = new Usuarios();
+        Dados da1(us1, ca1);
+
+        {
+            std::ofstream out("obras.txt");
+            out << "Livro;Confissoes;S.A;11;1;0;Romance;21\n";
+        }
+        {
+            std::ofstream u("usuario.txt");
+            u << "TecnicoManutencao;11;Wederley;11122233344;0;1;\n"
+            << "11;99999999999;rasgo;costura;3;3;2008;1;";
+        }
+        std::stringstream cap;
+        std::streambuf* original = std::cerr.rdbuf(cap.rdbuf());
+
+        da1.carregarDados();
+        std::cerr.rdbuf(original);
+        std::string txt = cap.str();
+
+        CHECK(txt.find("CPF da manutenção não corresponde ao técnico responsável.") != std::string::npos);
+
+        std::remove("obras.txt");
+        std::remove("usuario.txt");
+    }
+
+    SUBCASE("Caso com CPF da manutencao diferente do tecnico") {
+        Catalogo* ca1 = new Catalogo();
+        Usuarios* us1 = new Usuarios();
+        Dados da1(us1, ca1);
+
+        {
+            std::ofstream out("obras.txt");
+            out << "Livro;Confissoes;S.A;11;1;0;Romance;21\n";
+        }
+        {
+            std::ofstream u("usuario.txt");
+            u << "TecnicoManutencao;11;Wederley;99999999999;0;1;\n11;11122233344;rasgo;costura;3;3;2008;1;";
+        }
+        da1.carregarDados();
+
+        Pessoa* p = da1.getUsuarios()->buscarUsuarioId(11);
+        REQUIRE(p != nullptr);
+        TecnicoManutencao* e = dynamic_cast<TecnicoManutencao*> (p);
+        REQUIRE(e != nullptr);
 
         REQUIRE(e->getManutencoes().size() == 1);
-        CHECK(e->getManutencoes()[0]->getObra()->getID() == B->getID());
+        REQUIRE(e->getManutencoes().size() == 1);
 
-        delete B;
+        Obra* obraCarregada = da1.getCatalogo()->buscarPorId(11);
+        REQUIRE(obraCarregada != nullptr);
+        CHECK(e->getManutencoes()[0]->getObra() == obraCarregada);
+
+        std::stringstream cap;
+        std::streambuf* original = std::cerr.rdbuf(cap.rdbuf());
+        
+        da1.carregarDados();
+        std::cerr.rdbuf(original);
+        CHECK(cap.str().find("CPF da manutenção não corresponde ao técnico responsável.") != std::string::npos);
     }
 
     SUBCASE("Caso com tecnico com uma manutencao de uma obra nullptr"){
@@ -1061,6 +1155,37 @@ TEST_CASE("Dados - carregarDados"){
 
         delete B;
     }
+
+    SUBCASE("Preserva dados antigos quando o carregamento falha") {
+        Catalogo* ca1 = new Catalogo();
+        Usuarios* us1 = new Usuarios();
+        Dados da1(us1, ca1);
+
+        Livro* original = new Livro(
+            "Calculo",
+            "Stewart",
+            50,
+            "Didatico",
+            1
+        );
+        REQUIRE(ca1->cadastrarObra(original));
+
+        {
+            std::ofstream out("obras.txt");
+            out << "Livro;Confissoes;S.A;abc;1;0;Romance;21\n";
+        }
+        {
+            std::ofstream out("usuario.txt");
+        }
+
+        da1.carregarDados();
+        CHECK(da1.getCatalogo() == ca1);
+        CHECK(da1.getUsuarios() == us1);
+        CHECK(da1.getCatalogo()->buscarPorId(50) == original);
+
+        std::remove("obras.txt");
+        std::remove("usuario.txt");
+    }
 }
 
 TEST_CASE("Remover obra sem vínculos") {
@@ -1108,9 +1233,56 @@ TEST_CASE("Impedir remoção de obra com manutenção") {
 
     Manutencao *m = new Manutencao(obra, tecnico, "Capa rasgada", Data(10, 11, 2026));
 
-    m->setEstado(EstadoManutencao::CONCLUIDA);
     tecnico->adicionarManutencao(m);
+    m->iniciar();
+    m->concluir();
 
     CHECK_FALSE(dados.removerObra(11));
     CHECK(catalogo->buscarPorId(11) == obra);
+}
+
+TEST_CASE("Dados - recupera proximo ID corretamente") {
+    Catalogo* ca1 = new Catalogo();
+    Usuarios* us1 = new Usuarios();
+    Dados da1(us1, ca1);
+
+    {
+        std::ofstream out("obras.txt");
+
+        out << "ProximoId;5\n";
+        out << "Livro;Confissoes;S.A;10;1;0;Romance;21\n";
+    }
+    {
+        std::ofstream out("usuario.txt");
+    }
+    da1.carregarDados();
+    CHECK(TesteCatalogo::getProximoId(*da1.getCatalogo()) == 11);
+
+    std::remove("obras.txt");
+    std::remove("usuario.txt");
+}
+
+TEST_CASE("Dados - obra com emprestimo ativo fica indisponivel") {
+    Catalogo* ca1 = new Catalogo();
+    Usuarios* us1 = new Usuarios();
+    Dados da1(us1, ca1);
+
+    {
+        std::ofstream out("obras.txt");
+
+        out << "Livro;Confissoes;S.A;11;1;0;Romance;21\n";
+    }
+    {
+        std::ofstream out("usuario.txt");
+
+        out << "Professor;12;Wederley;11122233344;fisica;1;"
+            << "11;3;3;2008;17;4;2008;1;\n";
+    }
+    da1.carregarDados();
+    Obra* obra = da1.getCatalogo()->buscarPorId(11);
+    REQUIRE(obra != nullptr);
+    CHECK_FALSE(obra->isDisponivel());
+
+    std::remove("obras.txt");
+    std::remove("usuario.txt");
 }

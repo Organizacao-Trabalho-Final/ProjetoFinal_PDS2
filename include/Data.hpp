@@ -39,6 +39,8 @@ class Data {
 
         /**
         * @brief Avança a data em um dia.
+        * @throws std::invalid_argument caso a quantidade de dias seja menor que 1.
+        * @throws std::out_of_range caso a soma ultrapasse o ano 9999.
         */
         void addDia();
 

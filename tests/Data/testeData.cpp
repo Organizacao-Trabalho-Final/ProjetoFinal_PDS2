@@ -1,5 +1,6 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 
+#include <stdexcept>
 #include "doctest.h"
 #include "Data.hpp"
 
@@ -144,4 +145,20 @@ TEST_CASE("Teste função diferencaDatas() - Data") {
 TEST_CASE("Teste função isValida() - Data") {
     Data data(10, 6, 1942);
     CHECK(data.isValida());
+}
+
+TEST_CASE("Teste limite máximo de somarDias() - Data") {
+    Data data1(30, 12, 9999);
+    Data resultado = data1.somarDias(1);
+
+    CHECK(resultado.getDia() == 31);
+    CHECK(resultado.getMes() == 12);
+    CHECK(resultado.getAno() == 9999);
+
+    CHECK_THROWS_AS(data1.somarDias(2), std::out_of_range);
+    CHECK_THROWS_AS(Data(31, 12, 9999).somarDias(1), std::out_of_range);
+
+    CHECK(data1.getDia() == 30);
+    CHECK(data1.getMes() == 12);
+    CHECK(data1.getAno() == 9999);
 }

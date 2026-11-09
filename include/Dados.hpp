@@ -41,6 +41,12 @@ class Dados {
          */
         void carregarEmprestimos(std::ifstream &in, Pessoa* p);
 
+        /**
+         * @brief Carrega os dados em uma instância temporária.
+         * @return true se o carregamento for concluído, false caso contrário.
+         */
+        bool carregarDadosInterno();
+
     public:
         /**
          * @brief Constroi um objeto Dados.

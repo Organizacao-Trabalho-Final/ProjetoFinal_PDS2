@@ -90,6 +90,9 @@
         }
         if (m > 12) {
             m = 1;
+            if (a == 9999) {
+                throw std::out_of_range("Não é possível avançar a data 31/12/9999.");
+            }
             a++;
         }
         dia = d;
