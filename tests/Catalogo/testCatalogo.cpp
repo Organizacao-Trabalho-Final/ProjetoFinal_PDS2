@@ -58,24 +58,6 @@ TEST_CASE("Catalogo - cadastrarObra"){
     CHECK(h.cadastrarObra(c) == true);
 }
 
-TEST_CASE("Catalogo - removerObra)"){
-
-    std::string t1 = "Confissoes";
-    std::string ar = "fisica";
-    std::string au1 = "S.A";
-    std::string g1 = "teo";
-    int ed1 = 21;
-    int id1 = 11;
-    Catalogo h;
-
-    Livro* a = new Livro(t1, au1, id1, g1, ed1);
-    Livro* b = new Livro(t1, au1, 12, g1, ed1);
-    h.cadastrarObra(a);
-    h.cadastrarObra(b);
-    CHECK(h.removerObra(11) == true);
-    CHECK(h.removerObra(11) == false);
-}
-
 TEST_CASE("Catalogo - buscarPorTitulo"){
 
     std::string t1 = "Confissoes";

@@ -1,7 +1,6 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 
 #include "doctest.h"
-
 #include "Dados.hpp"
 #include <iostream>
 #include <string>
@@ -119,7 +118,6 @@ TEST_CASE("Dados - salvarEmprestimos"){
         Emprestimo* e1 = new Emprestimo(A, p3, d1);
         e.push_back(e1);
         
-
         std::string caminho = "salvaEm.txt";
         {
             std::ofstream escr_arqv(caminho);
@@ -150,9 +148,7 @@ TEST_CASE("Dados - salvarEmprestimos"){
         Dados da1(us1, ca1);
 
         std::string caminho = "salvaEm.txt";
-        std::ofstream escr_arqv(caminho); ////////////////////////
-        
-
+        std::ofstream escr_arqv(caminho);
 
         CHECK_THROWS_AS(TesteDados::salvarEmprestimos(da1, escr_arqv, e), std::invalid_argument);
 
@@ -1065,4 +1061,56 @@ TEST_CASE("Dados - carregarDados"){
 
         delete B;
     }
+}
+
+TEST_CASE("Remover obra sem vínculos") {
+    Catalogo *catalogo = new Catalogo();
+    Usuarios *usuarios = new Usuarios();
+    Dados dados(usuarios, catalogo);
+
+    Livro *obra = new Livro("Calculo", "Stewart", 11, "Didatico", 1);
+    REQUIRE(catalogo->cadastrarObra(obra));
+
+    CHECK(dados.removerObra(11));
+    CHECK(catalogo->buscarPorId(11) == nullptr);
+    CHECK_FALSE(dados.removerObra(11));
+}
+
+TEST_CASE("Impedir remoção de obra com empréstimo") {
+    Catalogo *catalogo = new Catalogo();
+    Usuarios *usuarios = new Usuarios();
+    Dados dados(usuarios, catalogo);
+
+    Livro *obra = new Livro("Calculo", "Stewart", 11, "Didatico", 1);
+    REQUIRE(catalogo->cadastrarObra(obra));
+
+    Professor *professor = new Professor("Rezeck", "01234567890", "DCC");
+    usuarios->adicionarUsuario(professor, 1);
+
+    Emprestimo *e = new Emprestimo(*obra, *professor, Data(10, 11, 2026));
+    e->setAtivo(false);
+    professor->registrarEmprestimo(e);
+
+    CHECK_FALSE(dados.removerObra(11));
+    CHECK(catalogo->buscarPorId(11) == obra);
+}
+
+TEST_CASE("Impedir remoção de obra com manutenção") {
+    Catalogo *catalogo = new Catalogo();
+    Usuarios *usuarios = new Usuarios();
+    Dados dados(usuarios, catalogo);
+
+    Livro *obra = new Livro("Calculo", "Stewart", 11, "Didatico", 1);
+    REQUIRE(catalogo->cadastrarObra(obra));
+
+    TecnicoManutencao *tecnico = new TecnicoManutencao("Carlos", "12345678901");
+    usuarios->adicionarUsuario(tecnico, 1);
+
+    Manutencao *m = new Manutencao(obra, tecnico, "Capa rasgada", Data(10, 11, 2026));
+
+    m->setEstado(EstadoManutencao::CONCLUIDA);
+    tecnico->adicionarManutencao(m);
+
+    CHECK_FALSE(dados.removerObra(11));
+    CHECK(catalogo->buscarPorId(11) == obra);
 }

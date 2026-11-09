@@ -25,7 +25,15 @@ class Catalogo {
          */
         bool verificarDuplicata(int id) const;
 
+        /**
+         * @brief Remove uma obra do catálogo.
+         * @param id Identificador da obra.
+         * @return true se removida, false se não encontrada.
+         */
+        bool removerObra(int id);
+
         friend struct TesteCatalogo;
+        friend class Dados;
 
     public:
         /**
@@ -39,13 +47,6 @@ class Catalogo {
          * @return true se o cadastro for realizado; false caso contrário.
          */
         bool cadastrarObra(Obra *o);
-
-        /**
-         * @brief Remove uma obra do catálogo.
-         * @param id ID da obra.
-         * @return true se a obra for removida; false se não for encontrada.
-         */
-        bool removerObra(int id);
 
         /**
          * @brief Busca uma obra pelo título.
