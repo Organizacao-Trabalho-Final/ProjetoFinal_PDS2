@@ -28,6 +28,7 @@ class TecnicoManutencao : public Pessoa {
          * @brief Constrói um objeto TecnicoManutencao.
          * @param n Nome do técnico.
          * @param c CPF do técnico.
+         * @throws std::invalid_argument se o técnico for nullptr.
          */
         TecnicoManutencao(std::string n, std::string c);
 
@@ -40,12 +41,14 @@ class TecnicoManutencao : public Pessoa {
         /**
          * @brief Adiciona uma manutenção à lista do técnico.
          * @param m Ponteiro para a manutenção a ser associada.
+         * @throws std::invalid_argument se a manutenção pertencer a outro técnico.
          */
         void adicionarManutencao(Manutencao *m);
 
         /**
          * @brief Substitui a lista de manutenções associadas ao técnico.
          * @param m Vetor de ponteiros para as manutenções.
+         * @throws std::invalid_argument se a manutenção pertencer a outro técnico.
          */
         void setManutencoes(const std::vector<Manutencao*>& m);
 

@@ -1,9 +1,14 @@
 #include <string>
+#include <stdexcept>
 #include "Obra.hpp"
 #include "Manutencao.hpp"
 
     Manutencao::Manutencao(Obra *o, TecnicoManutencao *tm, const std::string &d, const Data &i):
-    obra(o), tecnico(tm), dano(d), inicio(i), estado(EstadoManutencao::PENDENTE) {}
+    obra(o), tecnico(tm), dano(d), inicio(i), estado(EstadoManutencao::PENDENTE) {
+        if (tm == nullptr) {
+            throw std::invalid_argument("Uma manutenção precisa estar associada a um técnico.");
+        }
+    }
 
     Obra* Manutencao::getObra() const {
         return obra;
@@ -46,7 +51,7 @@
     }
 
     void Manutencao::concluir() {
-        if (obra == nullptr || estado != EstadoManutencao::EM_ANDAMENTO) {
+        if (obra == nullptr || estado != EstadoManutencao::EM_ANDAMENTO || reparo.find_first_not_of(" \t\n\r") == std::string::npos) {
             return;
         }
         estado = EstadoManutencao::CONCLUIDA;

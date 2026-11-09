@@ -72,7 +72,7 @@
         if (m == nullptr) {
             return;
         }
-        if (std::find(manutencoes.begin(), manutencoes.end(), m) == manutencoes.end()) {
+        if (m->getTecnico() != this || std::find(manutencoes.begin(), manutencoes.end(), m) == manutencoes.end()) {
             return;
         }
         if (m->getEstado() != EstadoManutencao::EM_ANDAMENTO) {
@@ -85,7 +85,7 @@
         if (m == nullptr) {
             return;
         }
-        if (std::find(manutencoes.begin(), manutencoes.end(), m) == manutencoes.end()) {
+        if (m->getTecnico() != this || std::find(manutencoes.begin(), manutencoes.end(), m) == manutencoes.end()) {
             return;
         }
         if (m->getEstado() != EstadoManutencao::EM_ANDAMENTO) {

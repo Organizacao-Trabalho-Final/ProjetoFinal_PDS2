@@ -88,12 +88,21 @@ TEST_CASE("Teste concluirManutencao - TecnicoManutencao") {
     Livro l1("Cálculo", "Stewart", 1, "Didático", 1);
     Manutencao *m1 = new Manutencao(&l1, &t6, "Capa rasgada", Data(10, 11, 2026));
     t6.adicionarManutencao(m1);
+    l1.setDanificado(true);
+    l1.setDisponivel(false);
 
     CHECK(m1->getEstado() == EstadoManutencao::PENDENTE);
     m1->iniciar();
     CHECK(m1->getEstado() == EstadoManutencao::EM_ANDAMENTO);
     t6.concluirManutencao(m1);
+    CHECK(m1->getEstado() == EstadoManutencao::EM_ANDAMENTO);
+    CHECK(l1.isDanificado() == true);
+
+    t6.registrarReparo(m1, "Capa restaurada");
+    t6.concluirManutencao(m1);
     CHECK(m1->getEstado() == EstadoManutencao::CONCLUIDA);
+    CHECK(l1.isDanificado() == false);
+    CHECK(l1.isDisponivel() == true);
 }
 
 TEST_CASE("Destrutor de TecnicoManutencao") {

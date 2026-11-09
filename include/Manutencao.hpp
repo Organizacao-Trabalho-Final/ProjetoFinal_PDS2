@@ -11,6 +11,7 @@
 
 class Obra;
 class TecnicoManutencao;
+class Dados;
 
 /**
  * @enum EstadoManutencao
@@ -36,6 +37,14 @@ class Manutencao {
         std::string dano, reparo; ///< Descrição do dano identificado + reparo realiado.
         Data inicio; ///< Data de início da manutenção.
         EstadoManutencao estado; ///< Estado atual da manutenção.
+
+        /**
+         * @brief Restaura o estado da manutenção durante o carregamento dos dados.
+         * @param e Estado armazenado.
+         */
+        void setEstado(EstadoManutencao e);
+
+        friend class Dados;
 
     public:
         /**
@@ -82,12 +91,6 @@ class Manutencao {
          * @return Estado da manutenção.
          */
         EstadoManutencao getEstado() const;
-
-        /**
-         * @brief Altera o estado da manutenção.
-         * @param e Novo estado.
-         */
-        void setEstado(EstadoManutencao e);
 
         /**
          * @brief Registra a descrição do reparo realizado.
