@@ -17,7 +17,7 @@ class Obra {
     private:
         std::string titulo, autor;
         int id;
-        bool disponivel, danificado;
+        bool disponivel, danificado, emManutencao;
 
     public:
 
@@ -41,6 +41,12 @@ class Obra {
          * @param d Valor de "danificado".
          */
         void setDanificado(bool d);
+
+        /**
+         * @brief Altera o estado de manutenção da obra.
+         * @param m Novo estado de manutenção.
+         */
+        void setEmManutencao(bool m);
 
         /**
          * @brief Substitui o título da obra.
@@ -85,6 +91,12 @@ class Obra {
          * @return true se estiver danificada, false se não estiver.
          */
         bool isDanificado() const;
+
+        /**
+         * @brief Verifica se a obra possui uma manutenção não concluída.
+         * @return true se estiver em manutenção, false caso contrário.
+         */
+        bool isEmManutencao() const;
 
         /**
          * @brief Exibe as informações específicas da obra.

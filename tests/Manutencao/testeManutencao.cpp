@@ -36,8 +36,10 @@ TEST_CASE("Teste iniciar e concluir - Manutencao") {
     Livro l2("O Pequeno Príncipe", "Antoine de Saint-Exupéry", 2, "Infantil", 1);
     TecnicoManutencao tm2("Max", "09876543210");
     Data d2(12, 11, 2026);
+    
     l2.setDanificado(true);
     Manutencao m2(&l2, &tm2, "Folha rasurada", d2);
+    CHECK(l2.isEmManutencao());
 
     m2.iniciar();
     CHECK(m2.getEstado() == EstadoManutencao::EM_ANDAMENTO);
@@ -46,12 +48,14 @@ TEST_CASE("Teste iniciar e concluir - Manutencao") {
     CHECK(m2.getEstado() == EstadoManutencao::EM_ANDAMENTO);
     CHECK(l2.isDisponivel() == false);
     CHECK(l2.isDanificado() == true);
+    CHECK(l2.isEmManutencao());
 
     m2.registrarReparo("Folhas coladas");
     m2.concluir();
     CHECK(m2.getEstado() == EstadoManutencao::CONCLUIDA);
     CHECK(l2.isDisponivel() == true);
     CHECK(l2.isDanificado() == false);
+    CHECK_FALSE(l2.isEmManutencao());
 
     SUBCASE("Ponteiro de obra nulo") {
         TecnicoManutencao tm3("Daniel", "12345678901");

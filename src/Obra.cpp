@@ -2,7 +2,7 @@
 #include "Obra.hpp"
 
     Obra::Obra(const std::string &t, const std::string &a, int id):
-    titulo(t), autor(a), id(id), disponivel(true), danificado(false) {
+    titulo(t), autor(a), id(id), disponivel(true), danificado(false), emManutencao(false) {
         if (titulo.empty()) {
             throw std::invalid_argument("Título da obra não pode ser vazio.");
         }
@@ -20,6 +20,10 @@
 
     void Obra::setDisponivel(bool d) {
         disponivel = d;
+    }
+
+    void Obra::setEmManutencao(bool m) {
+        emManutencao = m;
     }
 
     void Obra::setTitulo(const std::string &t) {
@@ -54,4 +58,8 @@
 
     bool Obra::isDisponivel() const {
         return disponivel;
+    }
+
+    bool Obra::isEmManutencao() const {
+        return emManutencao;
     }

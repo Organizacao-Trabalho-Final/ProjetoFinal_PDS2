@@ -164,6 +164,20 @@ TEST_CASE("Teste de encaminharManutencao - Bibliotecario") {
         Manutencao* m4 = b6.encaminharManutencao(&l6, nullptr, "Capa rasgada", d6);
         CHECK(m4 == nullptr);
     }
+
+    SUBCASE("Impedir manutenções duplicadas para a mesma obra") {
+        l6.setDanificado(true);
+        Manutencao* m1 = b6.encaminharManutencao(&l6, &t1, "Capa rasgada", d6);
+        REQUIRE(m1 != nullptr);
+
+        TecnicoManutencao t2("Ana", "22233344455");
+        Manutencao* m2 = b6.encaminharManutencao(&l6, &t2, "Folhas soltas", d6);
+
+        CHECK(m2 == nullptr);
+        CHECK(l6.isEmManutencao());
+        CHECK(t1.getManutencoes().size() == 1);
+        CHECK(t2.getManutencoes().empty());
+    }
 }
 
 TEST_CASE("Bibliotecario respeita limite de emprestimos") {

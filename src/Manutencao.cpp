@@ -8,6 +8,9 @@
         if (tm == nullptr) {
             throw std::invalid_argument("Uma manutenção precisa estar associada a um técnico.");
         }
+        if (obra != nullptr) {
+            obra->setEmManutencao(true);
+        }
     }
 
     Obra* Manutencao::getObra() const {
@@ -36,6 +39,9 @@
 
     void Manutencao::setEstado(EstadoManutencao e) {
         estado = e;
+        if (obra != nullptr) {
+            obra->setEmManutencao(e != EstadoManutencao::CONCLUIDA);
+        }
     }
 
     void Manutencao::registrarReparo(const std::string &r) {
@@ -57,4 +63,5 @@
         estado = EstadoManutencao::CONCLUIDA;
         obra->setDanificado(false);
         obra->setDisponivel(true);
+        obra->setEmManutencao(false);
     }

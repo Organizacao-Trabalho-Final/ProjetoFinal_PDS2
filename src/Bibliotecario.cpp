@@ -55,7 +55,7 @@
         if (o == nullptr || tm == nullptr) {
             return nullptr;
         }
-        if (o->isDanificado()) {
+        if (o->isDanificado() && !o->isEmManutencao()) {
             Manutencao* m = new Manutencao(o, tm, dano, i);
             tm->adicionarManutencao(m);
             o->setDisponivel(false);
