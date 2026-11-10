@@ -8,6 +8,11 @@
 #include "Catalogo.hpp"
 #include "Livro.hpp"
 #include "Artigo.hpp"
+#include "Usuarios.hpp"
+#include "Estudante.hpp"
+#include "Professor.hpp"
+#include "Bibliotecario.hpp"
+#include "TecnicoManutencao.hpp"
     
     Interface::Interface(Dados *d): dados(d) {
         if (d == nullptr) {
@@ -28,7 +33,7 @@
                 return;
             
             case 1:
-                menuPesquisa();
+                menuPesquisaObras();
                 break;
 
             case 2: {
@@ -46,7 +51,7 @@
             }
             
             case 3:
-                
+                menuCadastroObras();
                 break;
 
             case 4:
@@ -166,7 +171,7 @@
         } while (n != 0);
     }
 
-    void Interface::menuPesquisa() {
+    void Interface::menuPesquisaObras() {
         int n;
         std::string str;
         do {
@@ -237,6 +242,61 @@
             std::cout << "Obra não encontrada." << std::endl;
         }
     }
+
+    void Interface::menuCadastroObras() {
+        std::cout << "========== MENU DE CADASTRO ==========\n" << std::endl;
+        std::cout << "1 - Livro\n2 - Artigo\n0 - Voltar\n\nOpção:" << std::endl;
+            
+        int n = lerOpcao(0, 2);
+        if (n == 0) {
+            return;
+        }
+
+        std::string titulo, autor;
+        std::cout << "Digite o título: ";
+        std::getline(std::cin, titulo);
+        std::cout << "Digite o autor: ";
+        std::getline(std::cin, autor);
+
+        int id = dados->getCatalogo()->gerarProximoId();
+        if (id == 0) {
+            std::cout << "Não foi possível gerar um novo ID." << std::endl;
+            return;
+        }
+
+        Obra* nova = nullptr;
+        try {
+            if (n == 1) {
+                std::string genero;
+                int edicao;
+                std::cout << "Digite o gênero: ";
+                std::getline(std::cin, genero);
+                std::cout << "Digite a edição: ";
+                edicao = lerOpcao(1, std::numeric_limits<int>::max());
+
+                nova = new Livro(titulo, autor, id, genero, edicao);
+            } else if (n == 2) {
+                std::string area;
+                int ano;
+                std::cout << "Digite a área: ";
+                std::getline(std::cin, area);
+                std::cout << "Digite o ano de publicação: ";
+                ano = lerOpcao(1, 9999);
+
+                nova = new Artigo(titulo, autor, id, area, ano);
+            } else std::cout << "Não foi possível cadastrar a obra." << std::endl;
+
+            if (dados->getCatalogo()->cadastrarObra(nova)) {
+                std::cout << "Obra cadastrada com sucesso!" << "\nID: " << id << std::endl;
+            } else {
+                delete nova;
+                std::cout << "Não foi possível cadastrar a obra." << std::endl;
+            }
+        } catch (const std::invalid_argument &e) {
+            delete nova;
+            std::cout << "Erro ao cadastrar obra: " << e.what() << std::endl;
+        }
+    }
     
     void Interface::menuAtualizacoesLivro(Livro *l) {
         int n;
@@ -296,9 +356,9 @@
         std::string str;
         do {
             std::cout << "========== MENU DE ATUALIZAÇÕES DE ARTIGOS ==========\n" << std::endl;
-            std::cout << "1 - Atualizar título\n2 - Atualizar autor\n3 Atualizar área\n0 - Voltar\n\nOpção:" << std::endl;
+            std::cout << "1 - Atualizar título\n2 - Atualizar autor\n3 Atualizar área\n4 - Atualizar ano de publicação\n0 - Voltar\n\nOpção:" << std::endl;
             
-            n = lerOpcao(0, 3);
+            n = lerOpcao(0, 4);
             switch (n)
             {
             case 0:
@@ -328,6 +388,13 @@
                 if (!str.empty()) {
                     a->setArea(str);
                 }
+                break;
+            }
+
+            case 4: {
+                std::cout << "Digite o novo ano de publicação: " << std::endl;
+                int ano = lerOpcao(1, 9999);
+                a->setAno(ano);
                 break;
             }
             

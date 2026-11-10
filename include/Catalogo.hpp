@@ -52,6 +52,7 @@ class Catalogo {
 
         friend struct TesteCatalogo;
         friend class Dados;
+        friend class Interface;
 
     public:
         /**

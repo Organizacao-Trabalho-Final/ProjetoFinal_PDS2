@@ -45,14 +45,19 @@ class Interface {
         void menuManutencoes();
 
         /**
-         * @brief Exibe e gerencia o menu de operações relacionadas às pesquisas de obra.
+         * @brief Exibe e gerencia o menu de operações relacionadas às pesquisas de obras.
          */
-        void menuPesquisa();
+        void menuPesquisaObras();
 
         /**
          * @brief Gerencia os menus de operações entre livros e artigos.
          */
         void menuAtualizacoes();
+
+        /**
+         * @brief Gerencia os menus de operações cadastrais de obras.
+         */
+        void menuCadastroObras();
 
         /**
          * @brief Exibe e gerencia o menu de operações relacionadas às atualizações de dados de livros.
