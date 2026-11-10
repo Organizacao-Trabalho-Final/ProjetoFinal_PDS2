@@ -34,7 +34,7 @@ class Catalogo {
 
         /**
          * @brief Gera o próximo ID disponível para uma obra.
-         * @return ID gerado.
+         * @return ID gerado ou 0 se não houver ID disponível.
          */
         int gerarProximoId();
 

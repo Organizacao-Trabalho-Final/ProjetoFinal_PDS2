@@ -31,7 +31,7 @@ class Usuarios {
          * @brief Adiciona um usuário ao cadastro.
          * @param p Ponteiro para o usuário.
          * @param id ID do usuário a ser adicionado.
-         * @return true se cadastrado com sucesso, false se houver duplicidade ou ponteiro nulo.
+         * @return true se cadastrado com sucesso, false se houver duplicidade, ponteiro nulo ou id negativo.
          * O ponteiro é transferido para Usuarios somente se o cadastro for realizado.
          */
         bool adicionarUsuario(Pessoa *p, int id);

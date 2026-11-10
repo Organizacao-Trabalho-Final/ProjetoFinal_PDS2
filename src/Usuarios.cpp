@@ -10,14 +10,14 @@
     Usuarios::Usuarios(): usuarios(), proximoId(1) {}
 
     bool Usuarios::adicionarUsuario(Pessoa *u, int id) {
-        if (u == nullptr) {
+        if (u == nullptr || id <= 0) {
             return false;
         }
         for (const auto &cadastrado : usuarios) {
-            if (cadastrado.first == u) {
-                return false;
+            if (cadastrado.first == nullptr) {
+                continue;
             }
-            if ((cadastrado.second == id || cadastrado.first->getCPF() == u->getCPF()) && cadastrado.first != nullptr) {
+            if (cadastrado.first == u || cadastrado.second == id || cadastrado.first->getCPF() == u->getCPF()) {
                 return false;
             }
         }
@@ -29,7 +29,7 @@
     }
 
     int Usuarios::adicionarUsuario(Pessoa *u) {
-        if (u == nullptr) {
+        if (u == nullptr || proximoId <= 0 || proximoId >= std::numeric_limits<int>::max()) {
             return 0;
         }
         int id = proximoId;

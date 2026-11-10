@@ -4,12 +4,21 @@
 
 #include <string>
 #include <vector>
+#include <limits>
 #include "Catalogo.hpp"
 #include "Livro.hpp"
 
 struct TesteCatalogo{
     static bool g(Catalogo &c, int id){
         return c.verificarDuplicata(id);
+    }
+
+    static int gerar(Catalogo &c) {
+        return c.gerarProximoId();
+    }
+
+    static void definirProximoId(Catalogo &c, int id) {
+        c.setProximoId(id);
     }
 };
 
@@ -168,4 +177,20 @@ TEST_CASE("Catalogo - listarObras"){
     CHECK(mn.listarObras() == cd);
     CHECK(y.listarObras() == ws);
     CHECK(lk.listarObras() == l);
+}
+
+TEST_CASE("Catalogo - protege a geracao de IDs no limite de int") {
+    const int limite = std::numeric_limits<int>::max();
+    Catalogo c;
+    TesteCatalogo::definirProximoId(c, limite - 1);
+
+    CHECK(TesteCatalogo::gerar(c) == limite - 1);
+    CHECK(TesteCatalogo::gerar(c) == 0);
+
+    Catalogo c2;
+    TesteCatalogo::definirProximoId(c2, limite);
+    Livro* obra = new Livro("Ultimo ID", "Autor", limite, "Teste", 1);
+
+    REQUIRE(c2.cadastrarObra(obra));
+    CHECK(TesteCatalogo::gerar(c2) == 0);
 }

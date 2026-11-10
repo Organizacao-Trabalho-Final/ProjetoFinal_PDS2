@@ -8,6 +8,7 @@
 #include "../../include/Emprestimo.hpp"
 #include "../../include/TecnicoManutencao.hpp"
 #include "../../include/Manutencao.hpp"
+#include <limits>
 
 TEST_CASE("Teste Construtor - Usuarios") {
     Usuarios u1;
@@ -157,4 +158,28 @@ TEST_CASE("Teste atualização do próximo ID - Usuarios") {
 
     CHECK(id == 11);
     CHECK(usuarios.buscarUsuarioId(11) == p2);
+}
+
+TEST_CASE("Usuarios - rejeita IDs nao positivos") {
+    Usuarios usuarios;
+    Pessoa* idZero = new Professor("Zero", "00000000000", "DCC");
+    CHECK_FALSE(usuarios.adicionarUsuario(idZero, 0));
+    delete idZero;
+
+    Pessoa* idNegativo = new Professor("Negativo", "00000000001", "DCC");
+    CHECK_FALSE(usuarios.adicionarUsuario(idNegativo, -1));
+    delete idNegativo;
+    CHECK(usuarios.getUsuarios().empty());
+}
+
+TEST_CASE("Usuarios - interrompe geracao antes do limite de int") {
+    Usuarios usuarios;
+    const int limite = std::numeric_limits<int>::max();
+    Pessoa* penultimo = new Professor("Penultimo", "00000000002", "DCC");
+    REQUIRE(usuarios.adicionarUsuario(penultimo, limite - 1));
+
+    Pessoa* excedente = new Professor("Excedente", "00000000003", "DCC");
+    CHECK(usuarios.adicionarUsuario(excedente) == 0);
+    delete excedente;
+    CHECK(usuarios.buscarUsuarioId(limite - 1) == penultimo);
 }

@@ -1,5 +1,6 @@
 #include <string>
 #include <vector>
+#include <limits>
 #include "Catalogo.hpp"
 
     Catalogo::Catalogo(): obrasCadastradas(), proximoId(1) {}
@@ -14,11 +15,11 @@
     }
 
     bool Catalogo::cadastrarObra(Obra *o) {
-        if (o == nullptr || verificarDuplicata(o->getID())) {
+        if (o == nullptr || verificarDuplicata(o->getID()) || o->getID() <= 0) {
             return false;
         }
         obrasCadastradas.push_back(o);
-        if (o->getID() >= proximoId) {
+        if (o->getID() >= proximoId && o->getID() < std::numeric_limits<int>::max()) {
             proximoId = o->getID() + 1;
         }
         return true;
@@ -68,7 +69,14 @@
     }
 
     int Catalogo::gerarProximoId() {
+        const int limite = std::numeric_limits<int>::max();
+        if (proximoId <= 0 || proximoId >= limite) {
+            return 0;
+        }
         while (verificarDuplicata(proximoId)) {
+            if (proximoId >= limite - 1) {
+                return 0;
+            }
             proximoId++;
         }
         return proximoId++;
