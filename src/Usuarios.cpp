@@ -59,6 +59,28 @@
         return false;
     }
 
+    bool Usuarios::removerUsuarioCPF(const std::string &cpf) {
+        for (auto it = usuarios.begin(); it != usuarios.end(); ++it) {
+            Pessoa *p = it->first;
+            if (p == nullptr || p->getCPF() != cpf) {
+                continue;
+            }
+            if (!p->getEmprestimos().empty()) {
+                return false;
+            }
+
+            TecnicoManutencao *tm = dynamic_cast<TecnicoManutencao*>(p);
+            if (tm != nullptr && !tm->getManutencoes().empty()) {
+                return false;
+            }
+
+            delete p;
+            usuarios.erase(it);
+            return true;
+        }
+        return false;
+    }
+
     Pessoa* Usuarios::buscarUsuarioNome(const std::string &nome) const {
         for (const auto &usuario : usuarios) {
             if (usuario.first != nullptr && usuario.first->getNome() == nome) {

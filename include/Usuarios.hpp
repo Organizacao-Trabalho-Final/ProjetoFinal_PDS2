@@ -53,6 +53,13 @@ class Usuarios {
         bool removerUsuario(const std::string &nome);
 
         /**
+         * @brief Remove um usuário pelo CPF, desde que não possua empréstimos ou manutenções.
+         * @param cpf CPF do usuário.
+         * @return true se removido, false se não encontrado ou possuir registros associados.
+         */
+        bool removerUsuarioCPF(const std::string &cpf);
+
+        /**
          * @brief Busca um usuário pelo nome.
          * @param nome Nome do usuário a ser buscado.
          * @return Ponteiro para o objeto Pessoa encontrado ou nullptr se não encontrado.

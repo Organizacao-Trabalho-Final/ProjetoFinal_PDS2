@@ -9,8 +9,12 @@
 #include "Dados.hpp"
 #include "Tratamento.hpp"
 #include "Catalogo.hpp"
+#include "Emprestimo.hpp"
+#include "Data.hpp"
+#include "Obra.hpp"
 #include "Livro.hpp"
 #include "Artigo.hpp"
+#include "Pessoa.hpp"
 #include "Usuarios.hpp"
 #include "Estudante.hpp"
 #include "Professor.hpp"
@@ -21,6 +25,41 @@
         if (d == nullptr) {
             throw std::invalid_argument("Dados não pode ser nullptr.");
         }
+    }
+
+    void Interface::executar() {
+        int n;
+        do {
+            std::cout << "========== SISTEMA DE GERENCIAMENTO DA BIBLIOTECA ==========\n" << std::endl;
+            std::cout << "1 - Obras\n2 - Usuários\n3 - Empréstimos\n4 - Manutenções\n0 - Salvar e sair\n\nOpção:" << std::endl;
+        
+            n = lerOpcao(0, 4);
+            switch (n)
+            {
+            case 0:
+                std::cout << "Encerrando o sistema..." << std::endl;
+                return;
+            
+            case 1:
+                menuObras();
+                break;
+
+            case 2:
+                menuUsuarios();
+                break;
+            
+            case 3:
+                menuEmprestimos();
+                break;
+
+            case 4:
+                menuManutencoes();
+                break;
+            
+            default:
+                break;
+            }
+        } while (n != 0);
     }
     
     void Interface::menuObras() {
@@ -65,14 +104,13 @@
                 break;
 
             case 5: {
-                int id;
                 std::cout << "Digite o número de identificação da obra: " << std::endl;
-                id = lerOpcao(1, std::numeric_limits<int>::max());
+                int id = lerOpcao(1, std::numeric_limits<int>::max());
                 bool r = dados->removerObra(id);
                 if (r) {
                     std::cout << "Obra removida com sucesso." << std::endl;
                 } else {
-                    std::cout << "Obra não encontrada ou não pôde ser removida." << std::endl;
+                    std::cout << "Obra não encontrada ou associada a empréstimo/manutenção." << std::endl;
                 }
                 break;
             }
@@ -87,7 +125,7 @@
         int n;
         do {
             std::cout << "========== MENU DE USUÁRIOS ==========\n" << std::endl;
-            std::cout << "1 - Cadastrar usuário\n2 - Consultar usuário\n3 - Remover usuário\n0 - Voltar\n\nOpção:" << std::endl;
+            std::cout << "1 - Cadastrar usuário\n2 - Pesquisar usuário\n3 - Remover usuário\n4 - Listar usuários\n0 - Voltar\n\nOpção:" << std::endl;
         
             n = lerOpcao(0, 3);
             switch (n)
@@ -96,16 +134,50 @@
                 return;
             
             case 1:
-                
+                menuCadastroUsuarios();
                 break;
 
             case 2:
-                
+                menuPesquisaUsuarios();
                 break;
             
-            case 3:
-                
+            case 3: {
+                std::string cpf = lerTexto("CPF do usuário que deseja remover: ");
+                Pessoa *p = dados->getUsuarios()->buscarUsuarioCPF(cpf);
+
+                if (p == nullptr) {
+                    std::cout << "Usuário não encontrado." << std::endl;
+                    break;
+                }
+                if (!p->getEmprestimos().empty()) {
+                    std::cout << "Não é possível remover: o usuário possui histórico de empréstimos." << std::endl;
+                    break;
+                }
+
+                TecnicoManutencao *tecnico = dynamic_cast<TecnicoManutencao*>(p);
+                if (tecnico != nullptr && !tecnico->getManutencoes().empty()) {
+                    std::cout << "Não é possível remover: o técnico possui manutenções registradas." << std::endl;
+                    break;
+                }
+                if (dados->getUsuarios()->removerUsuarioCPF(cpf)) {
+                    std::cout << "Usuário removido com sucesso." << std::endl;
+                } else {
+                    std::cout << "Não foi possível remover o usuário." << std::endl;
+                }
                 break;
+            }
+
+            case 4: {
+                const std::vector<std::pair<Pessoa*, int> > &lista = dados->getUsuarios()->getUsuarios();
+                if (lista.empty()) {
+                    std::cout << "Nenhum usuário cadastrado." << std::endl;
+                } else {
+                    for (const auto &registro : lista) {
+                        printUsuario(registro.first, registro.second);
+                    }
+                }
+                break;
+            }
             
             default:
                 break;
@@ -181,8 +253,8 @@
         int n;
         std::string str;
         do {
-            std::cout << "========== MENU DE PESQUISA ==========\n" << std::endl;
-            std::cout << "1 - Pesquisar por título\n2 - Pesquisar por autor\n3 - Pesquisar por id\n0 - Voltar\n\nOpção:" << std::endl;
+            std::cout << "========== MENU DE PESQUISA DE OBRAS ==========\n" << std::endl;
+            std::cout << "1 - Pesquisar por título\n2 - Pesquisar por autor\n3 - Pesquisar por ID\n0 - Voltar\n\nOpção:" << std::endl;
         
             n = lerOpcao(0, 3);
             switch (n)
@@ -191,8 +263,7 @@
                 return;
             
             case 1: {
-                std::cout << "Digite o título da obra: " << std::endl;
-                std::getline(std::cin, str);
+                str = lerTexto("Digite o título da obra: ");
                 Obra *o = dados->getCatalogo()->buscarPorTitulo(str);
                 if (o != nullptr) {
                     o->printObra();
@@ -203,11 +274,10 @@
             }
 
             case 2: {
-                std::cout << "Digite o nome do autor da obra: " << std::endl;
-                std::getline(std::cin, str);
+                str = lerTexto("Digite o nome do autor da obra: ");
                 const std::vector<Obra*> obras = dados->getCatalogo()->buscarPorAutor(str);
                 if (obras.empty()) {
-                    std::cout << "Nennhuma obra desse autor foi encontrada." << std::endl;
+                    std::cout << "Nenhuma obra desse autor foi encontrada." << std::endl;
                 } else {
                     for (Obra *o : obras) {
                         if (o != nullptr) {
@@ -219,6 +289,7 @@
             }
             
             case 3: {
+                std::cout << "Digite o ID da obra: ";
                 int id = lerOpcao(1, std::numeric_limits<int>::max());
                 Obra *o = dados->getCatalogo()->buscarPorId(id);
                 if (o != nullptr) {
@@ -250,7 +321,7 @@
     }
 
     void Interface::menuCadastroObras() {
-        std::cout << "========== MENU DE CADASTRO ==========\n" << std::endl;
+        std::cout << "========== MENU DE CADASTRO DE OBRAS ==========\n" << std::endl;
         std::cout << "1 - Livro\n2 - Artigo\n0 - Voltar\n\nOpção:" << std::endl;
             
         int n = lerOpcao(0, 2);
@@ -258,50 +329,40 @@
             return;
         }
 
-        std::string titulo, autor;
-        std::cout << "Digite o título: ";
-        std::getline(std::cin, titulo);
-        std::cout << "Digite o autor: ";
-        std::getline(std::cin, autor);
-
-        int id = dados->getCatalogo()->gerarProximoId();
-        if (id == 0) {
-            std::cout << "Não foi possível gerar um novo ID." << std::endl;
-            return;
-        }
-
-        Obra* nova = nullptr;
+        Obra *nova = nullptr;
         try {
-            if (n == 1) {
-                std::string genero;
-                int edicao;
-                std::cout << "Digite o gênero: ";
-                std::getline(std::cin, genero);
-                std::cout << "Digite a edição: ";
-                edicao = lerOpcao(1, std::numeric_limits<int>::max());
+            const std::string titulo = lerTexto("Digite o título: ");
+            const std::string autor = lerTexto("Digite o autor: ");
+            int id = dados->getCatalogo()->gerarProximoId();
 
+            if (id == 0) {
+                std::cout << "Não foi possível gerar um novo ID." << std::endl;
+                return;
+            }
+
+            if (n == 1) {
+                const std::string genero = lerTexto("Digite o gênero: ");
+                std::cout << "Digite a edição: ";
+                const int edicao = lerOpcao(1, std::numeric_limits<int>::max());
                 nova = new Livro(titulo, autor, id, genero, edicao);
             } else if (n == 2) {
-                std::string area;
-                int ano;
-                std::cout << "Digite a área: ";
-                std::getline(std::cin, area);
+                const std::string area = lerTexto("Digite a área: ");
                 std::cout << "Digite o ano de publicação: ";
-                ano = lerOpcao(1, 9999);
-
+                const int ano = lerOpcao(1, 9999);
                 nova = new Artigo(titulo, autor, id, area, ano);
             } else std::cout << "Não foi possível cadastrar a obra." << std::endl;
 
             if (dados->getCatalogo()->cadastrarObra(nova)) {
-                std::cout << "Obra cadastrada com sucesso!" << "\nID: " << id << std::endl;
+                nova = nullptr;
+                std::cout << "Obra cadastrada com sucesso! ID: " << id << std::endl;
             } else {
-                delete nova;
                 std::cout << "Não foi possível cadastrar a obra." << std::endl;
             }
         } catch (const std::invalid_argument &e) {
             delete nova;
             std::cout << "Erro ao cadastrar obra: " << e.what() << std::endl;
         }
+        delete nova;
     }
     
     void Interface::menuAtualizacoesLivro(Livro *l) {
@@ -312,47 +373,42 @@
             std::cout << "1 - Atualizar título\n2 - Atualizar autor\n3 - Atualizar gênero\n4 - Atualizar edição\n0 - Voltar\n\nOpção:" << std::endl;
             
             n = lerOpcao(0, 4);
-            switch (n)
-            {
-            case 0:
-                return;
-            
-            case 1: {
-                std::cout << "Digite o novo título do livro: " << std::endl;
-                std::getline(std::cin, str);
-                if (!str.empty()) {
-                    l->setTitulo(str);
-                }
-                break;
-            }                
+            try {
+                switch (n)
+                {
+                case 0:
+                    return;
+                
+                case 1: {
+                    l->setTitulo(lerTexto("Digite o novo título: "));
+                    break;
+                }                
 
-            case 2: {
-                std::cout << "Digite o novo autor do livro: " << std::endl;
-                std::getline(std::cin, str);
-                if (!str.empty()) {
-                    l->setAutor(str);
+                case 2: {
+                    l->setAutor(lerTexto("Digite o novo autor: "));
+                    break;
                 }
-                break;
-            }
-            
-            case 3: {
-                std::cout << "Digite o novo gênero do livro: " << std::endl;
-                std::getline(std::cin, str);
-                if (!str.empty()) {
-                    l->setGenero(str);
+                
+                case 3: {
+                    l->setGenero(lerTexto("Digite o novo gênero: "));
+                    break;
                 }
-                break;
-            }
 
-            case 4: {
-                std::cout << "Digite a nova edição do livro: " << std::endl;
-                int e = lerOpcao(1, std::numeric_limits<int>::max());
-                l->setEdicao(e);
-                break;
-            }
-            
-            default:
-                break;
+                case 4: {
+                    std::cout << "Digite a nova edição: ";
+                    l->setEdicao(lerOpcao(1, std::numeric_limits<int>::max()));
+                    break;
+                }
+                
+                default:
+                    break;
+                }
+
+                if (n != 0) {
+                    std::cout << "Informação atualizada com sucesso." << std::endl;
+                }
+            } catch (const std::exception &e) {
+                std::cout << "Não foi possível atualizar a obra: " << e.what() << std::endl;
             }
         } while (n != 0);
     }
@@ -365,49 +421,116 @@
             std::cout << "1 - Atualizar título\n2 - Atualizar autor\n3 Atualizar área\n4 - Atualizar ano de publicação\n0 - Voltar\n\nOpção:" << std::endl;
             
             n = lerOpcao(0, 4);
-            switch (n)
-            {
-            case 0:
-                return;
-            
-            case 1: {
-                std::cout << "Digite o novo título do artigo: " << std::endl;
-                std::getline(std::cin, str);
-                if (!str.empty()) {
-                    a->setTitulo(str);
-                }
-                break;
-            }                
+            try {
+                switch (n)
+                {
+                case 0:
+                    return;
+                
+                case 1: {
+                    a->setTitulo(lerTexto("Digite o novo título: "));
+                    break;
+                }                
 
-            case 2: {
-                std::cout << "Digite o novo autor do artigo: " << std::endl;
-                std::getline(std::cin, str);
-                if (!str.empty()) {
-                    a->setAutor(str);
+                case 2: {
+                    a->setAutor(lerTexto("Digite o novo autor: "));
+                    break;
                 }
-                break;
-            }
-            
-            case 3: {
-                std::cout << "Digite a nova área do artigo: " << std::endl;
-                std::getline(std::cin, str);
-                if (!str.empty()) {
-                    a->setArea(str);
+                
+                case 3: {
+                    a->setArea(lerTexto("Digite a nova área: "));
+                    break;
                 }
-                break;
-            }
 
-            case 4: {
-                std::cout << "Digite o novo ano de publicação: " << std::endl;
-                int ano = lerOpcao(1, 9999);
-                a->setAno(ano);
-                break;
-            }
-            
-            default:
-                break;
+                case 4: {
+                    std::cout << "Digite o novo ano de publicação: ";
+                    a->setAno(lerOpcao(1, 9999));
+                    break;
+                }
+                
+                default:
+                    break;
+                }
+
+                if (n != 0) {
+                    std::cout << "Informação atualizada com sucesso." << std::endl;
+                }
+            } catch (const std::exception &e) {
+                std::cout << "Não foi possível atualizar a obra: " << e.what() << std::endl;
             }
         } while (n != 0);
+    }
+
+    void Interface::menuCadastroUsuarios() {
+        std::cout << "========== MENU DE CADASTRO DE USUÁRIOS ==========\n" << std::endl;
+        std::cout << "1 - Estudante\n2 - Professor\n3 - Bibliotecário\n4 - Técnico de manutenção\n0 - Voltar\n\nOpção:" << std::endl;
+
+        int n = lerOpcao(0, 4);
+        if (n == 0) {
+            return;
+        }
+
+        Pessoa *novo = nullptr;
+        try {
+            std::string nome = lerTexto("Nome completo: ");
+            std::string cpf = lerTexto("CPF: ");
+
+            if (n == 1) {
+                std::string curso = lerTexto("Curso: ");
+                std::string matricula = lerTexto("Matrícul: ");
+                novo = new Estudante(nome, cpf, curso, matricula);
+            } else if (n == 2) {
+                std::string area = lerTexto("Área de atuação: ");
+                novo = new Professor(nome, cpf, area);
+            } else if (n == 3) {
+                novo = new Bibliotecario(nome, cpf);
+            } else {
+                novo = new TecnicoManutencao(nome, cpf);
+            }
+
+            int id = dados->getUsuarios()->adicionarUsuario(novo);
+            if (id == 0) {
+                std::cout << "Cadastro não realizado: CPF já cadastrado ou identificador indisponível." << std::endl;
+            } else {
+                novo = nullptr;
+                std::cout << "Usuário cadastrado com sucesso! ID: " << id << std::endl;
+            }
+        } catch (const std::exception &e) {
+            std::cout << "Erro ao cadastrar usuário: " << e.what() << '\n';
+        }
+        delete novo;
+    }
+
+    void Interface::menuPesquisaUsuarios() {
+        std::cout << "========== MENU DE PESQUISA DE USUÁRIOS ==========\n" << std::endl;
+        std::cout << "1 - Pesquisar por nome\n2 - Pesquisar por CPF\n3 - Pesquisar por ID\n0 - Voltar\n" << "Opção: " << std::endl;
+        int n = lerOpcao(1, 3);
+        Pessoa *p = nullptr;
+
+        switch (n)
+        {
+        case 0:
+            return;
+
+        case 1: {
+            p = dados->getUsuarios()->buscarUsuarioNome(lerTexto("Nome: "));
+            break;
+        }
+
+        case 2: {
+            p = dados->getUsuarios()->buscarUsuarioCPF(lerTexto("CPF: "));
+            break;
+        }
+
+        case 3: {
+            std::cout << "ID: ";
+            p = dados->getUsuarios()->buscarUsuarioId(lerOpcao(1, std::numeric_limits<int>::max()));
+            break;
+        }
+        
+        default:
+            break;
+        }
     }
 
     int Interface::lerOpcao(int min, int max) {
@@ -415,7 +538,7 @@
         while (true) {
             if (std::cin >> n) {
                 try {
-                    tratamento.isNumeroValido(n, min, max);
+                    tratamento.isNumeroValido(n, min, max, "Opção");
                     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                     return n;
                 } catch (const std::invalid_argument &e) {
@@ -444,10 +567,10 @@
                 std::cout << "O campo não pode ficar vazio. Tente novamente.\n";
                 continue;
             }
-            const std::string textoLimpo = texto.substr(texto.find_first_not_of(" \t\n\r\f\v"), texto.find_last_not_of(" \t\n\r\f\v") - texto.find_first_not_of(" \t\n\r\f\v") + 1);
+            std::string limpo = texto.substr(texto.find_first_not_of(" \t\n\r\f\v"), texto.find_last_not_of(" \t\n\r\f\v") - texto.find_first_not_of(" \t\n\r\f\v") + 1);
             try {
-                tratamento.isCaracterValido(textoLimpo, ";", "Campo");
-                return textoLimpo;
+                tratamento.isCaracterValido(limpo, ";", "Campo");
+                return limpo;
             } catch (const std::invalid_argument &e) {
                 std::cout << e.what() << "\n";
             }
@@ -463,37 +586,90 @@
         return Data(dataLocal->tm_mday, dataLocal->tm_mon + 1, dataLocal->tm_year + 1900);
     }
 
-    
-    void Interface::executar() {
-        int n;
-        do {
-            std::cout << "========== BIBLIOTECA ==========\n" << std::endl;
-            std::cout << "1 - Obras\n2 - Usuários\n3 - Empréstimos\n4 - Manutenções\n0 - Sair\n\nOpção:" << std::endl;
-        
-            n = lerOpcao(0, 4);
-            switch (n)
-            {
-            case 0:
-                return;
-            
-            case 1:
-                menuObras();
-                break;
+    void Interface::printUsuario(Pessoa *p, int id) const {
+        if (p == nullptr) {
+            return;
+        }
+        std::cout << "\n========================================\n";
+        std::cout << "ID: " << id << "\nNome: " << p->getNome() << "\nCPF: " << p->getCPF() << std::endl;
+        if (Estudante *e = dynamic_cast<Estudante*>(p)) {
+            std::cout << "Categoria: Estudante\n" << "Curso: " << e->getCurso() << "\nMatrícula: " << e->getMatricula() << std::endl;
+            std::cout << "Empréstimos ativos: " << e->getEmprestimosAtivos() << "\nEmpréstimos registrados: " << e->getNumEmprestimos() << std::endl;
+        } else if (Professor *pf = dynamic_cast<Professor*>(p)) {
+            std::cout << "Categoria: Professor\n" << "Área: " << pf->getArea() << std::endl;
+            std::cout << "Empréstimos ativos: " << pf->getEmprestimosAtivos() << "\nEmpréstimos registrados: " << pf->getNumEmprestimos() << std::endl;
+        } else if (dynamic_cast<Bibliotecario*>(p) != nullptr) {
+            std::cout << "Categoria: Bibliotecário" << std::endl;
+        } else if (TecnicoManutencao *tm = dynamic_cast<TecnicoManutencao*>(p)) {
+            std::cout << "Categoria: Técnico de manutenção\n" << "Manutenções pendentes: " << tm->consultarManutencoesPendentes() << std::endl;
+        }
+        std::cout << "========================================\n";
+    }
 
-            case 2:
-                menuUsuarios();
-                break;
-            
-            case 3:
-                menuEmprestimos();
-                break;
+    Bibliotecario* Interface::selecionarBibliotecario() {
+        std::string cpf = lerTexto("CPF do bibliotecário responsável: ");
+        Pessoa *p = dados->getUsuarios()->buscarUsuarioCPF(cpf);
 
-            case 4:
-                menuManutencoes();
-                break;
-            
-            default:
-                break;
+        Bibliotecario *b = dynamic_cast<Bibliotecario*>(p);
+        if (b == nullptr) {
+            std::cout << "Bibliotecário não encontrado. " << "Cadastre ou informe um CPF válido.\n";
+        }
+        return b;
+    }
+
+    TecnicoManutencao* Interface::selecionarTecnico() {
+        std::string cpf = lerTexto("CPF do técnico de manutenção: ");
+        Pessoa *p = dados->getUsuarios()->buscarUsuarioCPF(cpf);
+
+        TecnicoManutencao *tm = dynamic_cast<TecnicoManutencao*>(p);
+        if (tm == nullptr) {
+            std::cout << "Técnico de manutenção não encontrado.\n";
+        }
+        return tm;
+    }
+
+    Emprestimo* Interface::selecionarEmprestimo(Pessoa *p, bool ativos, bool pendentes) {
+        if (p == nullptr) {
+            return nullptr;
+        }
+
+        std::vector<Emprestimo*> opcoes;
+        const std::vector<Emprestimo*> &emprestimos = p->getEmprestimos();
+        for (Emprestimo *e : emprestimos) {
+            if (e == nullptr) {
+                continue;
             }
-        } while (n != 0);
+            if (ativos && !e->isAtivo()) {
+                continue;
+            }
+            if (pendentes && !e->isRenovacaoSolicitada()) {
+                continue;
+            }
+            opcoes.push_back(e);
+        }
+
+        if (opcoes.empty()) {
+            std::cout << "Nenhum empréstimo correspondente foi encontrado.\n";
+            return nullptr;
+        }
+
+        std::cout << "\nEmpréstimos encontrados:" << std::endl;
+        for (std::size_t i = 0; i < opcoes.size(); ++i) {
+            Emprestimo *e = opcoes[i];
+
+            std::cout << i + 1 << " - " << e->getObra().getTitulo() << " (ID da obra: " << e->getObra().getID() << ")" << std::endl;
+            std::cout << "Retirada: " << e->getRetirada().getData() << std::endl;
+            std::cout << "Devolução: " << e->getDevolucao().getData() << std::endl;
+            std::cout << "Empréstimo " << (e->isAtivo() ? "ativo" : "encerrado") << std::endl;
+            if (e->isRenovacaoSolicitada()) {
+                std::cout << "Renovação pendente." << std::endl;
+            }
+        }
+
+        std::cout << "Selecione o empréstimo (0 para cancelar): ";
+        int n = lerOpcao(0, static_cast<int>(opcoes.size()));
+        if (n == 0) {
+            return nullptr;
+        }
+        return opcoes[static_cast<std::size_t>(n - 1)];
     }

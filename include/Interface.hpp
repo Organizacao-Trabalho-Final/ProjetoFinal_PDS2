@@ -56,14 +56,14 @@ class Interface {
         void menuPesquisaObras();
 
         /**
+         * @brief Exibe e gerencia o menu de operações relacionadas às pesquisas de usuários.
+         */
+        void menuPesquisaUsuarios();
+
+        /**
          * @brief Gerencia os menus de operações entre livros e artigos.
          */
         void menuAtualizacoes();
-
-        /**
-         * @brief Gerencia os menus de operações cadastrais de obras.
-         */
-        void menuCadastroObras();
 
         /**
          * @brief Exibe e gerencia o menu de operações relacionadas às atualizações de dados de livros.
@@ -78,6 +78,16 @@ class Interface {
         void menuAtualizacoesArtigo(Artigo *a);
 
         /**
+         * @brief Gerencia os menus de operações cadastrais de obras.
+         */
+        void menuCadastroObras();
+
+        /**
+         * @brief Gerencia os menus de operações cadastrais de usuários.
+         */
+        void menuCadastroUsuarios();
+
+        /**
          * @brief Lê e valida uma opção numérica dentro de um intervalo.
          * @param min Valor mínimo.
          * @param max Valor máximo.
@@ -87,15 +97,44 @@ class Interface {
 
         /**
          * @brief Lê e valida uma mensagem de texto.
-         * @return Data de hoje.
+         * @param msg Mensagem exibida antes da leitura.
+         * @return Texto informado pelo usuário, limpo.
          */
-        std::string lerTexto(const std::string &mensagem);
+        std::string lerTexto(const std::string &msg);
 
         /**
-         * @brief Lê e retorna a data local do computador.
-         * @return String informada pelo usuário.
+         * @brief Obtém a data local do computador.
+         * @return Objeto Data do dia de hoje.
          */
         Data obterDataAtual() const;
+
+        /**
+         * @brief Exibe os dados de um usuário cadastrado.
+         * @param p Ponteiro para o usuário cujas informações serão exibidas.
+         * @param id Número de identificação do usuário.
+         */
+        void Interface::printUsuario(Pessoa *p, int id) const;
+
+        /**
+         * @brief Localiza um bibliotecário pelo CPF informado.
+         * @return Ponteiro para o bibliotecário encontrado ou nullptr caso não exista.
+         */
+        Bibliotecario* selecionarBibliotecario();
+
+        /**
+         * @brief Localiza um técnico de manutenção pelo CPF informado.
+         * @return Ponteiro para o técnico encontrado ou nullptr caso não exista.
+         */
+        TecnicoManutencao* selecionarTecnico();
+
+        /**
+         * @brief Localiza e selecionar um empréstimo de um usuário.
+         * @param p Ponteiro para o usuário ao qual o empréstimo está associado.
+         * @param ativos Se true, exibe somente empréstimos ativos.
+         * @param pendentes Se true, exibe somente empréstimos com renovação pendente.
+         * @return Ponteiro para o empréstimo selecionado ou nullptr caso não existam opções.
+         */
+        Emprestimo* selecionarEmprestimo(Pessoa *p, bool ativos, bool pendentes = false);
 
     public:
         /**
