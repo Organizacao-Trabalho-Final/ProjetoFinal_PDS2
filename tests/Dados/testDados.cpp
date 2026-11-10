@@ -140,7 +140,7 @@ TEST_CASE("Dados - salvarEmprestimos"){
         le_arqv.close();
         std::remove(caminho.c_str());
 
-        std::string testa = "11;3;3;2008;17;4;2008;1;0";
+        std::string testa = "11;3;3;2008;17;4;2008;1;0;";
         CHECK(txt == testa);
 
         SUBCASE("Empréstimo com renovação solicitada") {
@@ -307,7 +307,7 @@ TEST_CASE("Dados - carregarEmprestimos"){
         std::string caminho = "Caminho.txt";
         {
             std::ofstream cria(caminho);
-            cria << "11;1;2;3;2026;";
+            cria << "1;11;3;3;2008;17;4;2008;1;";
         }
         std::ifstream in(caminho);
         REQUIRE(in.is_open());
@@ -337,7 +337,7 @@ TEST_CASE("Dados - carregarEmprestimos"){
         std::string caminho = "Caminho.txt";
         {
             std::ofstream cria(caminho);
-            cria << "3;11;3;3;2008;17;4;2008;1;12;3;3;2008;17;4;2008;1;13;3;3;2008;17;4;2008;1;";
+            cria << "3;11;3;3;2008;17;4;2008;1;0;12;3;3;2008;17;4;2008;1;0;13;3;3;2008;17;4;2008;1;0;";
         }
         std::ifstream in(caminho);
         REQUIRE(in.is_open());
@@ -363,7 +363,7 @@ TEST_CASE("Dados - carregarEmprestimos"){
         std::string caminho = "Caminho.txt";
         {
             std::ofstream cria(caminho);
-            cria << "3;11;3;3;2008;17;4;2008;1;12;3;3;2008;17;4;2008;1;13;3;3;2008;17;4;2008;1;";
+            cria << "3;11;3;3;2008;17;4;2008;1;0;12;3;3;2008;17;4;2008;1;0;13;3;3;2008;17;4;2008;1;0;";
         }
         std::ifstream in(caminho);
         REQUIRE(in.is_open());
@@ -371,6 +371,34 @@ TEST_CASE("Dados - carregarEmprestimos"){
 
         CHECK(in.fail());
         in.clear();
+    }
+
+    SUBCASE("Caso valido com renovacao solicitada") {
+
+        Catalogo* ca1 = new Catalogo();
+        Usuarios* us1 = new Usuarios();
+        Dados da1(us1, ca1);
+        Professor p3(n1, cpf1, ar);
+        Livro* B = new Livro(t1, au1, id1, g1, ed1);
+        
+        REQUIRE(ca1->cadastrarObra(B));
+        std::string caminho = "Caminho.txt";
+        {
+            std::ofstream cria(caminho);
+            cria << "1;11;3;3;2008;17;4;2008;1;1;";
+        }
+
+        std::ifstream in(caminho);
+        REQUIRE(in.is_open());
+        TesteDados2::carregarEmprestimos(da1, in, &p3);
+        REQUIRE_FALSE(in.fail());
+        REQUIRE(p3.getEmprestimos().size() == 1);
+
+        CHECK(p3.getEmprestimos()[0]->isAtivo());
+        CHECK(p3.getEmprestimos()[0]->isRenovacaoSolicitada());
+
+        in.close();
+        std::remove(caminho.c_str());
     }
 }
 
@@ -847,47 +875,13 @@ TEST_CASE("Dados - carregarDados"){
 
         da1.carregarDados();
         std::cerr.rdbuf(original);
-        std::string txt = cap.str();
 
-        CHECK(txt.find("CPF da manutenção não corresponde ao técnico responsável.") != std::string::npos);
+        CHECK(cap.str().find("CPF da manutenção não corresponde ao técnico responsável.") != std::string::npos);
+        CHECK(da1.getUsuarios()->buscarUsuarioId(11) == nullptr);
+        CHECK(da1.getCatalogo()->buscarPorId(11) == nullptr);
 
         std::remove("obras.txt");
         std::remove("usuario.txt");
-    }
-
-    SUBCASE("Caso com CPF da manutencao diferente do tecnico") {
-        Catalogo* ca1 = new Catalogo();
-        Usuarios* us1 = new Usuarios();
-        Dados da1(us1, ca1);
-
-        {
-            std::ofstream out("obras.txt");
-            out << "Livro;Confissoes;S.A;11;1;0;Romance;21\n";
-        }
-        {
-            std::ofstream u("usuario.txt");
-            u << "TecnicoManutencao;11;Wederley;99999999999;0;1;\n11;11122233344;rasgo;costura;3;3;2008;1;";
-        }
-        da1.carregarDados();
-
-        Pessoa* p = da1.getUsuarios()->buscarUsuarioId(11);
-        REQUIRE(p != nullptr);
-        TecnicoManutencao* e = dynamic_cast<TecnicoManutencao*> (p);
-        REQUIRE(e != nullptr);
-
-        REQUIRE(e->getManutencoes().size() == 1);
-        REQUIRE(e->getManutencoes().size() == 1);
-
-        Obra* obraCarregada = da1.getCatalogo()->buscarPorId(11);
-        REQUIRE(obraCarregada != nullptr);
-        CHECK(e->getManutencoes()[0]->getObra() == obraCarregada);
-
-        std::stringstream cap;
-        std::streambuf* original = std::cerr.rdbuf(cap.rdbuf());
-        
-        da1.carregarDados();
-        std::cerr.rdbuf(original);
-        CHECK(cap.str().find("CPF da manutenção não corresponde ao técnico responsável.") != std::string::npos);
     }
 
     SUBCASE("Caso com tecnico com uma manutencao de uma obra nullptr"){
@@ -1276,7 +1270,7 @@ TEST_CASE("Dados - obra com emprestimo ativo fica indisponivel") {
         std::ofstream out("usuario.txt");
 
         out << "Professor;12;Wederley;11122233344;fisica;1;"
-            << "11;3;3;2008;17;4;2008;1;\n";
+            << "11;3;3;2008;17;4;2008;1;0;\n";
     }
     da1.carregarDados();
     Obra* obra = da1.getCatalogo()->buscarPorId(11);

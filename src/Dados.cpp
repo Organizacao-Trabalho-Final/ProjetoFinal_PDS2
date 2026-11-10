@@ -305,7 +305,7 @@
         int mes;
         int ano;
         int edicao;
-        int maiorId;
+        int maiorId = 0;
         bool danificado;
         bool disponivel;
 
@@ -450,7 +450,7 @@
 
                 if (!arquivoUsuarios) {
                     std::cerr << "Erro ao ler os dados de um professor." << std::endl;
-                    return;
+                    return false;
                 }
 
                 pessoa = new Professor(nome, cpf, area);
@@ -528,7 +528,6 @@
                     if (!arquivoUsuarios ||
                         estado < static_cast<int>(EstadoManutencao::PENDENTE) ||
                         estado > static_cast<int>(EstadoManutencao::CONCLUIDA) ||
-                        cpf != tecnico->getCPF() ||
                         (estado == static_cast<int>(EstadoManutencao::CONCLUIDA) && reparo.empty())) {
 
                         std::cerr << "Erro ao ler uma manutenção do técnico." << std::endl;
@@ -544,15 +543,7 @@
                         for (Manutencao *m : manutencoes) {
                             delete m;
                         }
-                        return;
-                    }
-
-                    if (cpf != tecnico->getCPF()) {
-                        std::cerr << "CPF da manutenção não corresponde ao técnico responsável." << std::endl;
-                        for (Manutencao *m : manutencoes) {
-                            delete m;
-                        }
-                        return;
+                        return false;
                     }
 
                     Data data(dia, mes, ano);
