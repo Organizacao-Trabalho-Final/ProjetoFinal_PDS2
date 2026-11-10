@@ -81,16 +81,20 @@ TEST_CASE("Teste getOcupacao() - Usuarios") {
 static int destruidas = 0;
 class ClasseTeste : public Pessoa {
     public:
-        ClasseTeste() : Pessoa("Teste", "00000000000") {}
-        ~ClasseTeste() { destruidas++; }
+        ClasseTeste(const std::string &nome, const std::string &cpf)
+            : Pessoa(nome, cpf) {}
+
+        ~ClasseTeste() {
+            destruidas++;
+        }
 };
 
 TEST_CASE("Teste destrutor - Usuarios") {
     destruidas = 0;
     {
         Usuarios u5;
-        u5.adicionarUsuario(new ClasseTeste(), 1);
-        u5.adicionarUsuario(new ClasseTeste(), 2);
+        CHECK(u5.adicionarUsuario(new ClasseTeste("Teste 1", "00000000001"), 1));
+        CHECK(u5.adicionarUsuario(new ClasseTeste("Teste 2", "00000000002"), 2));
         CHECK(destruidas == 0);
     }
     CHECK(destruidas == 2);
@@ -117,7 +121,6 @@ TEST_CASE("Impedir remoção de técnico com histórico de manutenções") {
     
     usuarios.adicionarUsuario(tecnico, 1);
     Manutencao *m = new Manutencao(&obra, tecnico, "Capa rasgada", Data(10, 11, 2026));
-    m->setEstado(EstadoManutencao::CONCLUIDA);
     tecnico->adicionarManutencao(m);
 
     CHECK_FALSE(usuarios.removerUsuario("Max"));

@@ -18,17 +18,17 @@
     }
 
     void Tratamento::setMaxString(int m) {
-        if (m < 0 || m > max_string) {
-            throw std::invalid_argument("Limite mínimo de caracteres inválido.");
+        if (m < min_string) {
+            throw std::invalid_argument("Limite máximo não pode ser menor que o mínimo.");
         }
-        min_string = m;
+        max_string = m;
     }
 
     void Tratamento::setMinString(int m) {
-        if (m < 0 || m < min_string) {
-            throw std::invalid_argument("Limite máximo de caracteres inválido.");
+        if (m < 0 || m > max_string) {
+            throw std::invalid_argument("Limite mínimo não pode ser maior que o máximo.");
         }
-        max_string = m;
+        min_string = m;
     }
 
     void Tratamento::setCaracterInvalidos(const std::string &c) {

@@ -142,6 +142,7 @@ TEST_CASE("Dados - salvarEmprestimos"){
 
         std::string testa = "11;3;3;2008;17;4;2008;1;0;";
         CHECK(txt == testa);
+        delete e1;
 
         SUBCASE("Empréstimo com renovação solicitada") {
             Professor p3(n1, cpf1, ar);

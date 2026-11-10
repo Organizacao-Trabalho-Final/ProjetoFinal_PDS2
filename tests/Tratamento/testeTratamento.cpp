@@ -123,7 +123,7 @@ TEST_CASE("Teste função somenteNumeros() e somenteNumerosEX() - Tratamento") {
 
 TEST_CASE("Teste função validarCPF() - Tratamento") {
     Tratamento t13;
-    CHECK(t13.validarCPF("12345678910") == true);
+    CHECK(t13.validarCPF("12345678909") == true);
     CHECK_THROWS(t13.validarCPF("1234567891"));
     CHECK_THROWS(t13.validarCPF("123456789101"));
     CHECK(t13.validarCPF("52998224725") == true);

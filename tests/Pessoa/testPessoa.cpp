@@ -47,6 +47,7 @@ TEST_CASE("Teste Pessoa - getNumEmprestimos"){
     SUBCASE("Caso com zero emprestimos"){
         CHECK(p2.getNumEmprestimos() == 0);
     }
+
     std::string ar = "fisica";
     Professor p3(n1, cpf1, ar);
     std::string t1 = "Confissoes";
@@ -56,17 +57,13 @@ TEST_CASE("Teste Pessoa - getNumEmprestimos"){
     int ed1 = 21;
     Livro A(t1, au1, id1, g1, ed1);
     Data d1(3, 3, 2008);
+
     Emprestimo* e1 = new Emprestimo(A, p3, d1);
-    std::cout << "apos e1: " << p3.getNumEmprestimos() << "\n";
     Emprestimo* e2 = new Emprestimo(A, p3, d1);
-    std::cout << "apos e2: " << p3.getNumEmprestimos() << "\n";
     Emprestimo* e3 = new Emprestimo(A, p3, d1);
-    std::cout << "apos e2: " << p3.getNumEmprestimos() << "\n";
-    Emprestimo* e4 = new Emprestimo(A, p3, d1);
-    std::cout << "apos e2: " << p3.getNumEmprestimos() << "\n";
     std::vector<Emprestimo*> e = {e1, e2, e3};
     p3.setEmprestimos(e);
-    std::cout << "apos set: " << p3.getNumEmprestimos() << "\n";
+
     SUBCASE("Caso com quantidade positiva de emprestimos"){
         CHECK(p3.getNumEmprestimos() == 3);
     }
@@ -298,12 +295,12 @@ TEST_CASE("Pessoa - podeEmprestar"){
     int id1 = 11;
     std::string g1 = "Romance";
     int ed1 = 21;
-    Livro* A = new Livro(t1, au1, id1, g1, ed1);
+    Livro A(t1, au1, id1, g1, ed1);
     Data d1(3, 3, 2008);
     Professor p3(n1, cpf1, ar);
 
     SUBCASE("Caso valido - diferente de nullptr e obra disponivel"){
-        CHECK(p3.podeEmprestar(A) == true);
+        CHECK(p3.podeEmprestar(&A) == true);
     }
 
     SUBCASE("Teste com obra nula"){
@@ -312,8 +309,8 @@ TEST_CASE("Pessoa - podeEmprestar"){
     }
 
     SUBCASE("Teste com obra indisponivel"){
-        A->setDisponivel(false);
-        CHECK(p3.podeEmprestar(A) == false);
+        A.setDisponivel(false);
+        CHECK(p3.podeEmprestar(&A) == false);
     }
 }
 
@@ -325,15 +322,15 @@ TEST_CASE("Pessoa - consultarAtivos"){
     int id1 = 11;
     std::string g1 = "Romance";
     int ed1 = 21;
-    Livro* A = new Livro(t1, au1, id1, g1, ed1);
+    Livro A(t1, au1, id1, g1, ed1);
     Data d1(3, 3, 2008);
     Professor p3(n1, cpf1, ar);
 
     SUBCASE("Emprestimos com 2 nullptr e 2 emprestimos ativos"){
         Emprestimo* e1 = nullptr;
         Emprestimo* e2 = nullptr;
-        Emprestimo* e3 = new Emprestimo(*A, p3, d1);
-        Emprestimo* e4 = new Emprestimo(*A, p3, d1);
+        Emprestimo* e3 = new Emprestimo(A, p3, d1);
+        Emprestimo* e4 = new Emprestimo(A, p3, d1);
 
         std::vector<Emprestimo*> e;
         e.push_back(e1);
@@ -352,10 +349,10 @@ TEST_CASE("Pessoa - consultarAtivos"){
     SUBCASE("Emprestimo com 2 emprestimos ativos e 2 emprestimos desativos"){
 
         std::vector<Emprestimo*> e;
-        Emprestimo* e1 = new Emprestimo(*A, p3, d1);
-        Emprestimo* e2 = new Emprestimo(*A, p3, d1);
-        Emprestimo* e3 = new Emprestimo(*A, p3, d1);
-        Emprestimo* e4 = new Emprestimo(*A, p3, d1);
+        Emprestimo* e1 = new Emprestimo(A, p3, d1);
+        Emprestimo* e2 = new Emprestimo(A, p3, d1);
+        Emprestimo* e3 = new Emprestimo(A, p3, d1);
+        Emprestimo* e4 = new Emprestimo(A, p3, d1);
         e.push_back(e1);
         e.push_back(e2);
         e.push_back(e3);
@@ -376,8 +373,8 @@ TEST_CASE("Pessoa - consultarAtivos"){
     SUBCASE("Caso valido - somente emprestimos ativos"){
 
         std::vector<Emprestimo*> e;
-        Emprestimo* e3 = new Emprestimo(*A, p3, d1);
-        Emprestimo* e4 = new Emprestimo(*A, p3, d1);
+        Emprestimo* e3 = new Emprestimo(A, p3, d1);
+        Emprestimo* e4 = new Emprestimo(A, p3, d1);
         e.push_back(e3);
         e.push_back(e4);
         p3.setEmprestimos(e);
@@ -402,7 +399,7 @@ TEST_CASE("historicoEmprestimos"){
     int id1 = 11;
     std::string g1 = "Romance";
     int ed1 = 21;
-    Livro* A = new Livro(t1, au1, id1, g1, ed1);
+    Livro A(t1, au1, id1, g1, ed1);
     Data d1(3, 3, 2008);
     Professor p3(n1, cpf1, ar);
 
@@ -413,7 +410,7 @@ TEST_CASE("historicoEmprestimos"){
         std::string pem;
         std::string obtido;
 
-        Emprestimo* e1 = new Emprestimo(*A, p3, d1);
+        Emprestimo* e1 = new Emprestimo(A, p3, d1);
         std::vector<Emprestimo*> e;
         e.push_back(e1);
         p3.setEmprestimos(e);
@@ -474,8 +471,8 @@ TEST_CASE("historicoEmprestimos"){
         std::string obtido;
         std::string pem2;
 
-        Emprestimo* e1 = new Emprestimo(*A, p3, d1);
-        Emprestimo* e2 = new Emprestimo(*A, p3, d1);
+        Emprestimo* e1 = new Emprestimo(A, p3, d1);
+        Emprestimo* e2 = new Emprestimo(A, p3, d1);
         std::vector<Emprestimo*> e;
         e.push_back(e1);
         e.push_back(e2);
@@ -511,7 +508,7 @@ TEST_CASE("Pessoa - registrarEmprestimo"){
     int id1 = 11;
     std::string g1 = "Romance";
     int ed1 = 21;
-    Livro* A = new Livro(t1, au1, id1, g1, ed1);
+    Livro A(t1, au1, id1, g1, ed1);
     Data d1(3, 3, 2008);
     Professor p3(n1, cpf1, ar);
 
@@ -520,7 +517,7 @@ TEST_CASE("Pessoa - registrarEmprestimo"){
     }
 
     SUBCASE("caso onde a pessoa ja possui aquele emprestimo"){
-        Emprestimo* e1 = new Emprestimo(*A, p3, d1);
+        Emprestimo* e1 = new Emprestimo(A, p3, d1);
         std::vector<Emprestimo*> e;
         e.push_back(e1);
         p3.setEmprestimos(e);
@@ -530,7 +527,7 @@ TEST_CASE("Pessoa - registrarEmprestimo"){
     }
 
     SUBCASE("Caso onde eh inserido um emprestimo novo"){
-        Emprestimo* e1 = new Emprestimo(*A, p3, d1);
+        Emprestimo* e1 = new Emprestimo(A, p3, d1);
         std::vector<Emprestimo*> e;
         e.push_back(e1);
         p3.registrarEmprestimo(e1);
