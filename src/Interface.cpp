@@ -2,6 +2,9 @@
 #include <string>
 #include <stdexcept>
 #include <limits>
+#include <vector>
+#include <ctime>
+#include <algorithm>
 #include "Interface.hpp"
 #include "Dados.hpp"
 #include "Tratamento.hpp"
@@ -44,6 +47,9 @@
                     for (Obra *o : obras) {
                         if (o != nullptr) {
                             o->printObra();
+                            std::cout << "Disponibilidade: " << (o->isDisponivel() ? "Disponível" : "Indisponível") << std::endl;
+                            std::cout << "Danificada: " << (o->isDanificado() ? "Sim" : "Não") << std::endl;
+                            std::cout << "Em manutenção: " << (o->isEmManutencao() ? "Sim\n" : "Não\n") << std::endl;
                         }
                     }
                 }
@@ -414,13 +420,49 @@
                     return n;
                 } catch (const std::invalid_argument &e) {
                     std::cout << e.what() << std::endl;
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                 }
             } else {
+                if (std::cin.eof()) {
+                    throw std::runtime_error("Entrada encerrada pelo usuário.");
+                }
                 std::cin.clear();
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                std::cout << "Entrada inválida. Digite um número.\n";
             }
         }
     }
+
+    std::string Interface::lerTexto(const std::string &msg) {
+        while (true) {
+            std::cout << msg;
+            std::string texto;
+            if (!std::getline(std::cin, texto)) {
+                throw std::runtime_error("Entrada encerrada pelo usuário.");
+            }
+            if (texto.find_first_not_of(" \t\n\r\f\v") == std::string::npos) {
+                std::cout << "O campo não pode ficar vazio. Tente novamente.\n";
+                continue;
+            }
+            const std::string textoLimpo = texto.substr(texto.find_first_not_of(" \t\n\r\f\v"), texto.find_last_not_of(" \t\n\r\f\v") - texto.find_first_not_of(" \t\n\r\f\v") + 1);
+            try {
+                tratamento.isCaracterValido(textoLimpo, ";", "Campo");
+                return textoLimpo;
+            } catch (const std::invalid_argument &e) {
+                std::cout << e.what() << "\n";
+            }
+        }
+    }
+
+    Data Interface::obterDataAtual() const {
+        const std::time_t agora = std::time(nullptr);
+        const std::tm *dataLocal = std::localtime(&agora);
+        if (dataLocal == nullptr) {
+            throw std::runtime_error("Não foi possível obter a data atual do computador.");
+        }
+        return Data(dataLocal->tm_mday, dataLocal->tm_mon + 1, dataLocal->tm_year + 1900);
+    }
+
     
     void Interface::executar() {
         int n;

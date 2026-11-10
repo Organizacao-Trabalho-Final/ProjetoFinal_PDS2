@@ -6,11 +6,17 @@
  * @brief Contrato da classe Interface.
  */
 
+#include <string>
 #include "Dados.hpp"
 #include "Tratamento.hpp"
+#include "Data.hpp"
 
 class Livro;
 class Artigo;
+class Pessoa;
+class Bibliotecario;
+class TecnicoManutencao;
+class Emprestimo;
 
 /**
  * @class Interface
@@ -78,6 +84,18 @@ class Interface {
          * @return Opção válida informada pelo usuário.
          */
         int lerOpcao(int min, int max);
+
+        /**
+         * @brief Lê e valida uma mensagem de texto.
+         * @return Data de hoje.
+         */
+        std::string lerTexto(const std::string &mensagem);
+
+        /**
+         * @brief Lê e retorna a data local do computador.
+         * @return String informada pelo usuário.
+         */
+        Data obterDataAtual() const;
 
     public:
         /**

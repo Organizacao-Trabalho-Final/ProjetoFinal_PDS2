@@ -8,11 +8,10 @@ OBJ_DIR = build
 LIBS = -I$(INC_DIR) -Ithird_party
 
 INCLUDE = $(wildcard $(INC_DIR)/*.hpp)
-SOURCE  = $(wildcard $(SRC_DIR)/*.cpp)
-OBJECTS = $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SOURCE))
-
-CORE_SOURCE = $(filter-out $(SRC_DIR)/main.cpp, $(SOURCE))
+CORE_SOURCE = $(wildcard $(SRC_DIR)/*.cpp)
 CORE_OBJECTS = $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(CORE_SOURCE))
+MAIN_OBJECTS = $(OBJ_DIR)/main.o
+OBJECTS = $(CORE_OBJECTS) $(MAIN_OBJECT)
 
 TEST_SOURCE = $(wildcard tests/*/*.cpp)
 TEST_TARGETS = $(patsubst tests/%.cpp, $(OBJ_DIR)/tests/%, $(TEST_SOURCE))
@@ -26,6 +25,9 @@ objects: $(OBJECTS)
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp $(INCLUDE) | $(OBJ_DIR)
 	$(CC) $(FLAGS) $(LIBS) $< -c -o $@
 
+$(MAIN_OBJECT): main.cpp $(INCLUDE) | $(OBJ_DIR)
+	$(CC) $(FLAGS) $(LIBS) $< -c -o $@
+	
 $(TARGET): $(OBJECTS)
 	$(CC) $(FLAGS) $(LIBS) $(OBJECTS) -o $@
 
@@ -34,7 +36,7 @@ $(OBJ_DIR)/tests/%: tests/%.cpp $(CORE_OBJECTS) $(INCLUDE)
 	$(CC) $(FLAGS) $(LIBS) $< $(CORE_OBJECTS) -o $@
 
 test: $(TEST_TARGETS)
-	@for teste in $(TEST_TARGETS); do ./$$teste || exit 1; done
+	@for teste in $(TEST_TARGETS); do echo "Executando $$teste"; ./$$teste || exit 1; done
 
 $(OBJ_DIR):
 	mkdir -p $(OBJ_DIR)
