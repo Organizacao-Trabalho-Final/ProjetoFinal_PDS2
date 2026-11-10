@@ -178,6 +178,27 @@ TEST_CASE("Teste de encaminharManutencao - Bibliotecario") {
         CHECK(t1.getManutencoes().size() == 1);
         CHECK(t2.getManutencoes().empty());
     }
+
+    SUBCASE("Encaminhamento de obra indisponivel") {
+        l6.setDanificado(true);
+        l6.setDisponivel(false);
+        Manutencao* m = b6.encaminharManutencao(&l6, &t1, "Capa rasgada", d6);
+
+        CHECK(m == nullptr);
+        CHECK(t1.getManutencoes().empty());
+        CHECK_FALSE(l6.isEmManutencao());
+    }
+
+    SUBCASE("Encaminhamento com descricao de dano vazia") {
+        l6.setDanificado(true);
+        Manutencao* m1 = b6.encaminharManutencao(&l6, &t1, "", d6);
+        CHECK(m1 == nullptr);
+
+        Manutencao* m2 = b6.encaminharManutencao(&l6, &t1, "   ", d6);
+        CHECK(m2 == nullptr);
+        CHECK(t1.getManutencoes().empty());
+        CHECK_FALSE(l6.isEmManutencao());
+    }
 }
 
 TEST_CASE("Bibliotecario respeita limite de emprestimos") {

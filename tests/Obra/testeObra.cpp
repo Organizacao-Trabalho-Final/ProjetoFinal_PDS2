@@ -35,6 +35,8 @@ TEST_CASE("Teste Setters e Getters - Obra") {
     CHECK_THROWS_AS(o3.setAutor(""), std::invalid_argument);
     CHECK(o3.getTitulo() == "Dom Casmurro");
     CHECK(o3.getAutor() == "Machado de Assis");
+    CHECK_THROWS_AS(o3.setTitulo("   "), std::invalid_argument);
+    CHECK_THROWS_AS(o3.setAutor("   "), std::invalid_argument);
 }
 
 TEST_CASE("Teste isDisponivel - Obra"){

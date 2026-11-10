@@ -24,7 +24,7 @@ struct capturaCout {
 };
 
 std::string n1 = "Wederley";
-std:: string cpf1 = "11122233344";
+std:: string cpf1 = "11122233396";
 Pessoa p1(n1, cpf1);
 TEST_CASE("Teste Pessoa - getNome"){
     CHECK(p1.getNome() == n1);
@@ -540,5 +540,8 @@ TEST_CASE("Pessoa - validação do construtor") {
     CHECK_THROWS_AS(Pessoa("", "11122233344"), std::invalid_argument);
     CHECK_THROWS_AS(Pessoa("Maria", ""), std::invalid_argument);
     CHECK_NOTHROW(Pessoa("Maria", "11122233344"));
-    
+    CHECK_THROWS_AS(Pessoa("Maria", "12345678900"), std::invalid_argument);
+    CHECK_THROWS_AS(Pessoa("   ", "12345678909"), std::invalid_argument);
+    CHECK_NOTHROW(Pessoa("Maria", "12345678909"));
+        
 }

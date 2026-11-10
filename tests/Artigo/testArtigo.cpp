@@ -98,6 +98,7 @@ TEST_CASE("Artigo - setArea"){
     CHECK(a->getArea() == "ingles");
     CHECK_THROWS_AS(a->setArea(""), std::invalid_argument);
     CHECK(a->getArea() == "ingles");
+    CHECK_THROWS_AS(a->setArea("   "), std::invalid_argument);
     
     delete a;
 }

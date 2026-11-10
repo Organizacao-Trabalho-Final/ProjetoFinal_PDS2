@@ -55,11 +55,11 @@
         if (o == nullptr || tm == nullptr) {
             return nullptr;
         }
-        if (o->isDanificado() && !o->isEmManutencao()) {
-            Manutencao* m = new Manutencao(o, tm, dano, i);
-            tm->adicionarManutencao(m);
-            o->setDisponivel(false);
-            return m;
+        if (!o->isDanificado() || !o->isDisponivel() || o->isEmManutencao() || dano.find_first_not_of(" \t\n\r") == std::string::npos) {
+            return nullptr;
         }
-        return nullptr;
+        Manutencao* m = new Manutencao(o, tm, dano, i);
+        tm->adicionarManutencao(m);
+        o->setDisponivel(false);
+        return m;
     }

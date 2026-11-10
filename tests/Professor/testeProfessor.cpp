@@ -9,13 +9,14 @@
 #include "Obra.hpp"
 #include "Livro.hpp"
 
-Professor prof("Juriscreudo", "11122233344", "matematica");
+Professor prof("Juriscreudo", "98765432100", "matematica");
 std::string nome = "girafales";
-std::string cpf = "1234567890";
+std::string cpf1 = "12345678909";
+std::string cpf2 = "52998224725";
 std::string a = "biologia";
 std::string ab = "historia";
-Professor profa(nome, cpf, a);
-Professor profs(nome, cpf, ab);
+Professor profa(nome, cpf1, a);
+Professor profs(nome, cpf2, ab);
 TEST_CASE("Teste Professor - getArea"){
     CHECK(prof.getArea() == "matematica");
     CHECK(profa.getArea() == a);
@@ -46,7 +47,7 @@ TEST_CASE("Teste Professor - podeEmprestar"){
     Livro* G = nullptr;
 
     Data d(3, 3, 2008);
-    Professor profj("fulano", "22233344455", "fisica");
+    Professor profj("fulano", "22233344405", "fisica");
 
     SUBCASE("Caso Valido"){
         profj.registrarEmprestimo(new Emprestimo(A, profj, d));
@@ -78,7 +79,8 @@ TEST_CASE("Teste Professor - podeEmprestar"){
 
 TEST_CASE("Professor - validação do construtor") {
 
-    CHECK_THROWS_AS(Professor("Maria", "12345678901", ""), std::invalid_argument);
-    CHECK_NOTHROW(Professor("Maria", "12345678901", "Matemática"));
+    CHECK_THROWS_AS(Professor("Maria", "52998224725", ""), std::invalid_argument);
+    CHECK_THROWS_AS(Professor("Maria", "12345678901", "Matemática"), std::invalid_argument);
+    CHECK_NOTHROW(Professor("Maria", "98765432100", "Matemática"));
 
 }

@@ -6,15 +6,13 @@
 #include "Obra.hpp"
 #include "Pessoa.hpp"
 #include "Emprestimo.hpp"
+#include "Tratamento.hpp"
 
     Pessoa::Pessoa(const std::string &n, const std::string &c):
     nome(n), CPF(c) {
-        if (nome.empty()) {
-            throw std::invalid_argument("Nome não pode ser vazio.");
-        }
-        if (CPF.empty()) {
-            throw std::invalid_argument("CPF não pode ser vazio.");
-        }
+        Tratamento tratamento;
+        tratamento.isStringValido(nome, 1, 50, false, "Nome");
+        tratamento.validarCPF(CPF);
     }
 
     std::string Pessoa::getNome() const {

@@ -67,6 +67,7 @@ TEST_CASE("Livro - setGenero"){
     CHECK(i.getGenero() == "Ficcao");
     CHECK_THROWS_AS(i.setGenero(""), std::invalid_argument);
     CHECK(i.getGenero() == "Ficcao");
+    CHECK_THROWS_AS(i.setGenero("   "), std::invalid_argument);
 
 }
 

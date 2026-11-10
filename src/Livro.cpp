@@ -2,12 +2,12 @@
 #include <iostream>
 #include <string>
 #include "Livro.hpp"
+#include "Tratamento.hpp"
 
     Livro::Livro(const std::string &t, const std::string &a, int id, const std::string &g, int e):
     Obra(t, a, id), genero(g), edicao(e) {
-        if (genero.empty()) {
-            throw std::invalid_argument("Gênero do livro não pode ser vazio.");
-        }
+        Tratamento tratamento;
+        tratamento.isStringValido(genero, 1, 50, true, "Gênero");
         if (e <= 0) {
             throw std::invalid_argument("Edicao deve ser maior que zero.");
         }
@@ -15,15 +15,14 @@
 
     void Livro::setEdicao(int e) {
         if (e <= 0) {
-            throw std::invalid_argument("Edicao deve ser maior que zero");
+            throw std::invalid_argument("Edição deve ser maior que zero");
         }
         edicao = e;
     }
     
     void Livro::setGenero(const std::string &g) {
-        if (g.empty()) {
-            throw std::invalid_argument("Gênero do livro não pode ser vazio.");
-        }
+        Tratamento tratamento;
+        tratamento.isStringValido(g, 1, 50, true, "Gênero");
         genero = g;
     }
 

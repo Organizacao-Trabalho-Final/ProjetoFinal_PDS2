@@ -3,15 +3,13 @@
 #include "Estudante.hpp"
 #include "Obra.hpp"
 #include "Livro.hpp"
+#include "Tratamento.hpp"
 
     Estudante::Estudante(const std::string &n, const std::string &cpf, const std::string &c, const std::string &m):
     Pessoa(n, cpf), curso(c), matricula(m) {
-        if (curso.empty()) {
-            throw std::invalid_argument("Curso do estudante não pode ser vazio.");
-        }
-        if (matricula.empty()) {
-            throw std::invalid_argument("Matrícula do estudante não pode ser vazia.");
-        }
+        Tratamento tratamento;
+        tratamento.isStringValido(curso, 1, 50, true, "Curso");
+        tratamento.validarMatricula(matricula);
     }
 
     std::string Estudante::getCurso() const {

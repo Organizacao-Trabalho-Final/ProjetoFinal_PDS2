@@ -15,9 +15,9 @@
 TEST_CASE("Estudante - getCurso"){
 
     std::string n1 = "Daniel";
-    std::string cpf = "11122233344";
+    std::string cpf = "11122233396";
     std::string c = "Matematica";
-    std::string m = "111";
+    std::string m = "2026021111";
 
     Estudante e(n1, cpf, c, m);
 
@@ -137,5 +137,7 @@ TEST_CASE("Estudante - validação do construtor") {
     CHECK_THROWS_AS(Estudante("Daniel", "11122233344", "", "111"), std::invalid_argument);
     CHECK_THROWS_AS(Estudante("Daniel", "11122233344", "Matemática", ""), std::invalid_argument);
     CHECK_NOTHROW(Estudante("Daniel", "11122233344", "Matemática", "111"));
+    CHECK_THROWS_AS(Estudante("Daniel", "11122233396", "   ", "2026021111"), std::invalid_argument);
+    CHECK_THROWS_AS(Estudante("Daniel", "11122233396", "Matemática", "123"), std::invalid_argument);
 
 }

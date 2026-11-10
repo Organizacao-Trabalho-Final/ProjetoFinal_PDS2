@@ -63,7 +63,7 @@
     }
 
     bool Tratamento::isVazio(const std::string &s, std::string tipo) {
-        if(s.empty()) {
+        if(s.find_first_not_of(" \t\n\r\f\v") == std::string::npos) {
             throw std::invalid_argument(tipo + " não pode estar vazio.");
         }
         return false;
