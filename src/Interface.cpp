@@ -737,6 +737,12 @@
             return;
         }
 
+        std::cout << "\nConfirmar aprovação do empréstimo? (1 - Sim / 0 - Não): ";
+        if (lerOpcao(0, 1) == 0) {
+            std::cout << "Empréstimo cancelado." << std::endl;
+            return;
+        }
+
         Emprestimo *ep = b->aprovarEmprestimo(u, o, obterDataAtual());
         if (ep == nullptr) {
             std::cout << "O empréstimo não pôde ser aprovado. Verifique as regras de empréstimo." << std::endl;
