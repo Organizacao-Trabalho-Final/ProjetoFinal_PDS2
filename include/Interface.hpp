@@ -19,7 +19,6 @@ class TecnicoManutencao;
 class Emprestimo;
 class Obra;
 class Manutencao;
-enum class EstadoManutencao;
 
 /**
  * @class Interface
@@ -32,6 +31,27 @@ class Interface {
     private:
         Dados *dados; ///> ponteiro para o gerenciamento dos dados.
         Tratamento tratamento; ///> objeto para validação das entradas do usuário.
+
+        /**
+         * @brief Lê e valida uma opção numérica dentro de um intervalo.
+         * @param min Valor mínimo.
+         * @param max Valor máximo.
+         * @return Opção válida informada pelo usuário.
+         */
+        int lerOpcao(int min, int max);
+
+        /**
+         * @brief Lê e valida uma mensagem de texto.
+         * @param msg Mensagem exibida antes da leitura.
+         * @return Texto informado pelo usuário, limpo.
+         */
+        std::string lerTexto(const std::string &msg);
+
+        /**
+         * @brief Obtém a data local do computador.
+         * @return Objeto Data do dia de hoje.
+         */
+        Data obterDataAtual() const;
 
          /**
          * @brief Exibe e gerencia o menu de operações relacionadas às obras.
@@ -106,32 +126,26 @@ class Interface {
         void aprovarRenovacao();
 
         /**
-         * @brief Lê e valida uma opção numérica dentro de um intervalo.
-         * @param min Valor mínimo.
-         * @param max Valor máximo.
-         * @return Opção válida informada pelo usuário.
+         * @brief Verifica se a obra está vinculada a algum empréstimo ativo.
          */
-        int lerOpcao(int min, int max);
+        bool temEmprestimoAtivo(Obra *o) const;
 
         /**
-         * @brief Lê e valida uma mensagem de texto.
-         * @param msg Mensagem exibida antes da leitura.
-         * @return Texto informado pelo usuário, limpo.
+         * @brief Encaminha uma obra danificada para um técnico de manutenção.
          */
-        std::string lerTexto(const std::string &msg);
+        void encaminharManutencao();
 
         /**
-         * @brief Obtém a data local do computador.
-         * @return Objeto Data do dia de hoje.
+         * @brief Exibe as manutenções associadas a um técnico de manutenção.
          */
-        Data obterDataAtual() const;
+        void consultarManutencoes();
 
         /**
          * @brief Exibe os dados de um usuário cadastrado.
          * @param p Ponteiro para o usuário cujas informações serão exibidas.
          * @param id Número de identificação do usuário.
          */
-        void Interface::printUsuario(Pessoa *p, int id) const;
+        void printUsuario(Pessoa *p, int id) const;
 
         /**
          * @brief Localiza um bibliotecário pelo CPF informado.
@@ -153,6 +167,15 @@ class Interface {
          * @return Ponteiro para o empréstimo selecionado ou nullptr caso não existam opções.
          */
         Emprestimo* selecionarEmprestimo(Pessoa *p, bool ativos, bool pendentes = false);
+
+        /**
+         * @brief Seleciona uma manutenção de acordo com seu estado.
+         * @param tm Ponteiro para o técnico responsável pelas manutenções.
+         * @param pendentes Se true, exibe somente manutenções pendentes.
+         * @param emAndamento Se true, exibe somente manutenções em andamento.
+         * @return Ponteiro para a manutenção selecionada ou nullptr caso não existam opções.
+         */
+        Manutencao* selecionarManutencao(TecnicoManutencao *tm, bool pendentes, bool emAndamento);
 
     public:
         /**

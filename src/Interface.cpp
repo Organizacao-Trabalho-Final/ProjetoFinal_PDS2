@@ -28,6 +28,59 @@
         }
     }
 
+    int Interface::lerOpcao(int min, int max) {
+        int n;
+        while (true) {
+            if (std::cin >> n) {
+                try {
+                    tratamento.isNumeroValido(n, min, max, "Opção");
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                    return n;
+                } catch (const std::invalid_argument &e) {
+                    std::cout << e.what() << std::endl;
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                }
+            } else {
+                if (std::cin.eof()) {
+                    throw std::runtime_error("Entrada encerrada pelo usuário.");
+                }
+                std::cin.clear();
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                std::cout << "Entrada inválida. Digite um número." << std::endl;
+            }
+        }
+    }
+
+    std::string Interface::lerTexto(const std::string &msg) {
+        while (true) {
+            std::cout << msg << std::endl;
+            std::string texto;
+            if (!std::getline(std::cin, texto)) {
+                throw std::runtime_error("Entrada encerrada pelo usuário.");
+            }
+            if (texto.find_first_not_of(" \t\n\r\f\v") == std::string::npos) {
+                std::cout << "O campo não pode ficar vazio. Tente novamente." << std::endl;
+                continue;
+            }
+            std::string limpo = texto.substr(texto.find_first_not_of(" \t\n\r\f\v"), texto.find_last_not_of(" \t\n\r\f\v") - texto.find_first_not_of(" \t\n\r\f\v") + 1);
+            try {
+                tratamento.isCaracterValido(limpo, ";", "Campo");
+                return limpo;
+            } catch (const std::invalid_argument &e) {
+                std::cout << e.what() << std::endl;
+            }
+        }
+    }
+
+    Data Interface::obterDataAtual() const {
+        const std::time_t agora = std::time(nullptr);
+        const std::tm *dataLocal = std::localtime(&agora);
+        if (dataLocal == nullptr) {
+            throw std::runtime_error("Não foi possível obter a data atual do computador.");
+        }
+        return Data(dataLocal->tm_mday, dataLocal->tm_mon + 1, dataLocal->tm_year + 1900);
+    }
+
     void Interface::executar() {
         int n;
         do {
@@ -220,7 +273,7 @@
                     if (e == nullptr) {
                         continue;
                     }
-                    std::cout << "\n========================================" << std::endl;
+                    std::cout << "========================================" << std::endl;
                     e->printEmprestimo();
                     if (e->isAtivo()) {
                         std::cout << "Atraso: " << e->getAtraso(hj) << " dia(s)." << std::endl;
@@ -270,26 +323,63 @@
         int n;
         do {
             std::cout << "========== MENU DE MANUTENÇÕES ==========\n" << std::endl;
-            std::cout << "1 - Encaminhar para manutenção\n2 - Consultar manutenção\n3 - Concluir manutenção\n0 - Voltar\n\nOpção:" << std::endl;
+            std::cout << "1 - Encaminhar para manutenção\n2 - Consultar manutenção\n3 - Iniciar manutenção\n4 - Concluir manutenção\n0 - Voltar\n\nOpção:" << std::endl;
         
-            n = lerOpcao(0, 3);
+            n = lerOpcao(0, 4);
             switch (n)
             {
             case 0:
                 return;
             
             case 1:
-                
+                encaminharManutencao();
                 break;
 
             case 2:
-                
+                consultarManutencoes();
                 break;
-            
-            case 3:
-                
+
+            case 3: {
+                TecnicoManutencao *tm = selecionarTecnico();
+                if (tm == nullptr) {
+                    return;
+                }
+
+                Manutencao *m = selecionarManutencao(tm, true, false);
+                if (m == nullptr) {
+                    return;
+                }
+
+                m->iniciar();
+                if (m->getEstado() == EstadoManutencao::EM_ANDAMENTO) {
+                    std::cout << "Manutenção iniciada." << std::endl;
+                } else {
+                    std::cout << "Não foi possível iniciar a manutenção." << std::endl;
+                }
                 break;
+            }
             
+            case 4: {
+                TecnicoManutencao *tm = selecionarTecnico();
+                if (tm == nullptr) {
+                    return;
+                }
+
+                Manutencao *m = selecionarManutencao(tm, false, true);
+                if (m == nullptr) {
+                    return;
+                }
+
+                const std::string reparo = lerTexto("Descreva o reparo realizado: ");
+                tm->registrarReparo(m, reparo);
+                tm->concluirManutencao(m);
+                if (m->getEstado() == EstadoManutencao::CONCLUIDA) {
+                    std::cout << "Manutenção concluída. A obra está novamente disponível." << std::endl;
+                } else {
+                    std::cout << "Não foi possível concluir a manutenção." << std::endl;
+                }
+            }
+
             default:
                 break;
             }
@@ -336,7 +426,7 @@
             }
             
             case 3: {
-                std::cout << "Digite o ID da obra: ";
+                std::cout << "Digite o ID da obra: " << std::endl;
                 int id = lerOpcao(1, std::numeric_limits<int>::max());
                 Obra *o = dados->getCatalogo()->buscarPorId(id);
                 if (o != nullptr) {
@@ -387,12 +477,12 @@
 
             if (n == 1) {
                 const std::string genero = lerTexto("Digite o gênero: ");
-                std::cout << "Digite a edição: ";
+                std::cout << "Digite a edição: " << std::endl;
                 const int edicao = lerOpcao(1, std::numeric_limits<int>::max());
                 nova = new Livro(titulo, autor, id, genero, edicao);
             } else if (n == 2) {
                 const std::string area = lerTexto("Digite a área: ");
-                std::cout << "Digite o ano de publicação: ";
+                std::cout << "Digite o ano de publicação: " << std::endl;
                 const int ano = lerOpcao(1, 9999);
                 nova = new Artigo(titulo, autor, id, area, ano);
             } else std::cout << "Não foi possível cadastrar a obra." << std::endl;
@@ -440,7 +530,7 @@
                 }
 
                 case 4: {
-                    std::cout << "Digite a nova edição: ";
+                    std::cout << "Digite a nova edição: " << std::endl;
                     l->setEdicao(lerOpcao(1, std::numeric_limits<int>::max()));
                     break;
                 }
@@ -488,7 +578,7 @@
                 }
 
                 case 4: {
-                    std::cout << "Digite o novo ano de publicação: ";
+                    std::cout << "Digite o novo ano de publicação: " << std::endl;
                     a->setAno(lerOpcao(1, 9999));
                     break;
                 }
@@ -522,7 +612,7 @@
 
             if (n == 1) {
                 std::string curso = lerTexto("Curso: ");
-                std::string matricula = lerTexto("Matrícul: ");
+                std::string matricula = lerTexto("Matrícula: ");
                 novo = new Estudante(nome, cpf, curso, matricula);
             } else if (n == 2) {
                 std::string area = lerTexto("Área de atuação: ");
@@ -568,7 +658,7 @@
         }
 
         case 3: {
-            std::cout << "ID: ";
+            std::cout << "ID: " << std::endl;
             p = dados->getUsuarios()->buscarUsuarioId(lerOpcao(1, std::numeric_limits<int>::max()));
             break;
         }
@@ -589,7 +679,7 @@
             return;
         }
 
-        std::cout << "ID da obra: ";
+        std::cout << "ID da obra: " << std::endl;
         Obra *o = dados->getCatalogo()->buscarPorId(lerOpcao(1, std::numeric_limits<int>::max()));
         if (o == nullptr) {
             std::cout << "Obra não encontrada." << std::endl;
@@ -660,7 +750,7 @@
             return;
         }
 
-        std::cout << "A obra retornou danificada? (1 - Sim / 0 - Não): ";
+        std::cout << "A obra retornou danificada? (1 - Sim / 0 - Não): " << std::endl;
         bool danificada = lerOpcao(0, 1) == 1;
         e->getObra().setDanificado(danificada);
 
@@ -697,64 +787,96 @@
         }
     }
 
-    int Interface::lerOpcao(int min, int max) {
-        int n;
-        while (true) {
-            if (std::cin >> n) {
-                try {
-                    tratamento.isNumeroValido(n, min, max, "Opção");
-                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                    return n;
-                } catch (const std::invalid_argument &e) {
-                    std::cout << e.what() << std::endl;
-                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                }
-            } else {
-                if (std::cin.eof()) {
-                    throw std::runtime_error("Entrada encerrada pelo usuário.");
-                }
-                std::cin.clear();
-                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                std::cout << "Entrada inválida. Digite um número." << std::endl;
+    bool Interface::temEmprestimoAtivo(Obra *o) const {
+        if (o == nullptr) return false;
+        const std::vector<std::pair<Pessoa*, int> > &usuarios = dados->getUsuarios()->getUsuarios();
+        for (const auto &reg : usuarios) {
+            if (reg.first == nullptr) continue;
+            for (Emprestimo *e : reg.first->getEmprestimos()) {
+                if (e != nullptr && e->isAtivo() && &e->getObra() == o) return true;
             }
+        }
+        return false;
+    }
+
+    void Interface::encaminharManutencao() {
+        std::cout << "ID da obra: " << std::endl;
+        Obra *o = dados->getCatalogo()->buscarPorId(lerOpcao(1, std::numeric_limits<int>::max()));
+        if (o == nullptr) {
+            std::cout << "Obra não encontrada." << std::endl;
+            return;
+        }
+        if (o->isEmManutencao() || temEmprestimoAtivo(o)) {
+            std::cout << "A obra está emprestada ou já possui uma manutenção em andamento." << std::endl;
+            return;
+        }
+
+        Bibliotecario *b = selecionarBibliotecario();
+        if (b == nullptr) {
+            return;
+        }
+        TecnicoManutencao *tm = selecionarTecnico();
+        if (tm == nullptr) {
+            return;
+        }
+
+        std::string dano = lerTexto("Descreva o dano identificado: ");
+        bool d = o->isDanificado();
+        bool disp = o->isDisponivel();
+        
+        o->setDanificado(true);
+        if (!o->isDisponivel()) {
+            o->setDisponivel(true);
+        }
+
+        Manutencao *m = b->encaminharManutencao(o, tm, dano, obterDataAtual());
+        if (m != nullptr) {
+            std::cout << "Obra encaminhada para manutenção. Ela permanecerá indisponível até a conclusão do reparo." << std::endl;
+        } else {
+            o->setDisponivel(disp);
+            o->setDanificado(d);
+            std::cout << "Não foi possível encaminhar a obra para manutenção." << std::endl;
         }
     }
 
-    std::string Interface::lerTexto(const std::string &msg) {
-        while (true) {
-            std::cout << msg;
-            std::string texto;
-            if (!std::getline(std::cin, texto)) {
-                throw std::runtime_error("Entrada encerrada pelo usuário.");
-            }
-            if (texto.find_first_not_of(" \t\n\r\f\v") == std::string::npos) {
-                std::cout << "O campo não pode ficar vazio. Tente novamente." << std::endl;
+    void Interface::consultarManutencoes() {
+        TecnicoManutencao *tm = selecionarTecnico();
+        if (tm == nullptr) {
+            return;
+        }
+
+        const std::vector<Manutencao*> &manutencoes = tm->getManutencoes();
+        std::cout << "Manutenções pendentes: " << tm->consultarManutencoesPendentes() << std::endl;
+        std::cout << "Total de manutenções: " << manutencoes.size() << std::endl;
+        if (manutencoes.empty()) {
+            std::cout << "Nenhuma manutenção registrada para esse técnico." << std::endl;
+            return;
+        }
+
+        for (std::size_t i = 0; i < manutencoes.size(); ++i) {
+            Manutencao *m = manutencoes[i];
+            if (m == nullptr || m->getObra() == nullptr) {
                 continue;
             }
-            std::string limpo = texto.substr(texto.find_first_not_of(" \t\n\r\f\v"), texto.find_last_not_of(" \t\n\r\f\v") - texto.find_first_not_of(" \t\n\r\f\v") + 1);
-            try {
-                tratamento.isCaracterValido(limpo, ";", "Campo");
-                return limpo;
-            } catch (const std::invalid_argument &e) {
-                std::cout << e.what() << "\n";
-            }
-        }
-    }
 
-    Data Interface::obterDataAtual() const {
-        const std::time_t agora = std::time(nullptr);
-        const std::tm *dataLocal = std::localtime(&agora);
-        if (dataLocal == nullptr) {
-            throw std::runtime_error("Não foi possível obter a data atual do computador.");
+            std::string estado;
+            if (m->getEstado() == EstadoManutencao::PENDENTE) {
+                estado = "Pendente";
+            } else if (m->getEstado() == EstadoManutencao::EM_ANDAMENTO) {
+                estado = "Em andamento";
+            } else estado = "Concluída";
+
+            std::cout << i + 1 << " - Obra: " << m->getObra()->getTitulo() << " (ID " << m->getObra()->getID() << ")" << std::endl;
+            std::cout << "Dano: " << m->getDano() << " | Reparo: " << (m->getReparo().empty() ? "Não registrado" : m->getReparo()) << " | Estado: " << estado << std::endl;
+            std::cout << "Início: " << m->getInicio().getData() << std::endl;
         }
-        return Data(dataLocal->tm_mday, dataLocal->tm_mon + 1, dataLocal->tm_year + 1900);
     }
 
     void Interface::printUsuario(Pessoa *p, int id) const {
         if (p == nullptr) {
             return;
         }
-        std::cout << "\n========================================" << std::endl;
+        std::cout << "========================================" << std::endl;
         std::cout << "ID: " << id << "\nNome: " << p->getNome() << "\nCPF: " << p->getCPF() << std::endl;
         if (Estudante *e = dynamic_cast<Estudante*>(p)) {
             std::cout << "Categoria: Estudante\n" << "Curso: " << e->getCurso() << "\nMatrícula: " << e->getMatricula() << std::endl;
@@ -776,7 +898,7 @@
 
         Bibliotecario *b = dynamic_cast<Bibliotecario*>(p);
         if (b == nullptr) {
-            std::cout << "Bibliotecário não encontrado. " << "Cadastre ou informe um CPF válido." << std::endl;
+            std::cout << "Bibliotecário não encontrado." << std::endl;
         }
         return b;
     }
@@ -817,7 +939,7 @@
             return nullptr;
         }
 
-        std::cout << "\nEmpréstimos encontrados:" << std::endl;
+        std::cout << "Empréstimos encontrados:" << std::endl;
         for (std::size_t i = 0; i < opcoes.size(); ++i) {
             Emprestimo *e = opcoes[i];
 
@@ -830,7 +952,43 @@
             }
         }
 
-        std::cout << "Selecione o empréstimo (0 para cancelar): ";
+        std::cout << "Selecione o empréstimo (0 para cancelar): " << std::endl;
+        int n = lerOpcao(0, static_cast<int>(opcoes.size()));
+        if (n == 0) {
+            return nullptr;
+        }
+        return opcoes[static_cast<std::size_t>(n - 1)];
+    }
+
+    Manutencao* Interface::selecionarManutencao(TecnicoManutencao *tm, bool pendentes, bool emAndamento) {
+        if (tm == nullptr) {
+            return nullptr;
+        }
+
+        std::vector<Manutencao*> opcoes;
+        for (Manutencao *m : tm->getManutencoes()) {
+            if (m == nullptr || m->getObra() == nullptr) {
+                continue;
+            }
+            if (pendentes && m->getEstado() != EstadoManutencao::PENDENTE) {
+                continue;
+            }
+            if (emAndamento && m->getEstado() != EstadoManutencao::EM_ANDAMENTO) {
+                continue;
+            }
+            opcoes.push_back(m);
+        }
+        if (opcoes.empty()) {
+            std::cout << "Nenhuma manutenção correspondente foi encontrada." << std::endl;
+            return nullptr;
+        }
+
+        for (std::size_t i = 0; i < opcoes.size(); ++i) {
+            Manutencao *m = opcoes[i];
+            std::cout << i + 1 << " - " << m->getObra()->getTitulo() << " (ID " << m->getObra()->getID() << ")" << std::endl;
+        }
+
+        std::cout << "Selecione a manutenção (0 para cancelar): " << std::endl;
         int n = lerOpcao(0, static_cast<int>(opcoes.size()));
         if (n == 0) {
             return nullptr;
