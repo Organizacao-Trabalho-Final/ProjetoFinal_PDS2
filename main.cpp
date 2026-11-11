@@ -8,7 +8,10 @@
 int main() {
     try {
         Dados dados(new Usuarios(), new Catalogo());
-        dados.carregarDados();
+        
+        if (!dados.carregarDados()) {
+            return 1;
+        }
 
         Interface interface(&dados);
         interface.executar();

@@ -86,8 +86,9 @@ class Dados {
 
         /**
          * @brief Carrega os dados de usuários e catálogos a partir de um arquivo .txt
+         * @return true caso os dados sejam carregados com sucesso, false caso contrário.
          */
-        void carregarDados();
+        bool carregarDados();
 
         /**
          * @brief Remove uma obra do catálogo, caso não existam registros associados a ela.

@@ -11,7 +11,7 @@ INCLUDE = $(wildcard $(INC_DIR)/*.hpp)
 CORE_SOURCE = $(wildcard $(SRC_DIR)/*.cpp)
 CORE_OBJECTS = $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(CORE_SOURCE))
 MAIN_OBJECTS = $(OBJ_DIR)/main.o
-OBJECTS = $(CORE_OBJECTS) $(MAIN_OBJECT)
+OBJECTS = $(CORE_OBJECTS) $(MAIN_OBJECTS)
 
 TEST_SOURCE = $(wildcard tests/*/*.cpp)
 TEST_TARGETS = $(patsubst tests/%.cpp, $(OBJ_DIR)/tests/%, $(TEST_SOURCE))
@@ -25,7 +25,7 @@ objects: $(OBJECTS)
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp $(INCLUDE) | $(OBJ_DIR)
 	$(CC) $(FLAGS) $(LIBS) $< -c -o $@
 
-$(MAIN_OBJECT): main.cpp $(INCLUDE) | $(OBJ_DIR)
+$(MAIN_OBJECTS): main.cpp $(INCLUDE) | $(OBJ_DIR)
 	$(CC) $(FLAGS) $(LIBS) $< -c -o $@
 	
 $(TARGET): $(OBJECTS)

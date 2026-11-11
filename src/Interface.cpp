@@ -342,12 +342,12 @@
             case 3: {
                 TecnicoManutencao *tm = selecionarTecnico();
                 if (tm == nullptr) {
-                    return;
+                    break;
                 }
 
                 Manutencao *m = selecionarManutencao(tm, true, false);
                 if (m == nullptr) {
-                    return;
+                    break;
                 }
 
                 m->iniciar();
@@ -362,12 +362,12 @@
             case 4: {
                 TecnicoManutencao *tm = selecionarTecnico();
                 if (tm == nullptr) {
-                    return;
+                    break;
                 }
 
                 Manutencao *m = selecionarManutencao(tm, false, true);
                 if (m == nullptr) {
-                    return;
+                    break;
                 }
 
                 const std::string reparo = lerTexto("Descreva o reparo realizado: ");
@@ -378,6 +378,7 @@
                 } else {
                     std::cout << "Não foi possível concluir a manutenção." << std::endl;
                 }
+                break;
             }
 
             default:
@@ -665,6 +666,18 @@
         
         default:
             break;
+        }
+
+        if (p == nullptr) {
+            std::cout << "Usuário não encontrado." << std::endl;
+            return;
+        }
+
+        for (const auto &reg : dados->getUsuarios()->getUsuarios()) {
+            if (reg.first == p) {
+                printUsuario(p, reg.second);
+                return;
+            }
         }
     }
 

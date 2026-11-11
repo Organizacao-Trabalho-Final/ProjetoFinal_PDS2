@@ -531,16 +531,20 @@ TEST_CASE("Dados - salvarDados"){
         Professor p3(n1, cpf1, ar);
 
         Obra* orb = new obraDesconhecida(t1, au1, id1);
-
         ca1->cadastrarObra(orb);
+        
+        std::stringstream cap;
+        std::streambuf* original = std::cerr.rdbuf(cap.rdbuf());
         da1.salvarDados();
+        std::cerr.rdbuf(original);
 
         std::ifstream in("obras.txt");
         std::stringstream buffer;
         buffer << in.rdbuf();
         const std::string ver = buffer.str();
 
-        CHECK(ver == "Tipo de obra desconhecido. Não foi possível salvar os dados.\n");
+        CHECK(ver == "ProximoId;12\n");
+        CHECK(cap.str() == "Tipo de obra desconhecido. Não foi possível salvar os dados.\n");
     }
 
     SUBCASE("Caso com Professor"){
@@ -640,8 +644,6 @@ TEST_CASE("Dados - carregarDados"){
     std::string t1 = "Confissoes";
     std::string au1 = "S.A";
     int id1 = 11;
-    int id2 = 12;
-    int id3 = 13;
     std::string g1 = "Romance";
     int ed1 = 21;
     Livro A(t1, au1, id1, g1, ed1);
@@ -903,7 +905,7 @@ TEST_CASE("Dados - carregarDados"){
         le << cap.rdbuf();
         std::string txt = le.str();
 
-        CHECK(txt.find("Obra não encontrada ao carregar manutenção: \n") != std::string::npos);
+        CHECK(txt.find("Obra não encontrada ao carregar manutenção: 11\n") != std::string::npos);
     }
 
     SUBCASE("Caso com estado de manutencao invalida"){
@@ -1216,7 +1218,7 @@ TEST_CASE("Impedir remoção de obra com manutenção") {
     Livro *obra = new Livro("Calculo", "Stewart", 11, "Didatico", 1);
     REQUIRE(catalogo->cadastrarObra(obra));
 
-    TecnicoManutencao *tecnico = new TecnicoManutencao("Carlos", "12345678901");
+    TecnicoManutencao *tecnico = new TecnicoManutencao("Carlos", "52998224725");
     usuarios->adicionarUsuario(tecnico, 1);
 
     Manutencao *m = new Manutencao(obra, tecnico, "Capa rasgada", Data(10, 11, 2026));

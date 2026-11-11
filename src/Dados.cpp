@@ -276,14 +276,15 @@
         }
     }
 
-    void Dados::carregarDados() {
+    bool Dados::carregarDados() {
         Dados temp(new Usuarios(), new Catalogo());
         if (!temp.carregarDadosInterno()) {
             std::cerr << "Falha no carregamento. Os dados atuais foram preservados." << std::endl;
-            return;
+            return false;
         }
         std::swap(usuarios, temp.usuarios);
         std::swap(catalogo, temp.catalogo);
+        return true;
     }
 
     bool Dados::carregarDadosInterno() {
