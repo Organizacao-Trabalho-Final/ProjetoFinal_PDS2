@@ -20,6 +20,7 @@
 #include "Professor.hpp"
 #include "Bibliotecario.hpp"
 #include "TecnicoManutencao.hpp"
+#include "Manutencao.hpp"
     
     Interface::Interface(Dados *d): dados(d) {
         if (d == nullptr) {
@@ -189,7 +190,7 @@
         int n;
         do {
             std::cout << "========== MENU DE EMPRÉSTIMOS ==========\n" << std::endl;
-            std::cout << "1 - Realizar empréstimo\n2 - Consultar empréstimo\n3 - Devolver obra\n4 - Renovar empréstimo\n5 - Aprovar renovação\n0 - Voltar\n\nOpção:" << std::endl;
+            std::cout << "1 - Realizar empréstimo\n2 - Consultar empréstimo\n3 - Devolver obra\n4 - Solicitar renovação\n5 - Aprovar renovação\n0 - Voltar\n\nOpção:" << std::endl;
         
             n = lerOpcao(0, 5);
             switch (n)
@@ -201,20 +202,62 @@
                 realizarEmprestimo();
                 break;
 
-            case 2:
-                
+            case 2: {
+                Pessoa *p = dados->getUsuarios()->buscarUsuarioCPF(lerTexto("CPF do usuário: "));
+                if (p == nullptr) {
+                    std::cout << "Usuário não encontrado." << std::endl;
+                    break;
+                }
+
+                const std::vector<Emprestimo*> &emprestimos = p->getEmprestimos();
+                if (emprestimos.empty()) {
+                    std::cout << "Esse usuário não possui empréstimos registrados." << std::endl;
+                    break;
+                }
+
+                const Data hj = obterDataAtual();
+                for (Emprestimo *e : emprestimos) {
+                    if (e == nullptr) {
+                        continue;
+                    }
+                    std::cout << "\n========================================" << std::endl;
+                    e->printEmprestimo();
+                    if (e->isAtivo()) {
+                        std::cout << "Atraso: " << e->getAtraso(hj) << " dia(s)." << std::endl;
+                        if (e->isRenovacaoSolicitada()) {
+                            std::cout << "Renovação: aguardando aprovação." << std::endl;
+                        }
+                    }
+                }
                 break;
+            }
             
             case 3:
-                
+                registrarDevolucao();
                 break;
 
-            case 4:
-                
+            case 4: {
+                Pessoa *p = dados->getUsuarios()->buscarUsuarioCPF(lerTexto("CPF do usuário: "));
+                if (p == nullptr || (dynamic_cast<Estudante*>(p) == nullptr && dynamic_cast<Professor*>(p) == nullptr)) {
+                    std::cout << "Estudante ou professor não encontrado." << std::endl;
+                    break;
+                }
+
+                Emprestimo *e = selecionarEmprestimo(p, true);
+                if (e == nullptr) {
+                    break;
+                }
+
+                if (e->solicitarRenovacao()) {
+                    std::cout << "Solicitação de renovação registrada. Aguarde a aprovação do bibliotecário." << std::endl;
+                } else {
+                    std::cout << "Não foi possível solicitar a renovação." << std::endl;
+                }
                 break;
+            }
 
             case 5:
-                
+                aprovarRenovacao();
                 break;
             
             default:
@@ -593,6 +636,67 @@
         return;
     }
 
+    void Interface::registrarDevolucao() {
+        Pessoa *p = dados->getUsuarios()->buscarUsuarioCPF(lerTexto("CPF do usuário: "));
+        if (p == nullptr) {
+            std::cout << "Usuário não encontrado." << std::endl;
+            return;
+        }
+
+        Emprestimo *e = selecionarEmprestimo(p, true);
+        if (e == nullptr) {
+            return;
+        }
+
+        int atraso = e->getAtraso(obterDataAtual());
+        if (atraso > 0) {
+            std::cout << "Devolução com " << atraso << " dia(s) de atraso." << std::endl;
+        } else {
+            std::cout << "Devolução dentro do prazo." << std::endl;
+        }
+
+        Bibliotecario *b = selecionarBibliotecario();
+        if (b == nullptr) {
+            return;
+        }
+
+        std::cout << "A obra retornou danificada? (1 - Sim / 0 - Não): ";
+        bool danificada = lerOpcao(0, 1) == 1;
+        e->getObra().setDanificado(danificada);
+
+        b->registrarDevolucao(e);
+        std::cout << "Devolução registrada com sucesso." << std::endl;
+        std::cout << "A obra está " << (e->getObra().isDisponivel() ? "disponível." : "indisponível.") << std::endl;
+    }
+    
+    void Interface::aprovarRenovacao() {
+        Pessoa *p = dados->getUsuarios()->buscarUsuarioCPF(lerTexto("CPF do usuário: "));
+        if (p == nullptr || (dynamic_cast<Estudante*>(p) == nullptr && dynamic_cast<Professor*>(p) == nullptr)) {
+            std::cout << "Estudante ou professor não encontrado." << std::endl;
+            return;
+        }
+
+        Emprestimo *e = selecionarEmprestimo(p, true, true);
+        if (e == nullptr) {
+            return;
+        }
+
+        Bibliotecario *b = selecionarBibliotecario();
+        if (b == nullptr) {
+            return;
+        }
+
+        const Data hj = obterDataAtual();
+        if (b->aprovarRenovacao(e, hj)) {
+            std::cout << "Renovação aprovada com sucesso." << std::endl;
+            std::cout << "Nova data de devolução: " << e->getDevolucao().getData() << std::endl;
+        } else if (e->getAtraso(hj) > 0) {
+            std::cout << "Renovação recusada: o empréstimo está em atraso." << std::endl;
+        } else {
+            std::cout << "Não foi possível aprovar a renovação." << std::endl;
+        }
+    }
+
     int Interface::lerOpcao(int min, int max) {
         int n;
         while (true) {
@@ -650,7 +754,7 @@
         if (p == nullptr) {
             return;
         }
-        std::cout << "\n========================================\n";
+        std::cout << "\n========================================" << std::endl;
         std::cout << "ID: " << id << "\nNome: " << p->getNome() << "\nCPF: " << p->getCPF() << std::endl;
         if (Estudante *e = dynamic_cast<Estudante*>(p)) {
             std::cout << "Categoria: Estudante\n" << "Curso: " << e->getCurso() << "\nMatrícula: " << e->getMatricula() << std::endl;
@@ -663,7 +767,7 @@
         } else if (TecnicoManutencao *tm = dynamic_cast<TecnicoManutencao*>(p)) {
             std::cout << "Categoria: Técnico de manutenção\n" << "Manutenções pendentes: " << tm->consultarManutencoesPendentes() << std::endl;
         }
-        std::cout << "========================================\n";
+        std::cout << "========================================" << std::endl;
     }
 
     Bibliotecario* Interface::selecionarBibliotecario() {

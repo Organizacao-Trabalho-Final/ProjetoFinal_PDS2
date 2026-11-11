@@ -288,12 +288,15 @@
 
     bool Dados::carregarDadosInterno() {
         std::ifstream arquivoUsuarios("usuario.txt");
+        std::ifstream arquivoObras("obras.txt");
+
+        if (!arquivoUsuarios.is_open() && !arquivoObras.is_open()) {
+            return true;
+        }
         if (!arquivoUsuarios.is_open()) {
             std::cerr << "Erro ao abrir o arquivo para ler dados -> Usuarios." << std::endl;
             return false;
         }
-
-        std::ifstream arquivoObras("obras.txt");
         if (!arquivoObras.is_open()) {
             std::cerr << "Erro ao abrir o arquivo para ler dados -> Obras." << std::endl;
             return false;

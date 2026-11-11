@@ -17,6 +17,9 @@ class Pessoa;
 class Bibliotecario;
 class TecnicoManutencao;
 class Emprestimo;
+class Obra;
+class Manutencao;
+enum class EstadoManutencao;
 
 /**
  * @class Interface
@@ -91,6 +94,16 @@ class Interface {
          * @brief Verifica as condições, realiza o empréstimo caso possível e imprime suas informações na tela.
          */
         void realizarEmprestimo();
+
+        /**
+         * @brief Verifica as condições e realiza a devolução caso possível.
+         */
+        void registrarDevolucao();
+
+        /**
+         * @brief Verifica as condições e autoriza a renovação caso possível.
+         */
+        void aprovarRenovacao();
 
         /**
          * @brief Lê e valida uma opção numérica dentro de um intervalo.
