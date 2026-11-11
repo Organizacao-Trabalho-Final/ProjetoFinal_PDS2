@@ -10,13 +10,13 @@
 #include "Manutencao.hpp"
 
 TEST_CASE("Teste do construtor - Bibliotecario") {
-    Bibliotecario b1("João", "12345678900");
+    Bibliotecario b1("João", "12345678909");
     CHECK(b1.getNome() == "João");
-    CHECK(b1.getCPF() == "12345678900");
+    CHECK(b1.getCPF() == "12345678909");
 }
 
 TEST_CASE("Teste do método aprovarEmprestimo - Bibliotecario") {
-    Bibliotecario b2("João", "12345678900");
+    Bibliotecario b2("João", "12345678909");
     Estudante e2("Maria", "98765432100", "Letras", "2026021111");
     Livro l2("Hamlet", "William Shakespeare", 1, "Drama", 3);
     Data d2(10, 11, 2026);
@@ -50,7 +50,7 @@ TEST_CASE("Teste do método aprovarEmprestimo - Bibliotecario") {
 }
 
 TEST_CASE("Teste de aprovarRenovacao - Bibliotecario") {
-    Bibliotecario b3("João", "12345678900");
+    Bibliotecario b3("João", "12345678909");
     Estudante e3("Maria", "98765432100", "Letras", "2026021111");
     Livro l3("Hamlet", "William Shakespeare", 1, "Drama", 3);
     Data d3(10, 11, 2026);
@@ -86,7 +86,7 @@ TEST_CASE("Teste de aprovarRenovacao - Bibliotecario") {
 }
 
 TEST_CASE("Teste de registrarDevolucao - Bibliotecario") {
-    Bibliotecario b4("João", "12345678900");
+    Bibliotecario b4("João", "12345678909");
     Estudante e4("Maria", "98765432100", "Letras", "2026021111");
     Livro l4("Hamlet", "William Shakespeare", 1, "Drama", 3);
     Data d4(12, 11, 2026);
@@ -118,7 +118,7 @@ TEST_CASE("Teste de registrarDevolucao - Bibliotecario") {
 }
 
 TEST_CASE("Teste de avaliarObra - Bibliotecario") {
-    Bibliotecario b5("João", "12345678900");
+    Bibliotecario b5("João", "12345678909");
     Livro l5("Hamlet", "William Shakespeare", 1, "Drama", 3);
 
     SUBCASE("Avaliação de obra danificada") {
@@ -137,8 +137,8 @@ TEST_CASE("Teste de avaliarObra - Bibliotecario") {
 }
 
 TEST_CASE("Teste de encaminharManutencao - Bibliotecario") {
-    Bibliotecario b6("João", "12345678900");
-    TecnicoManutencao t1("Carlos", "11122233344");
+    Bibliotecario b6("João", "12345678909");
+    TecnicoManutencao t1("Carlos", "11122233396");
     Livro l6("Hamlet", "William Shakespeare", 1, "Drama", 3);
     Data d6(15, 11, 2026);
 
@@ -170,7 +170,7 @@ TEST_CASE("Teste de encaminharManutencao - Bibliotecario") {
         Manutencao* m1 = b6.encaminharManutencao(&l6, &t1, "Capa rasgada", d6);
         REQUIRE(m1 != nullptr);
 
-        TecnicoManutencao t2("Ana", "22233344455");
+        TecnicoManutencao t2("Ana", "22233344405");
         Manutencao* m2 = b6.encaminharManutencao(&l6, &t2, "Folhas soltas", d6);
 
         CHECK(m2 == nullptr);
@@ -202,7 +202,7 @@ TEST_CASE("Teste de encaminharManutencao - Bibliotecario") {
 }
 
 TEST_CASE("Bibliotecario respeita limite de emprestimos") {
-    Bibliotecario b("Joao", "12345678900");
+    Bibliotecario b("Joao", "12345678909");
     Estudante e("Maria", "98765432100", "Letras", "2026021111");
 
     Livro l1("Livro 1", "Autor", 1, "Romance", 1);
@@ -220,9 +220,9 @@ TEST_CASE("Bibliotecario respeita limite de emprestimos") {
 }
 
 TEST_CASE("Bibliotecario restringe categorias de usuarios") {
-    Bibliotecario b("Joao", "12345678900");
-    Bibliotecario outroBibliotecario("Ana", "11122233344");
-    TecnicoManutencao tecnico("Carlos", "22233344455");
+    Bibliotecario b("Joao", "12345678909");
+    Bibliotecario outroBibliotecario("Ana", "11122233396");
+    TecnicoManutencao tecnico("Carlos", "22233344405");
 
     Livro livro("Hamlet", "Shakespeare", 1, "Drama", 1);
     Data d(10, 11, 2026);

@@ -50,7 +50,7 @@ class Usuarios {
          * @param nome Nome do usuário a ser removido.
          * @return true se o usuário for removido, false se não encontrado ou tiver registros associados.
          */
-        bool removerUsuario(const std::string &nome);
+        bool removerUsuarioNome(const std::string &nome);
 
         /**
          * @brief Remove um usuário pelo CPF, desde que não possua empréstimos ou manutenções.

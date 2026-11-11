@@ -88,6 +88,11 @@ class Interface {
         void menuCadastroUsuarios();
 
         /**
+         * @brief Verifica as condições, realiza o empréstimo caso possível e imprime suas informações na tela.
+         */
+        void realizarEmprestimo();
+
+        /**
          * @brief Lê e valida uma opção numérica dentro de um intervalo.
          * @param min Valor mínimo.
          * @param max Valor máximo.

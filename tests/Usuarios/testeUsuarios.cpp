@@ -27,7 +27,7 @@ TEST_CASE("Teste adicionarUsuario() e removerUsuario() - Usuarios") {
     CHECK(u2.buscarUsuarioCPF("01234567890") == p1);
     CHECK(u2.buscarUsuarioNome("Paulo") == nullptr);
     CHECK(u2.buscarUsuarioId(2) == nullptr);
-    CHECK(u2.buscarUsuarioCPF("01234567891") == nullptr);
+    CHECK(u2.buscarUsuarioCPF("01234567970") == nullptr);
 
     CHECK_FALSE(u2.adicionarUsuario(nullptr, 3));
     CHECK(u2.buscarUsuarioId(3) == nullptr);
@@ -40,12 +40,12 @@ TEST_CASE("Teste adicionarUsuario() e removerUsuario() - Usuarios") {
     CHECK(u2.buscarUsuarioId(2) == nullptr);
     delete cpfDuplicado;
 
-    Pessoa *idDuplicado = new Professor("Outro Professor", "11122233344", "DCC");
+    Pessoa *idDuplicado = new Professor("Outro Professor", "11122233396", "DCC");
     CHECK_FALSE(u2.adicionarUsuario(idDuplicado, 1));
-    CHECK(u2.buscarUsuarioCPF("11122233344") == nullptr);
+    CHECK(u2.buscarUsuarioCPF("11122233396") == nullptr);
     delete idDuplicado;
 
-    CHECK(u2.removerUsuario("Rezeck"));
+    CHECK(u2.removerUsuarioNome("Rezeck"));
     CHECK(u2.buscarUsuarioNome("Rezeck") == nullptr);
 }
 
@@ -70,9 +70,9 @@ TEST_CASE("Teste getOcupacao() - Usuarios") {
     CHECK(u4.getOcupacao("01234567890") == "Professor");
     CHECK(u4.getOcupacao(0) == "Professor");
 
-    Pessoa *p4 = new Estudante("João", "01234567891", "Engenharia de Controle e Automação", "2026012345");
+    Pessoa *p4 = new Estudante("João", "01234567970", "Engenharia de Controle e Automação", "2026012345");
     u4.adicionarUsuario(p4, 2);
-    CHECK(u4.getOcupacao("01234567891") == "Estudante");
+    CHECK(u4.getOcupacao("01234567970") == "Estudante");
     CHECK(u4.getOcupacao(1) == "Estudante");
 
     CHECK(u4.getOcupacao("01234567892") == "ERRO");
@@ -94,8 +94,8 @@ TEST_CASE("Teste destrutor - Usuarios") {
     destruidas = 0;
     {
         Usuarios u5;
-        CHECK(u5.adicionarUsuario(new ClasseTeste("Teste 1", "00000000001"), 1));
-        CHECK(u5.adicionarUsuario(new ClasseTeste("Teste 2", "00000000002"), 2));
+        CHECK(u5.adicionarUsuario(new ClasseTeste("Teste um", "11122233396"), 1));
+        CHECK(u5.adicionarUsuario(new ClasseTeste("Teste dois", "01234567970"), 2));
         CHECK(destruidas == 0);
     }
     CHECK(destruidas == 2);
@@ -111,20 +111,20 @@ TEST_CASE("Impedir remoção de usuário com histórico de empréstimos") {
     e->setAtivo(false);
     prof->registrarEmprestimo(e);
 
-    CHECK_FALSE(usuarios.removerUsuario("Rezeck"));
+    CHECK_FALSE(usuarios.removerUsuarioNome("Rezeck"));
     CHECK(usuarios.buscarUsuarioNome("Rezeck") == prof);
 }
 
 TEST_CASE("Impedir remoção de técnico com histórico de manutenções") {
     Livro obra("Calculo", "Stewart", 1, "Didatico", 1);
     Usuarios usuarios;
-    TecnicoManutencao *tecnico = new TecnicoManutencao("Max", "12345678901");
+    TecnicoManutencao *tecnico = new TecnicoManutencao("Max", "12345678909");
     
     usuarios.adicionarUsuario(tecnico, 1);
     Manutencao *m = new Manutencao(&obra, tecnico, "Capa rasgada", Data(10, 11, 2026));
     tecnico->adicionarManutencao(m);
 
-    CHECK_FALSE(usuarios.removerUsuario("Max"));
+    CHECK_FALSE(usuarios.removerUsuarioNome("Max"));
     CHECK(usuarios.buscarUsuarioNome("Max") == tecnico);
 }
 
@@ -140,7 +140,7 @@ TEST_CASE("Teste geração automática de IDs - Usuarios") {
     CHECK(usuarios.adicionarUsuario(duplicado) == 0);
     delete duplicado;
 
-    Pessoa *p2 = new Estudante("Santiago", "11122233344", "Engenharia", "2026012345");
+    Pessoa *p2 = new Estudante("Santiago", "11122233396", "Engenharia", "2026012345");
     int id2 = usuarios.adicionarUsuario(p2);
 
     CHECK(id2 == 2);
@@ -153,7 +153,7 @@ TEST_CASE("Teste atualização do próximo ID - Usuarios") {
 
     CHECK(usuarios.adicionarUsuario(p1, 10));
 
-    Pessoa *p2 = new Estudante("Daniel", "11122233344", "Engenharia", "2026012345");
+    Pessoa *p2 = new Estudante("Daniel", "11122233396", "Engenharia", "2026012345");
     int id = usuarios.adicionarUsuario(p2);
 
     CHECK(id == 11);
@@ -162,11 +162,11 @@ TEST_CASE("Teste atualização do próximo ID - Usuarios") {
 
 TEST_CASE("Usuarios - rejeita IDs nao positivos") {
     Usuarios usuarios;
-    Pessoa* idZero = new Professor("Zero", "00000000000", "DCC");
+    Pessoa* idZero = new Professor("Zero", "12345678909", "DCC");
     CHECK_FALSE(usuarios.adicionarUsuario(idZero, 0));
     delete idZero;
 
-    Pessoa* idNegativo = new Professor("Negativo", "00000000001", "DCC");
+    Pessoa* idNegativo = new Professor("Negativo", "11122233396", "DCC");
     CHECK_FALSE(usuarios.adicionarUsuario(idNegativo, -1));
     delete idNegativo;
     CHECK(usuarios.getUsuarios().empty());
@@ -175,11 +175,21 @@ TEST_CASE("Usuarios - rejeita IDs nao positivos") {
 TEST_CASE("Usuarios - interrompe geracao antes do limite de int") {
     Usuarios usuarios;
     const int limite = std::numeric_limits<int>::max();
-    Pessoa* penultimo = new Professor("Penultimo", "00000000002", "DCC");
+    Pessoa* penultimo = new Professor("Penultimo", "01234567970", "DCC");
     REQUIRE(usuarios.adicionarUsuario(penultimo, limite - 1));
 
-    Pessoa* excedente = new Professor("Excedente", "00000000003", "DCC");
+    Pessoa* excedente = new Professor("Excedente", "01234567970", "DCC");
     CHECK(usuarios.adicionarUsuario(excedente) == 0);
     delete excedente;
     CHECK(usuarios.buscarUsuarioId(limite - 1) == penultimo);
+}
+
+TEST_CASE("Usuarios - remover usuário pelo CPF") {
+    Usuarios usuarios;
+    Pessoa *p = new Professor("Paulo Rezeck", "52998224725", "Computação");
+
+    REQUIRE(usuarios.adicionarUsuario(p) == 1);
+    CHECK(usuarios.removerUsuarioCPF("52998224725"));
+    CHECK(usuarios.getUsuarios().empty());
+    CHECK(usuarios.buscarUsuarioCPF("52998224725") == nullptr);
 }

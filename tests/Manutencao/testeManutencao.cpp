@@ -34,7 +34,7 @@ TEST_CASE("Teste construtor e getters - Manutencao") {
 
 TEST_CASE("Teste iniciar e concluir - Manutencao") {
     Livro l2("O Pequeno Príncipe", "Antoine de Saint-Exupéry", 2, "Infantil", 1);
-    TecnicoManutencao tm2("Max", "09876543210");
+    TecnicoManutencao tm2("Max", "09876543229");
     Data d2(12, 11, 2026);
     
     l2.setDanificado(true);
@@ -58,7 +58,7 @@ TEST_CASE("Teste iniciar e concluir - Manutencao") {
     CHECK_FALSE(l2.isEmManutencao());
 
     SUBCASE("Ponteiro de obra nulo") {
-        TecnicoManutencao tm3("Daniel", "12345678901");
+        TecnicoManutencao tm3("Daniel", "12345678909");
         Data d3(13, 11, 2026);
         Manutencao m3(nullptr, &tm3, "Dano desconhecido", d3);
 
@@ -70,7 +70,7 @@ TEST_CASE("Teste iniciar e concluir - Manutencao") {
 
     SUBCASE("Iniciar e concluir com ordem inversa"){
         Livro l4("1984", "George Orwell", 3, "Distopia", 1);
-        TecnicoManutencao tm4("Santiago", "23456789012");
+        TecnicoManutencao tm4("Santiago", "23456789092");
         Data d4(14, 11, 2026);
         l4.setDanificado(true);
         l4.setDisponivel(false);
@@ -104,7 +104,7 @@ TEST_CASE("Teste iniciar e concluir - Manutencao") {
 
 TEST_CASE("Teste destrutor - Manutencao") {
     Livro l5("O Senhor dos Anéis", "J.R.R. Tolkien", 4, "Fantasia", 1);
-    TecnicoManutencao tm5("Rezeck", "34567890123");
+    TecnicoManutencao tm5("Rezeck", "34567890175");
     Data d5(15, 11, 2026);
     {
         Manutencao m5(&l5, &tm5, "Capa rasgada", d5);
@@ -119,7 +119,7 @@ TEST_CASE("Manutenção associada ao técnico correto") {
     Livro l1("Cálculo", "Stewart", 1, "Didático", 1);
     Livro l2("Física", "Halliday", 2, "Didático", 1);
     TecnicoManutencao t1("Eris", "01234567890");
-    TecnicoManutencao t2("Alan", "12345678901");
+    TecnicoManutencao t2("Alan", "12345678909");
 
     Manutencao *m1 = new Manutencao(&l1, &t1, "Capa rasgada", Data(10, 11, 2026));
     Manutencao *m2 = new Manutencao(&l2, &t2, "Folhas soltas", Data(11, 11, 2026));

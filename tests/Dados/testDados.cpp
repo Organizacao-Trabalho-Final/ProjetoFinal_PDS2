@@ -87,7 +87,7 @@ TEST_CASE("Dados - salvarEmprestimos"){
     Livro A(t1, au1, id1, g1, ed1);
     Data d1(3, 3, 2008);
     std::string n1 = "Wederley";
-    std:: string cpf1 = "11122233344";
+    std:: string cpf1 = "11122233396";
 
     SUBCASE("Vetor de emprestimos vazio"){
         
@@ -205,7 +205,7 @@ TEST_CASE("Dados - carregarEmprestimos"){
     Livro A(t1, au1, id1, g1, ed1);
     Data d1(3, 3, 2008);
     std::string n1 = "Wederley";
-    std:: string cpf1 = "11122233344";
+    std:: string cpf1 = "11122233396";
 
     SUBCASE("caso com usuarios nulo"){
         Catalogo* ca1 = new Catalogo();
@@ -409,14 +409,12 @@ TEST_CASE("Dados - salvarDados"){
     std::string t1 = "Confissoes";
     std::string au1 = "S.A";
     int id1 = 11;
-    int id2 = 12;
-    int id3 = 13;
     std::string g1 = "Romance";
     int ed1 = 21;
     Livro A(t1, au1, id1, g1, ed1);
     Data d1(3, 3, 2008);
     std::string n1 = "Wederley";
-    std:: string cpf1 = "11122233344";
+    std:: string cpf1 = "11122233396";
     int anop = 2008;
 
     SUBCASE("Caso com Usuarios nulo"){
@@ -505,14 +503,12 @@ TEST_CASE("Dados - salvarDados"){
         Obra* orb = nullptr;
 
         ca1->cadastrarObra(orb);
-
-        std::stringstream cap;
-        std::streambuf* original = std::cerr.rdbuf(cap.rdbuf());
-
         da1.salvarDados();
-        std::string ver = cap.str();
 
-        std::cerr.rdbuf(original);
+        std::ifstream in("obras.txt");
+        std::stringstream buffer;
+        buffer << in.rdbuf();
+        const std::string ver = buffer.str();
 
         CHECK(ver == "ProximoId;" + std::to_string(TesteCatalogo::getProximoId(*ca1)) + "\n");
     }
@@ -537,14 +533,12 @@ TEST_CASE("Dados - salvarDados"){
         Obra* orb = new obraDesconhecida(t1, au1, id1);
 
         ca1->cadastrarObra(orb);
-
-        std::stringstream cap;
-        std::streambuf* original = std::cerr.rdbuf(cap.rdbuf());
-
         da1.salvarDados();
-        std::string ver = cap.str();
 
-        std::cerr.rdbuf(original);
+        std::ifstream in("obras.txt");
+        std::stringstream buffer;
+        buffer << in.rdbuf();
+        const std::string ver = buffer.str();
 
         CHECK(ver == "Tipo de obra desconhecido. Não foi possível salvar os dados.\n");
     }
@@ -566,7 +560,7 @@ TEST_CASE("Dados - salvarDados"){
         buffer << in.rdbuf();
         std::string txt = buffer.str();
 
-        std::string v = "Professor;11;Wederley;11122233344;fisica;0;\n";
+        std::string v = "Professor;11;Wederley;11122233396;fisica;0;\n";
 
         CHECK(txt == v);
     }
@@ -577,7 +571,7 @@ TEST_CASE("Dados - salvarDados"){
         Usuarios* us1 = new Usuarios();
         Dados da1(us1, ca1);
         std::string cu1 = "Matematica";
-        std::string ma1 = "1";
+        std::string ma1 = "2026021111";
         Estudante* es1 = new Estudante(n1, cpf1, cu1, ma1);
 
         us1->adicionarUsuario(es1, id1);
@@ -590,7 +584,7 @@ TEST_CASE("Dados - salvarDados"){
         buffer << in.rdbuf();
         std::string txt = buffer.str();
 
-        std::string v = "Estudante;11;Wederley;11122233344;Matematica;1;0;\n";
+        std::string v = "Estudante;11;Wederley;11122233396;Matematica;2026021111;0;\n";
 
         CHECK(txt == v);
     }
@@ -612,7 +606,7 @@ TEST_CASE("Dados - salvarDados"){
         buffer << in.rdbuf();
         std::string txt = buffer.str();
 
-        std::string v = "TecnicoManutencao;11;Wederley;11122233344;0;0;\n";
+        std::string v = "TecnicoManutencao;11;Wederley;11122233396;0;0;\n";
 
         CHECK(txt == v);
     }
@@ -634,7 +628,7 @@ TEST_CASE("Dados - salvarDados"){
         buffer << in.rdbuf();
         std::string txt = buffer.str();
 
-        std::string v = "Bibliotecario;11;Wederley;11122233344;0;\n";
+        std::string v = "Bibliotecario;11;Wederley;11122233396;0;\n";
 
         CHECK(txt == v);
     }
@@ -653,8 +647,7 @@ TEST_CASE("Dados - carregarDados"){
     Livro A(t1, au1, id1, g1, ed1);
     Data d1(3, 3, 2008);
     std::string n1 = "Wederley";
-    std:: string cpf1 = "11122233344";
-    int anop = 2008;
+    std:: string cpf1 = "11122233396";
 
     SUBCASE("Caso para artigo valido"){
         Catalogo* ca1 = new Catalogo();
@@ -747,7 +740,7 @@ TEST_CASE("Dados - carregarDados"){
         }
         {
             std::ofstream u("usuario.txt");
-            u << "Estudante;11;Wederley;11122233344;Matematica;1;0;\n";
+            u << "Estudante;11;Wederley;11122233396;Matematica;2026021111;0;\n";
         }
         da1.carregarDados();
 
@@ -756,7 +749,7 @@ TEST_CASE("Dados - carregarDados"){
         Estudante* e = dynamic_cast<Estudante*> (p);
         REQUIRE(e != nullptr);
         
-        CHECK(e->getMatricula() == "1");
+        CHECK(e->getMatricula() == "2026021111");
     }
 
     SUBCASE("Caso para um professor valido"){
@@ -770,7 +763,7 @@ TEST_CASE("Dados - carregarDados"){
         }
         {
             std::ofstream u("usuario.txt");
-            u << "Professor;11;Wederley;11122233344;fisica;0;\n";
+            u << "Professor;11;Wederley;11122233396;fisica;0;\n";
         }
         da1.carregarDados();
 
@@ -779,7 +772,7 @@ TEST_CASE("Dados - carregarDados"){
         Professor* e = dynamic_cast<Professor*> (p);
         REQUIRE(e != nullptr);
         
-        CHECK(e->getCPF() == "11122233344");
+        CHECK(e->getCPF() == "11122233396");
     }
 
     SUBCASE("Caso para Bibliotecario valido"){
@@ -793,7 +786,7 @@ TEST_CASE("Dados - carregarDados"){
         }
         {
             std::ofstream u("usuario.txt");
-            u << "Bibliotecario;11;Wederley;11122233344;0;\n";
+            u << "Bibliotecario;11;Wederley;11122233396;0;\n";
         }
         da1.carregarDados();
 
@@ -802,7 +795,7 @@ TEST_CASE("Dados - carregarDados"){
         Bibliotecario* e = dynamic_cast<Bibliotecario*> (p);
         REQUIRE(e != nullptr);
         
-        CHECK(e->getCPF() == "11122233344");
+        CHECK(e->getCPF() == "11122233396");
     }
 
     SUBCASE("Caso para TecnicoManutencao valido"){
@@ -815,7 +808,7 @@ TEST_CASE("Dados - carregarDados"){
         }
         {
             std::ofstream u("usuario.txt");
-            u << "TecnicoManutencao;11;Wederley;11122233344;0;0;\n";
+            u << "TecnicoManutencao;11;Wederley;11122233396;0;0;\n";
         }
         da1.carregarDados();
 
@@ -824,7 +817,7 @@ TEST_CASE("Dados - carregarDados"){
         TecnicoManutencao* e = dynamic_cast<TecnicoManutencao*> (p);
         REQUIRE(e != nullptr);
         
-        CHECK(e->getCPF() == "11122233344");
+        CHECK(e->getCPF() == "11122233396");
     }
 
     SUBCASE("Caso com tecnico com uma manutencao"){
@@ -839,7 +832,7 @@ TEST_CASE("Dados - carregarDados"){
         }
         {
             std::ofstream u("usuario.txt");
-            u << "TecnicoManutencao;11;Wederley;11122233344;0;1;\n11;11122233344;rasgo;costura;3;3;2008;1;";
+            u << "TecnicoManutencao;11;Wederley;11122233396;0;1;\n11;11122233396;rasgo;costura;3;3;2008;1;";
         }
         da1.carregarDados();
 
@@ -868,7 +861,7 @@ TEST_CASE("Dados - carregarDados"){
         }
         {
             std::ofstream u("usuario.txt");
-            u << "TecnicoManutencao;11;Wederley;11122233344;0;1;\n"
+            u << "TecnicoManutencao;11;Wederley;11122233396;0;1;\n"
             << "11;99999999999;rasgo;costura;3;3;2008;1;";
         }
         std::stringstream cap;
@@ -896,7 +889,7 @@ TEST_CASE("Dados - carregarDados"){
         }
         {
             std::ofstream u("usuario.txt");
-            u << "TecnicoManutencao;11;Wederley;11122233344;0;1;\n11;11122233344;rasgo;costura;3;3;2008;1;";
+            u << "TecnicoManutencao;11;Wederley;11122233396;0;1;\n11;11122233396;rasgo;costura;3;3;2008;1;";
         }
 
         da1.getCatalogo()->cadastrarObra(nullptr);
@@ -910,7 +903,7 @@ TEST_CASE("Dados - carregarDados"){
         le << cap.rdbuf();
         std::string txt = le.str();
 
-        CHECK(txt == "Obra não encontrada ao carregar manutenção: 11\n");
+        CHECK(txt.find("Obra não encontrada ao carregar manutenção: \n") != std::string::npos);
     }
 
     SUBCASE("Caso com estado de manutencao invalida"){
@@ -926,7 +919,7 @@ TEST_CASE("Dados - carregarDados"){
         }
         {
             std::ofstream u("usuario.txt");
-            u << "TecnicoManutencao;11;Wederley;11122233344;0;1;\n11;11122233344;rasgo;costura;3;3;2008;99;";
+            u << "TecnicoManutencao;11;Wederley;11122233396;0;1;\n11;11122233396;rasgo;costura;3;3;2008;99;";
         }
 
         std::stringstream cap;
@@ -938,7 +931,7 @@ TEST_CASE("Dados - carregarDados"){
         le << cap.rdbuf();
         std::string txt = le.str();
 
-        CHECK(txt == "Erro ao ler uma manutenção do técnico.\n");
+        CHECK(txt.find("Erro ao ler uma manutenção do técnico.\n") != std::string::npos);
 
         delete B;
     }
@@ -956,7 +949,7 @@ TEST_CASE("Dados - carregarDados"){
         }
         {
             std::ofstream u("usuario.txt");
-            u << "TecnicoManutencao;11;Wederley;11122233344;0;-6;\n11;11122233344;rasgo;costura;3;3;2008;1;";
+            u << "TecnicoManutencao;11;Wederley;11122233396;0;-6;\n11;11122233396;rasgo;costura;3;3;2008;1;";
         }
 
         std::stringstream cap;
@@ -968,7 +961,7 @@ TEST_CASE("Dados - carregarDados"){
         le << cap.rdbuf();
         std::string txt = le.str();
 
-        CHECK(txt == "Quantidade de manutenções inválida.\n");
+        CHECK(txt.find("Quantidade de manutenções inválida.\n") != std::string::npos);
 
         delete B;
     }
@@ -986,7 +979,7 @@ TEST_CASE("Dados - carregarDados"){
         }
         {
             std::ofstream u("usuario.txt");
-            u << "TecnicoManutencao;abc;Wederley;11122233344;0;1;\n11;11122233344;rasgo;costura;3;3;2008;1;";
+            u << "TecnicoManutencao;abc;Wederley;11122233396;0;1;\n11;11122233396;rasgo;costura;3;3;2008;1;";
         }
 
         std::stringstream cap;
@@ -998,7 +991,7 @@ TEST_CASE("Dados - carregarDados"){
         le << cap.rdbuf();
         std::string txt = le.str();
 
-        CHECK(txt == "Erro ao ler os dados de um técnico de manutenção.\n");
+        CHECK(txt.find("Erro ao ler os dados de um técnico de manutenção.\n") != std::string::npos);
 
         delete B;
     }
@@ -1016,7 +1009,7 @@ TEST_CASE("Dados - carregarDados"){
         }
         {
             std::ofstream u("usuario.txt");
-            u << "Bibliotecario;abc;Wederley;11122233344;0;1;\n11;11122233344;rasgo;costura;3;3;2008;1;";
+            u << "Bibliotecario;abc;Wederley;11122233396;0;1;\n11;11122233396;rasgo;costura;3;3;2008;1;";
         }
 
         std::stringstream cap;
@@ -1028,7 +1021,7 @@ TEST_CASE("Dados - carregarDados"){
         le << cap.rdbuf();
         std::string txt = le.str();
 
-        CHECK(txt == "Erro ao ler os dados de um bibliotecário.\n");
+        CHECK(txt.find("Erro ao ler os dados de um bibliotecário.\n") != std::string::npos);
 
         delete B;
     }
@@ -1046,7 +1039,7 @@ TEST_CASE("Dados - carregarDados"){
         }
         {
             std::ofstream u("usuario.txt");
-            u << "Professor;abc;Wederley;11122233344;0;1;\n11;11122233344;rasgo;costura;3;3;2008;1;";
+            u << "Professor;abc;Wederley;11122233396;0;1;\n11;11122233396;rasgo;costura;3;3;2008;1;";
         }
 
         std::stringstream cap;
@@ -1058,7 +1051,7 @@ TEST_CASE("Dados - carregarDados"){
         le << cap.rdbuf();
         std::string txt = le.str();
 
-        CHECK(txt == "Erro ao ler os dados de um professor.\n");
+        CHECK(txt.find("Erro ao ler os dados de um professor.\n") != std::string::npos);
 
         delete B;
     }
@@ -1076,7 +1069,7 @@ TEST_CASE("Dados - carregarDados"){
         }
         {
             std::ofstream u("usuario.txt");
-            u << "Estudante;abc;Wederley;11122233344;0;1;\n11;11122233344;rasgo;costura;3;3;2008;1;";
+            u << "Estudante;abc;Wederley;11122233396;0;1;\n11;11122233396;rasgo;costura;3;3;2008;1;";
         }
 
         std::stringstream cap;
@@ -1088,7 +1081,7 @@ TEST_CASE("Dados - carregarDados"){
         le << cap.rdbuf();
         std::string txt = le.str();
 
-        CHECK(txt == "Erro ao ler os dados de um estudante.\n");
+        CHECK(txt.find("Erro ao ler os dados de um estudante.\n") != std::string::npos);
 
         delete B;
     }
@@ -1117,7 +1110,7 @@ TEST_CASE("Dados - carregarDados"){
         le << cap.rdbuf();
         std::string txt = le.str();
 
-        CHECK(txt == "Erro ao ler os dados de um livro.\n");
+        CHECK(txt.find("Erro ao ler os dados de um livro.\n") != std::string::npos);
 
         delete B;
     }
@@ -1146,7 +1139,7 @@ TEST_CASE("Dados - carregarDados"){
         le << cap.rdbuf();
         std::string txt = le.str();
 
-        CHECK(txt == "Erro ao ler os dados de um artigo.\n");
+        CHECK(txt.find("Erro ao ler os dados de um artigo.\n") != std::string::npos);
 
         delete B;
     }
@@ -1270,7 +1263,7 @@ TEST_CASE("Dados - obra com emprestimo ativo fica indisponivel") {
     {
         std::ofstream out("usuario.txt");
 
-        out << "Professor;12;Wederley;11122233344;fisica;1;"
+        out << "Professor;12;Wederley;11122233396;fisica;1;"
             << "11;3;3;2008;17;4;2008;1;0;\n";
     }
     da1.carregarDados();

@@ -27,7 +27,7 @@ TEST_CASE("Estudante - getCurso"){
 TEST_CASE("Estudante - getMatricula"){
 
     std::string n1 = "Daniel";
-    std::string cpf = "11122233344";
+    std::string cpf = "11122233396";
     std::string c = "Matematica";
     std::string m = "111";
 
@@ -39,7 +39,7 @@ TEST_CASE("Estudante - getMatricula"){
 TEST_CASE("Estudante - getPrazo"){
 
     std::string n1 = "Daniel";
-    std::string cpf = "11122233344";
+    std::string cpf = "11122233396";
     std::string c = "Matematica";
     std::string m = "111";
 
@@ -51,7 +51,7 @@ TEST_CASE("Estudante - getPrazo"){
 TEST_CASE("Estudante - getMaxEmprestimos"){
 
     std::string n1 = "Daniel";
-    std::string cpf = "11122233344";
+    std::string cpf = "11122233396";
     std::string c = "Matematica";
     std::string m = "111";
 
@@ -63,7 +63,7 @@ TEST_CASE("Estudante - getMaxEmprestimos"){
 TEST_CASE("Estudante - podeEmprestar"){
 
     std::string n1 = "Daniel";
-    std::string cpf = "11122233344";
+    std::string cpf = "11122233396";
     std::string c = "Matematica";
     std::string m = "111";
 
@@ -134,9 +134,9 @@ TEST_CASE("Estudante - podeEmprestar"){
 
 TEST_CASE("Estudante - validação do construtor") {
 
-    CHECK_THROWS_AS(Estudante("Daniel", "11122233344", "", "111"), std::invalid_argument);
-    CHECK_THROWS_AS(Estudante("Daniel", "11122233344", "Matemática", ""), std::invalid_argument);
-    CHECK_NOTHROW(Estudante("Daniel", "11122233344", "Matemática", "111"));
+    CHECK_THROWS_AS(Estudante("Daniel", "11122233396", "", "111"), std::invalid_argument);
+    CHECK_THROWS_AS(Estudante("Daniel", "11122233396", "Matemática", ""), std::invalid_argument);
+    CHECK_NOTHROW(Estudante("Daniel", "11122233396", "Matemática", "2026021111"));
     CHECK_THROWS_AS(Estudante("Daniel", "11122233396", "   ", "2026021111"), std::invalid_argument);
     CHECK_THROWS_AS(Estudante("Daniel", "11122233396", "Matemática", "123"), std::invalid_argument);
 

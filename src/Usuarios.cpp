@@ -39,20 +39,20 @@
         return id;
     }
 
-    bool Usuarios::removerUsuario(const std::string &nome) {
+    bool Usuarios::removerUsuarioNome(const std::string &nome) {
         for (auto it = usuarios.begin(); it != usuarios.end(); ++it) {
-            Pessoa *pessoa = it->first;
-            if (pessoa == nullptr || pessoa->getNome() != nome) {
+            Pessoa *p = it->first;
+            if (p == nullptr || p->getNome() != nome) {
                 continue;
             }
-            if (!pessoa->getEmprestimos().empty()) {
+            if (!p->getEmprestimos().empty()) {
                 return false;
             }
-            TecnicoManutencao *tecnico = dynamic_cast<TecnicoManutencao*>(pessoa);
-            if (tecnico != nullptr && !tecnico->getManutencoes().empty()) {
+            TecnicoManutencao *tm = dynamic_cast<TecnicoManutencao*>(p);
+            if (tm != nullptr && !tm->getManutencoes().empty()) {
                 return false;
             }
-            delete pessoa;
+            delete p;
             usuarios.erase(it);
             return true;
         }

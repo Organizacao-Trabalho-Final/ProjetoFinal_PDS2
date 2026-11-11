@@ -127,7 +127,7 @@
             std::cout << "========== MENU DE USUÁRIOS ==========\n" << std::endl;
             std::cout << "1 - Cadastrar usuário\n2 - Pesquisar usuário\n3 - Remover usuário\n4 - Listar usuários\n0 - Voltar\n\nOpção:" << std::endl;
         
-            n = lerOpcao(0, 3);
+            n = lerOpcao(0, 4);
             switch (n)
             {
             case 0:
@@ -189,16 +189,16 @@
         int n;
         do {
             std::cout << "========== MENU DE EMPRÉSTIMOS ==========\n" << std::endl;
-            std::cout << "1 - Realizar empréstimo\n2 - Consultar empréstimo\n3 - Devolver obra\n4 - Renovar empréstimo\n0 - Voltar\n\nOpção:" << std::endl;
+            std::cout << "1 - Realizar empréstimo\n2 - Consultar empréstimo\n3 - Devolver obra\n4 - Renovar empréstimo\n5 - Aprovar renovação\n0 - Voltar\n\nOpção:" << std::endl;
         
-            n = lerOpcao(0, 4);
+            n = lerOpcao(0, 5);
             switch (n)
             {
             case 0:
                 return;
             
             case 1:
-                
+                realizarEmprestimo();
                 break;
 
             case 2:
@@ -210,6 +210,10 @@
                 break;
 
             case 4:
+                
+                break;
+
+            case 5:
                 
                 break;
             
@@ -307,7 +311,7 @@
     }
 
     void Interface::menuAtualizacoes() {
-        std::cout << "Digite o número de identificação da obra a ser modificada: " << std::endl;
+        std::cout << "Digite o ID da obra a ser modificada: " << std::endl;
         int id = lerOpcao(1, std::numeric_limits<int>::max());
         
         Obra *o = dados->getCatalogo()->buscarPorId(id);
@@ -315,9 +319,7 @@
             menuAtualizacoesLivro(l);
         } else if (Artigo *a = dynamic_cast<Artigo*>(o)) {
             menuAtualizacoesArtigo(a);
-        } else {
-            std::cout << "Obra não encontrada." << std::endl;
-        }
+        } else std::cout << "Obra não encontrada." << std::endl;
     }
 
     void Interface::menuCadastroObras() {
@@ -504,7 +506,7 @@
     void Interface::menuPesquisaUsuarios() {
         std::cout << "========== MENU DE PESQUISA DE USUÁRIOS ==========\n" << std::endl;
         std::cout << "1 - Pesquisar por nome\n2 - Pesquisar por CPF\n3 - Pesquisar por ID\n0 - Voltar\n" << "Opção: " << std::endl;
-        int n = lerOpcao(1, 3);
+        int n = lerOpcao(0, 3);
         Pessoa *p = nullptr;
 
         switch (n)
@@ -533,6 +535,64 @@
         }
     }
 
+    void Interface::realizarEmprestimo() {
+        Pessoa *u = dados->getUsuarios()->buscarUsuarioCPF(lerTexto("CPF: "));
+        if (u == nullptr) {
+            std::cout << "Usuário não encontrado." << std::endl;
+            return;
+        }
+        if (dynamic_cast<Estudante*>(u) == nullptr && dynamic_cast<Professor*>(u) == nullptr) {
+            std::cout << "Somente estudantes e professores podem realizar empréstimos." << std::endl;
+            return;
+        }
+
+        std::cout << "ID da obra: ";
+        Obra *o = dados->getCatalogo()->buscarPorId(lerOpcao(1, std::numeric_limits<int>::max()));
+        if (o == nullptr) {
+            std::cout << "Obra não encontrada." << std::endl;
+            return;
+        }
+        if (!o->isDisponivel()) {
+            std::cout << "A obra está indisponível no momento." << std::endl;
+            return;
+        }
+        if (o->isDanificado() || o->isEmManutencao()) {
+            std::cout<< "A obra está danificada ou em manutenção e não pode ser emprestada." << std::endl;
+            return;
+        }
+        if (Estudante *e = dynamic_cast<Estudante*>(u)) {
+            if (dynamic_cast<Livro*>(o) == nullptr) {
+                std::cout << "Estudantes podem emprestar somente livros." << std::endl;
+                return;
+            }
+            if (e->getEmprestimosAtivos() >= e->getMaxEmprestimos()) {
+                std::cout << "O estudante atingiu o limite de empréstimos ativos." << std::endl;
+                return;
+            }
+        } else if (Professor *p = dynamic_cast<Professor*>(u)) {
+            if (p->getEmprestimosAtivos() >= p->getMaxEmprestimos()) {
+                std::cout << "O professor atingiu o limite de empréstimos ativos." << std::endl;
+                return;
+            }
+        }
+
+        Bibliotecario *b = selecionarBibliotecario();
+        if (b == nullptr) {
+            return;
+        }
+
+        Emprestimo *ep = b->aprovarEmprestimo(u, o, obterDataAtual());
+        if (ep == nullptr) {
+            std::cout << "O empréstimo não pôde ser aprovado. Verifique as regras de empréstimo." << std::endl;
+        } else {
+            std::cout << "Empréstimo realizado com sucesso." << std::endl;
+            std::cout << "Data de retirada: " << ep->getRetirada().getData() << std::endl;
+            std::cout << "Data prevista para devolução: " << ep->getDevolucao().getData() << std::endl;
+            std::cout << "Prazo: " << u->getPrazo() << " dias." << std::endl;
+        }
+        return;
+    }
+
     int Interface::lerOpcao(int min, int max) {
         int n;
         while (true) {
@@ -551,7 +611,7 @@
                 }
                 std::cin.clear();
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                std::cout << "Entrada inválida. Digite um número.\n";
+                std::cout << "Entrada inválida. Digite um número." << std::endl;
             }
         }
     }
@@ -564,7 +624,7 @@
                 throw std::runtime_error("Entrada encerrada pelo usuário.");
             }
             if (texto.find_first_not_of(" \t\n\r\f\v") == std::string::npos) {
-                std::cout << "O campo não pode ficar vazio. Tente novamente.\n";
+                std::cout << "O campo não pode ficar vazio. Tente novamente." << std::endl;
                 continue;
             }
             std::string limpo = texto.substr(texto.find_first_not_of(" \t\n\r\f\v"), texto.find_last_not_of(" \t\n\r\f\v") - texto.find_first_not_of(" \t\n\r\f\v") + 1);
@@ -612,7 +672,7 @@
 
         Bibliotecario *b = dynamic_cast<Bibliotecario*>(p);
         if (b == nullptr) {
-            std::cout << "Bibliotecário não encontrado. " << "Cadastre ou informe um CPF válido.\n";
+            std::cout << "Bibliotecário não encontrado. " << "Cadastre ou informe um CPF válido." << std::endl;
         }
         return b;
     }
@@ -623,7 +683,7 @@
 
         TecnicoManutencao *tm = dynamic_cast<TecnicoManutencao*>(p);
         if (tm == nullptr) {
-            std::cout << "Técnico de manutenção não encontrado.\n";
+            std::cout << "Técnico de manutenção não encontrado." << std::endl;
         }
         return tm;
     }
@@ -649,7 +709,7 @@
         }
 
         if (opcoes.empty()) {
-            std::cout << "Nenhum empréstimo correspondente foi encontrado.\n";
+            std::cout << "Nenhum empréstimo correspondente foi encontrado." << std::endl;
             return nullptr;
         }
 
