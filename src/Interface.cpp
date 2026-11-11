@@ -32,6 +32,7 @@
         int n;
         while (true) {
             if (std::cin >> n) {
+                dados->salvarDados();
                 try {
                     tratamento.isNumeroValido(n, min, max, "Opção");
                     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -162,6 +163,7 @@
                 int id = lerOpcao(1, std::numeric_limits<int>::max());
                 bool r = dados->removerObra(id);
                 if (r) {
+                    dados->salvarDados();
                     std::cout << "Obra removida com sucesso." << std::endl;
                 } else {
                     std::cout << "Obra não encontrada ou associada a empréstimo/manutenção." << std::endl;
@@ -214,6 +216,7 @@
                     break;
                 }
                 if (dados->getUsuarios()->removerUsuarioCPF(cpf)) {
+                    dados->salvarDados();
                     std::cout << "Usuário removido com sucesso." << std::endl;
                 } else {
                     std::cout << "Não foi possível remover o usuário." << std::endl;
@@ -302,6 +305,7 @@
                 }
 
                 if (e->solicitarRenovacao()) {
+                    dados->salvarDados();
                     std::cout << "Solicitação de renovação registrada. Aguarde a aprovação do bibliotecário." << std::endl;
                 } else {
                     std::cout << "Não foi possível solicitar a renovação." << std::endl;
@@ -352,6 +356,7 @@
 
                 m->iniciar();
                 if (m->getEstado() == EstadoManutencao::EM_ANDAMENTO) {
+                    dados->salvarDados();
                     std::cout << "Manutenção iniciada." << std::endl;
                 } else {
                     std::cout << "Não foi possível iniciar a manutenção." << std::endl;
@@ -374,6 +379,7 @@
                 tm->registrarReparo(m, reparo);
                 tm->concluirManutencao(m);
                 if (m->getEstado() == EstadoManutencao::CONCLUIDA) {
+                    dados->salvarDados();
                     std::cout << "Manutenção concluída. A obra está novamente disponível." << std::endl;
                 } else {
                     std::cout << "Não foi possível concluir a manutenção." << std::endl;
@@ -490,6 +496,7 @@
 
             if (dados->getCatalogo()->cadastrarObra(nova)) {
                 nova = nullptr;
+                dados->salvarDados();
                 std::cout << "Obra cadastrada com sucesso! ID: " << id << std::endl;
             } else {
                 std::cout << "Não foi possível cadastrar a obra." << std::endl;
@@ -541,6 +548,7 @@
                 }
 
                 if (n != 0) {
+                    dados->salvarDados();
                     std::cout << "Informação atualizada com sucesso." << std::endl;
                 }
             } catch (const std::exception &e) {
@@ -589,6 +597,7 @@
                 }
 
                 if (n != 0) {
+                    dados->salvarDados();
                     std::cout << "Informação atualizada com sucesso." << std::endl;
                 }
             } catch (const std::exception &e) {
@@ -629,6 +638,7 @@
                 std::cout << "Cadastro não realizado: CPF já cadastrado ou identificador indisponível." << std::endl;
             } else {
                 novo = nullptr;
+                dados->salvarDados();
                 std::cout << "Usuário cadastrado com sucesso! ID: " << id << std::endl;
             }
         } catch (const std::exception &e) {
@@ -731,6 +741,7 @@
         if (ep == nullptr) {
             std::cout << "O empréstimo não pôde ser aprovado. Verifique as regras de empréstimo." << std::endl;
         } else {
+            dados->salvarDados();
             std::cout << "Empréstimo realizado com sucesso." << std::endl;
             std::cout << "Data de retirada: " << ep->getRetirada().getData() << std::endl;
             std::cout << "Data prevista para devolução: " << ep->getDevolucao().getData() << std::endl;
@@ -768,6 +779,7 @@
         e->getObra().setDanificado(danificada);
 
         b->registrarDevolucao(e);
+        dados->salvarDados();
         std::cout << "Devolução registrada com sucesso." << std::endl;
         std::cout << "A obra está " << (e->getObra().isDisponivel() ? "disponível." : "indisponível.") << std::endl;
     }
@@ -789,8 +801,10 @@
             return;
         }
 
-        const Data hj = obterDataAtual();
-        if (b->aprovarRenovacao(e, hj)) {
+        Data hj = obterDataAtual();
+        bool aprovada = b->aprovarRenovacao(e, hj);
+        dados->salvarDados();
+        if (aprovada) {
             std::cout << "Renovação aprovada com sucesso." << std::endl;
             std::cout << "Nova data de devolução: " << e->getDevolucao().getData() << std::endl;
         } else if (e->getAtraso(hj) > 0) {
@@ -844,6 +858,7 @@
 
         Manutencao *m = b->encaminharManutencao(o, tm, dano, obterDataAtual());
         if (m != nullptr) {
+            dados->salvarDados();
             std::cout << "Obra encaminhada para manutenção. Ela permanecerá indisponível até a conclusão do reparo." << std::endl;
         } else {
             o->setDisponivel(disp);
