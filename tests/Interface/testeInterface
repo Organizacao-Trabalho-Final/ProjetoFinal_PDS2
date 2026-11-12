@@ -1,0 +1,292 @@
+#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+#include "doctest.h"
+#include "Interface.hpp"
+#include "Dados.hpp"
+#include "Usuarios.hpp"
+#include "Catalogo.hpp"
+#include "Livro.hpp"
+#include "Artigo.hpp"
+#include "Estudante.hpp"
+#include "Professor.hpp"
+#include "Bibliotecario.hpp"
+#include "TecnicoManutencao.hpp"
+#include "Emprestimo.hpp"
+#include "Manutencao.hpp"
+#include "Data.hpp"
+#include <iostream>
+#include <sstream>
+#include <string>
+#include <stdexcept>
+#include <ctime>
+#include <cstdio>
+#include <cstdlib>
+#include <iomanip>
+#include <unistd.h>
+
+class DiretorioTemporario {
+    private:
+        std::string anterior;
+        std::string caminho;
+
+    public:
+        DiretorioTemporario() {
+            char atual[4096];
+            if (getcwd(atual, sizeof(atual)) == nullptr) {
+                throw std::runtime_error("Não foi possível obter o diretório atual.");
+            }
+            anterior = atual;
+
+            char modelo[] = "/tmp/pds2-interface-XXXXXX";
+            char *novo = mkdtemp(modelo);
+            if (novo == nullptr) {
+                throw std::runtime_error("Não foi possível criar diretório temporário.");
+            }
+            caminho = novo;
+            if (chdir(caminho.c_str()) != 0) {
+                rmdir(caminho.c_str());
+                throw std::runtime_error("Não foi possível acessar diretório temporário.");
+            }
+        }
+
+        ~DiretorioTemporario() {
+            std::remove("obras.txt");
+            std::remove("usuario.txt");
+            std::remove("emprestimos.txt");
+            chdir(anterior.c_str());
+            rmdir(caminho.c_str());
+        }
+};
+
+class Fluxos {
+    private:
+        std::istringstream entrada;
+        std::ostringstream saida;
+        std::streambuf *cinOriginal;
+        std::streambuf *coutOriginal;
+
+    public:
+        explicit Fluxos(const std::string &texto): entrada(texto), cinOriginal(std::cin.rdbuf()), coutOriginal(std::cout.rdbuf()) {
+            std::cin.clear();
+            std::cout.clear();
+            std::cin.rdbuf(entrada.rdbuf());
+            std::cout.rdbuf(saida.rdbuf());
+        }
+
+        ~Fluxos() {
+            std::cin.rdbuf(cinOriginal);
+            std::cout.rdbuf(coutOriginal);
+            std::cin.clear();
+            std::cout.clear();
+        }
+
+        std::string texto() const {
+            return saida.str();
+        }
+};
+
+static std::string executarInterface(Dados &dados, const std::string &entrada) {
+    Fluxos fluxos(entrada);
+    Interface interface(&dados);
+    interface.executar();
+    return fluxos.texto();
+}
+
+static std::string cpfTeste(unsigned int base) {
+    std::ostringstream os;
+    os << std::setw(9) << std::setfill('0') << base;
+    std::string cpf = os.str();
+    int soma = 0;
+    for (int i = 0; i < 9; ++i) soma += (cpf[i] - '0') * (10 - i);
+    int d1 = (soma * 10) % 11;
+    if (d1 == 10) d1 = 0;
+    soma = d1 * 2;
+    for (int i = 0; i < 9; ++i) soma += (cpf[i] - '0') * (11 - i);
+    int d2 = (soma * 10) % 11;
+    if (d2 == 10) d2 = 0;
+    cpf += static_cast<char>('0' + d1);
+    cpf += static_cast<char>('0' + d2);
+    return cpf;
+}
+
+static Data dataHoje() {
+    const std::time_t agora = std::time(nullptr);
+    const std::tm *local = std::localtime(&agora);
+    if (local == nullptr) return Data(1, 1, 2026);
+    return Data(local->tm_mday, local->tm_mon + 1, local->tm_year + 1900);
+}
+
+TEST_CASE("Interface - construtor, menus principais vazios e encerramento") {
+    DiretorioTemporario dir;
+    CHECK_THROWS_AS(Interface(nullptr), std::invalid_argument);
+
+    Dados dados(new Usuarios(), new Catalogo());
+    const std::string cpf = cpfTeste(12345678);
+    const std::string entrada = "1\n2\n0\n2\n4\n0\n3\n2\n" + cpf + "\n0\n4\n2\n" + cpf + "\n0\n0\n";
+    const std::string saida = executarInterface(dados, entrada);
+
+    CHECK(saida.find("Nenhuma obra foi cadastrada até então.") != std::string::npos);
+    CHECK(saida.find("Nenhum usuário cadastrado.") != std::string::npos);
+    CHECK(saida.find("Usuário não encontrado.") != std::string::npos);
+    CHECK(saida.find("Técnico de manutenção não encontrado.") != std::string::npos);
+    CHECK(saida.find("Encerrando o sistema...") != std::string::npos);
+}
+
+TEST_CASE("Interface - valida opções numéricas e trata fim da entrada") {
+    DiretorioTemporario dir;
+    Dados dados(new Usuarios(), new Catalogo());
+    const std::string saida = executarInterface(dados, "abc\n9\n0\n");
+    CHECK(saida.find("Entrada inválida. Digite um número.") != std::string::npos);
+    CHECK(saida.find("Opção inválido -> Opção") != std::string::npos);
+
+    Fluxos fluxos("");
+    Interface interface(&dados);
+    CHECK_THROWS_AS(interface.executar(), std::runtime_error);
+}
+
+TEST_CASE("Interface - pesquisa e listagem de obras") {
+    DiretorioTemporario dir;
+    Dados dados(new Usuarios(), new Catalogo());
+    Livro *livro = new Livro("Cálculo", "Stewart", 1, "Didático", 2);
+    Artigo *artigo = new Artigo("Robótica", "Siciliano", 2, "Engenharia", 2024);
+    REQUIRE(dados.getCatalogo()->cadastrarObra(livro));
+    REQUIRE(dados.getCatalogo()->cadastrarObra(artigo));
+
+    const std::string entrada =
+        "1\n1\n1\nCálculo\n2\nStewart\n3\n2\n1\nInexistente\n0\n2\n0\n0\n";
+    const std::string saida = executarInterface(dados, entrada);
+
+    CHECK(saida.find("Cálculo") != std::string::npos);
+    CHECK(saida.find("Robótica") != std::string::npos);
+    CHECK(saida.find("Obra não encontrada.") != std::string::npos);
+    CHECK(saida.find("Disponibilidade:") != std::string::npos);
+}
+
+TEST_CASE("Interface - cadastra livros e artigos e trata cadastro inválido") {
+    DiretorioTemporario dir;
+    Dados dados(new Usuarios(), new Catalogo());
+    const std::string tituloLongo(51, 'A');
+    const std::string entrada =
+        "1\n3\n1\n" + tituloLongo + "\nAutor\nGênero\n1\n"
+        "3\n1\nCálculo\nStewart\nDidático\n2\n"
+        "3\n2\nRobótica\nSiciliano\nEngenharia\n2024\n0\n0\n0\n";
+    const std::string saida = executarInterface(dados, entrada);
+
+    CHECK(saida.find("Erro ao cadastrar obra:") != std::string::npos);
+    CHECK(saida.find("Obra cadastrada com sucesso!") != std::string::npos);
+    REQUIRE(dados.getCatalogo()->listarObras().size() == 2);
+    CHECK(dynamic_cast<Livro*>(dados.getCatalogo()->listarObras()[0]) != nullptr);
+    CHECK(dynamic_cast<Artigo*>(dados.getCatalogo()->listarObras()[1]) != nullptr);
+}
+
+TEST_CASE("Interface - atualiza e remove livros e artigos") {
+    DiretorioTemporario dir;
+    Dados dados(new Usuarios(), new Catalogo());
+    Livro *livro = new Livro("Cálculo", "Stewart", 1, "Didático", 1);
+    Artigo *artigo = new Artigo("Robótica", "Siciliano", 2, "Engenharia", 2024);
+    REQUIRE(dados.getCatalogo()->cadastrarObra(livro));
+    REQUIRE(dados.getCatalogo()->cadastrarObra(artigo));
+
+    const std::string tituloLongo(51, 'B');
+    const std::string entrada =
+        "1\n4\n1\n1\n" + tituloLongo + "\n1\nNovo Cálculo\n2\nNovo Autor\n3\nNovo Gênero\n4\n2\n0\n"
+        "4\n2\n1\nNovo Artigo\n2\nNovo Autor Artigo\n3\nComputação\n4\n2025\n0\n"
+        "5\n999\n5\n1\n0\n0\n";
+    const std::string saida = executarInterface(dados, entrada);
+
+    CHECK(saida.find("Não foi possível atualizar a obra:") != std::string::npos);
+    CHECK(saida.find("Informação atualizada com sucesso.") != std::string::npos);
+    CHECK(saida.find("Obra não encontrada ou associada a empréstimo/manutenção.") != std::string::npos);
+    CHECK(saida.find("Obra removida com sucesso.") != std::string::npos);
+    CHECK(dados.getCatalogo()->buscarPorId(1) == nullptr);
+    REQUIRE(dados.getCatalogo()->buscarPorId(2) != nullptr);
+    CHECK(dados.getCatalogo()->buscarPorId(2)->getTitulo() == "Novo Artigo");
+    Artigo *artigoAtualizado = dynamic_cast<Artigo*>(dados.getCatalogo()->buscarPorId(2));
+    REQUIRE(artigoAtualizado != nullptr);
+    CHECK(artigoAtualizado->getArea() == "Computação");
+    CHECK(artigoAtualizado->getAno() == 2025);
+}
+
+TEST_CASE("Interface - trata campos vazios e caracteres proibidos na leitura de texto") {
+    DiretorioTemporario dir;
+    Dados dados(new Usuarios(), new Catalogo());
+    const std::string entrada = "1\n1\n1\n\n;\nLivro inexistente\n0\n0\n0\n";
+    const std::string saida = executarInterface(dados, entrada);
+
+    CHECK(saida.find("O campo não pode ficar vazio. Tente novamente.") != std::string::npos);
+    CHECK(saida.find("Obra não encontrada.") != std::string::npos);
+}
+
+TEST_CASE("Interface - cadastra, pesquisa e lista todas as categorias de usuários") {
+    DiretorioTemporario dir;
+    Dados dados(new Usuarios(), new Catalogo());
+    const std::string cpf1 = cpfTeste(12345678);
+    const std::string cpf2 = cpfTeste(23456789);
+    const std::string cpf3 = cpfTeste(34567890);
+    const std::string cpf4 = cpfTeste(45678901);
+    const std::string entrada =
+        "2\n1\n1\nAna\n" + cpf1 + "\nEngenharia\n2026012345\n"
+        "1\n2\nBruno\n" + cpf2 + "\nComputação\n"
+        "1\n3\nBia\n" + cpf3 + "\n"
+        "1\n4\nCarlos\n" + cpf4 + "\n"
+        "2\n1\nAna\n"
+        "2\n2\n" + cpf2 + "\n"
+        "2\n3\n3\n"
+        "2\n1\nInexistente\n"
+        "4\n0\n0\n";
+    const std::string saida = executarInterface(dados, entrada);
+
+    REQUIRE(dados.getUsuarios()->getUsuarios().size() == 4);
+    CHECK(saida.find("Usuário cadastrado com sucesso!") != std::string::npos);
+    CHECK(saida.find("Categoria: Estudante") != std::string::npos);
+    CHECK(saida.find("Categoria: Professor") != std::string::npos);
+    CHECK(saida.find("Categoria: Bibliotecário") != std::string::npos);
+    CHECK(saida.find("Categoria: Técnico de manutenção") != std::string::npos);
+    CHECK(saida.find("Usuário não encontrado.") != std::string::npos);
+}
+
+TEST_CASE("Interface - rejeita cadastro duplicado e cadastro com dados inválidos") {
+    DiretorioTemporario dir;
+    Dados dados(new Usuarios(), new Catalogo());
+    const std::string cpf = cpfTeste(12345678);
+    const std::string entrada =
+        "2\n1\n2\nAna\n" + cpf + "\nComputação\n"
+        "1\n1\nBia\n" + cpf + "\nEngenharia\n2026012345\n"
+        "1\n1\nCaio\n" + cpfTeste(23456789) + "\nEngenharia\n123\n"
+        "0\n0\n";
+    const std::string saida = executarInterface(dados, entrada);
+
+    CHECK(saida.find("Cadastro não realizado: CPF já cadastrado") != std::string::npos);
+    CHECK(saida.find("Erro ao cadastrar usuário:") != std::string::npos);
+    CHECK(dados.getUsuarios()->getUsuarios().size() == 1);
+}
+
+TEST_CASE("Interface - impede remoção de usuários com registros e remove usuário sem vínculos") {
+    DiretorioTemporario dir;
+    Dados dados(new Usuarios(), new Catalogo());
+    const std::string cpfAluno = cpfTeste(12345678);
+    const std::string cpfTecnico = cpfTeste(23456789);
+    const std::string cpfBiblio = cpfTeste(34567890);
+    Livro *livro = new Livro("Livro", "Autor", 1, "Didático", 1);
+    Livro *livro2 = new Livro("Livro 2", "Autor", 2, "Didático", 1);
+    REQUIRE(dados.getCatalogo()->cadastrarObra(livro));
+    REQUIRE(dados.getCatalogo()->cadastrarObra(livro2));
+    Estudante *aluno = new Estudante("Ana", cpfAluno, "Engenharia", "2026012345");
+    TecnicoManutencao *tecnico = new TecnicoManutencao("Carlos", cpfTecnico);
+    Bibliotecario *biblio = new Bibliotecario("Bia", cpfBiblio);
+    REQUIRE(dados.getUsuarios()->adicionarUsuario(aluno, 1));
+    REQUIRE(dados.getUsuarios()->adicionarUsuario(tecnico, 2));
+    REQUIRE(dados.getUsuarios()->adicionarUsuario(biblio, 3));
+    Emprestimo *e = new Emprestimo(*livro, *aluno, dataHoje());
+    aluno->registrarEmprestimo(e);
+    Manutencao *m = new Manutencao(livro2, tecnico, "Capa rasgada", dataHoje());
+    tecnico->adicionarManutencao(m);
+
+    const std::string entrada = "2\n3\n00000000000\n3\n" + cpfAluno + "\n3\n" + cpfTecnico + "\n3\n" + cpfBiblio + "\n0\n0\n";
+    const std::string saida = executarInterface(dados, entrada);
+
+    CHECK(saida.find("Usuário não encontrado.") != std::string::npos);
+    CHECK(saida.find("o usuário possui histórico de empréstimos") != std::string::npos);
+    CHECK(saida.find("o técnico possui manutenções registradas") != std::string::npos);
+    CHECK(saida.find("Usuário removido com sucesso.") != std::string::npos);
+    CHECK(dados.getUsuarios()->buscarUsuarioCPF(cpfBiblio) == nullptr);
+}
