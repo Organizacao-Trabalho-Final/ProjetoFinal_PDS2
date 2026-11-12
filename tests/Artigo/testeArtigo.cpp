@@ -153,8 +153,7 @@ TEST_CASE("Artigo - printObra"){
     buffer << cap.rdbuf();
     std::string txt = buffer.str();
 
-    CHECK(txt == "Titulo: Confissoes\nAutor: S.A\nArea: fisica\nAno: 2026\nID: 11\nDisponivel: Sim\nTitulo: Confissoes\nAutor: S.A\nArea: fisica\nAno: 2026\nID: 11\nDisponivel: Não\n");
-    //CHECK(txt == "Titulo: Confissoes\nAutor: S.A\nArea: fisica\nAno: 2026\nID: 11\nDisponivel: Não\n");
+    CHECK(txt == "Titulo: Confissoes\nAutor: S.A\nArea: fisica\nAno: 2026\nID: 11\nDisponibilidade: Disponível\nTitulo: Confissoes\nAutor: S.A\nArea: fisica\nAno: 2026\nID: 11\nDisponibilidade: Indisponível\n");
 
     delete b;
     delete a;
