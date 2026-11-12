@@ -141,7 +141,6 @@
                     for (Obra *o : obras) {
                         if (o != nullptr) {
                             o->printObra();
-                            std::cout << "Disponibilidade: " << (o->isDisponivel() ? "Disponível" : "Indisponível") << std::endl;
                             std::cout << "Danificada: " << (o->isDanificado() ? "Sim" : "Não") << std::endl;
                             std::cout << "Em manutenção: " << (o->isEmManutencao() ? "Sim\n" : "Não\n") << std::endl;
                         }

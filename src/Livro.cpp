@@ -40,5 +40,5 @@
         std::cout << "Genero: " << getGenero() << std::endl;
         std::cout << "Edição: " << getEdicao() << std::endl;
         std::cout << "ID: " << getID() << std::endl;
-        std::cout << "Disponivel: " << (isDisponivel() ? "Sim" : "Não") << std::endl;
+        std::cout << "Disponibilidade: " << (isDisponivel() ? "Disponível" : "Indisponível") << std::endl;
     }
