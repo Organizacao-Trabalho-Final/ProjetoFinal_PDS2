@@ -44,6 +44,8 @@ class Data {
         */
         void addDia();
 
+        friend struct TesteData;
+
     public:
         /**
         * @brief Constrói um objeto Data.

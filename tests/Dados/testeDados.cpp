@@ -12,6 +12,9 @@
 #include <sstream>
 #include <cstdio>
 #include <stdexcept>
+#include <cstdlib>
+#include <unistd.h>
+#include <sys/stat.h>
 #include "Estudante.hpp"
 #include "Emprestimo.hpp"
 #include "Professor.hpp"
@@ -50,6 +53,47 @@ struct TesteCatalogo {
 class PessoaDesconhecidaDados : public Pessoa {
     public:
         PessoaDesconhecidaDados(const std::string &n, const std::string &c) : Pessoa(n, c) {}
+
+        int getPrazo() const override {
+            return 30;
+        }
+};
+
+class DiretorioTemporario {
+    private:
+        std::string diretorioAnterior;
+        std::string caminho;
+
+    public:
+        DiretorioTemporario() {
+            char atual[4096];
+            if (getcwd(atual, sizeof(atual)) == nullptr) {
+                throw std::runtime_error("Não foi possível obter o diretório atual.");
+            }
+            diretorioAnterior = atual;
+
+            char modelo[] = "/tmp/pds2-dados-XXXXXX";
+            char *novo = mkdtemp(modelo);
+            if (novo == nullptr) {
+                throw std::runtime_error("Não foi possível criar diretório temporário.");
+            }
+            caminho = novo;
+
+            if (chdir(caminho.c_str()) != 0) {
+                rmdir(caminho.c_str());
+                throw std::runtime_error("Não foi possível acessar diretório temporário.");
+            }
+        }
+
+        ~DiretorioTemporario() {
+            std::remove("usuario.txt");
+            std::remove("obras.txt");
+            std::remove("emprestimos.txt");
+            rmdir("usuario.txt");
+            rmdir("obras.txt");
+            chdir(diretorioAnterior.c_str());
+            rmdir(caminho.c_str());
+        }
 };
 
 static void escreverArquivosDados(const std::string &obras, const std::string &usuarios) {
@@ -1686,7 +1730,7 @@ TEST_CASE("Dados - rejeita renovação inválida e limpa empréstimos parciais")
     }
 }
 
-TEST_CASE("Dados - cobre falha de leitura após reconhecer o tipo de usuário") {
+TEST_CASE("Dados - cobre falha de leitura") {
     escreverArquivosDados("ProximoId;1\n", "Professor;1;Ana;52998224725;Computação;");
     Dados dados(new Usuarios(), new Catalogo());
     CHECK_FALSE(dados.carregarDados());
@@ -1719,4 +1763,74 @@ TEST_CASE("Dados - preserva o próximo ID e ignora manutenção concluída") {
     std::remove("obras.txt");
     std::remove("usuario.txt");;
     }
+}
+
+TEST_CASE("Dados - trata falhas ao abrir arquivos durante o salvamento") {
+    SUBCASE("Falha ao abrir usuario.txt") {
+        DiretorioTemporario dir;
+        REQUIRE(mkdir("usuario.txt", 0700) == 0);
+
+        Dados dados(new Usuarios(), new Catalogo());
+        std::ostringstream cap;
+        std::streambuf *original = std::cerr.rdbuf(cap.rdbuf());
+        dados.salvarDados();
+        std::cerr.rdbuf(original);
+
+        CHECK(cap.str() == "Erro ao abrir o arquivo para salvar os dados -> Usuarios.\n");
+    }
+
+    SUBCASE("Falha ao abrir obras.txt") {
+        DiretorioTemporario dir;
+        {
+            std::ofstream usuario("usuario.txt");
+            REQUIRE(usuario.is_open());
+        }
+        REQUIRE(mkdir("obras.txt", 0700) == 0);
+
+        Dados dados(new Usuarios(), new Catalogo());
+        std::ostringstream cap;
+        std::streambuf *original = std::cerr.rdbuf(cap.rdbuf());
+        dados.salvarDados();
+        std::cerr.rdbuf(original);
+
+        CHECK(cap.str() == "Erro ao abrir o arquivo para salvar os dados -> Obras.\n");
+    }
+}
+
+TEST_CASE("Dados - detecta falha durante a gravação") {
+    DiretorioTemporario dir;
+    REQUIRE(symlink("/dev/full", "obras.txt") == 0);
+
+    Catalogo *catalogo = new Catalogo();
+    REQUIRE(catalogo->cadastrarObra(new Livro("Livro teste", "Autor", 1, "Didático", 1)));
+    Dados dados(new Usuarios(), catalogo);
+
+    std::ostringstream cap;
+    std::streambuf *original = std::cerr.rdbuf(cap.rdbuf());
+    dados.salvarDados();
+    std::cerr.rdbuf(original);
+
+    CHECK(cap.str() == "Erro durante a gravação dos arquivos de dados.\n");
+}
+
+TEST_CASE("Dados - rejeita empréstimo ativo de usuário não autorizado") {
+    Catalogo *catalogo = new Catalogo();
+    Usuarios *usuarios = new Usuarios();
+
+    Livro *obra = new Livro("Livro", "Autor", 1, "Didático", 1);
+    REQUIRE(catalogo->cadastrarObra(obra));
+
+    PessoaDesconhecidaDados *pessoa = new PessoaDesconhecidaDados("Teste", "52998224725");
+    REQUIRE(usuarios->adicionarUsuario(pessoa, 1));
+
+    Emprestimo *e = new Emprestimo(*obra, *pessoa, Data(10, 11, 2026));
+    pessoa->registrarEmprestimo(e);
+
+    Dados dados(usuarios, catalogo);
+    escreverArquivosDados("", "");
+
+    CHECK_FALSE(TesteDados::carregarInterno(dados));
+
+    std::remove("obras.txt");
+    std::remove("usuario.txt");
 }

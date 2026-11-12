@@ -4,6 +4,16 @@
 #include "doctest.h"
 #include "Data.hpp"
 
+struct TesteData {
+    static bool isBissexto(const Data &d, int a) {
+        return d.isBissexto(a);
+    }
+
+    static int diaMes(const Data &d, int m, int a) {
+        return d.diaMes(m, a);
+    }
+};
+
 TEST_CASE("Teste Construtor - Data") {
     CHECK_THROWS(Data( 10,  13,   2006));
     CHECK_THROWS(Data( 32,  10,   2006));
@@ -161,4 +171,12 @@ TEST_CASE("Teste limite máximo de somarDias() - Data") {
     CHECK(data1.getDia() == 30);
     CHECK(data1.getMes() == 12);
     CHECK(data1.getAno() == 9999);
+}
+
+TEST_CASE("Data - valida caminhos internos") {
+    Data d(1, 1, 2024);
+
+    CHECK_THROWS_AS(TesteData::isBissexto(d, 0), std::invalid_argument);
+    CHECK_THROWS_AS(TesteData::isBissexto(d, 10000), std::invalid_argument);
+    CHECK(TesteData::diaMes(d, 13, 2024) == 0);
 }

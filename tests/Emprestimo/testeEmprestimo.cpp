@@ -6,6 +6,12 @@
 #include "Pessoa.hpp"
 #include "Estudante.hpp"
 
+struct TesteEmprestimo {
+    static bool renovar(Emprestimo &e) {
+        return e.renovarEmprestimo();
+    }
+};
+
 TEST_CASE("Teste Construtor e Getters - Emprestimo") {
     Livro l1("Dom Casmurro", "Machado de Assis", 1, "Romance", 5);
     Estudante p1("Fulano", "01234567890", "Engenharia", "2026012345");
@@ -114,4 +120,15 @@ TEST_CASE("Teste solicitar renovacao com emprestimo inativo") {
     e7.encerrarEmprestimo();
     CHECK(e7.isRenovacaoSolicitada() == false);
     CHECK(e7.solicitarRenovacao() == false);
+}
+
+TEST_CASE("Emprestimo - renovação em estados inválidos") {
+    Livro livro("Dom Casmurro", "Machado de Assis", 90, "Romance", 1);
+    Estudante estudante("Fulano", "01234567890", "Engenharia", "2026012345");
+    Emprestimo e(livro, estudante, Data(12, 11, 2026));
+
+    CHECK_FALSE(TesteEmprestimo::renovar(e));
+    REQUIRE(e.solicitarRenovacao());
+    e.encerrarEmprestimo();
+    CHECK_FALSE(TesteEmprestimo::renovar(e));
 }

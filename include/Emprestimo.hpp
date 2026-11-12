@@ -40,6 +40,7 @@ class Emprestimo {
 
         friend class Bibliotecario;
         friend class Dados;
+        friend struct TesteEmprestimo;
 
     public:
         /**

@@ -20,14 +20,6 @@ class Tratamento {
         int max_string = 50; ///< Limite máximo padrão de caracteres para uma string.
         int min_string = 0; ///< Limite mínimo padrão de caracteres para uma string.
 
-        /**
-         * @brief Define se as strings analisadas pelo método padrão podem conter números.
-         *
-         * true permite números e false não permite.
-         * Por padrão, é false.
-        */
-        bool pode_num = false;
-
         std::string caracter_invalidos; ///< Caracteres proibidos em strings.
 
     public:

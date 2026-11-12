@@ -420,10 +420,6 @@
             return false;
         }
 
-        if (catalogo->getProximoId() <= maiorId) {
-            catalogo->setProximoId(maiorId + 1);
-        }
-
         while (std::getline(arquivoUsuarios, tipo, ';')) {
             if (tipo == "Estudante") {
                 arquivoUsuarios >> id;

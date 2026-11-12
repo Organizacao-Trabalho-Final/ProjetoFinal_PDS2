@@ -104,9 +104,6 @@
             throw std::invalid_argument(tipo + " muito pequeno -> precisa ser maior que " + 
                         std::to_string(min_string) + " caracteres");
         }
-        if (pode_num) {
-            return true;
-        }
         for (char c : s) {
             if (std::isdigit(static_cast<unsigned char>(c))) {
                 throw std::invalid_argument(tipo + " não pode conter números.");
