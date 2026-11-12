@@ -207,3 +207,15 @@ TEST_CASE("Validar quantidade respeita limites inclusivos") {
     CHECK(t.validarQtd("abc", 4, 3) == false);
     CHECK_THROWS_AS(t.validarQtdEX("abc", 4, 3), std::invalid_argument);
 }
+
+TEST_CASE("Tratamento - caminhos restantes") {
+    Tratamento t;
+
+    CHECK_FALSE(t.somenteNumeros(""));
+    CHECK_THROWS_AS(t.validarCPF("52998A24725"), std::invalid_argument);
+    CHECK_THROWS_AS(t.validarCPF("52998224735"), std::invalid_argument);
+
+    t.setCaracterInvalidos(" !");
+    CHECK(t.isCaracterValido("Texto sem caracteres proibidos", "Nome"));
+    CHECK(t.isCaracterValido("Texto sem caracteres proibidos", " !", "Nome"));
+}

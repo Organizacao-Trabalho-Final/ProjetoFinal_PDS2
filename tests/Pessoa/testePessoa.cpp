@@ -545,3 +545,27 @@ TEST_CASE("Pessoa - validação do construtor") {
     CHECK_NOTHROW(Pessoa("Maria", "12345678909"));
         
 }
+
+TEST_CASE("Pessoa - caminhos restantes") {
+    Pessoa p("Pessoa base", "52998224725");
+    Livro obra("Teste", "Autor", 50, "Didático", 1);
+
+    CHECK(p.Pessoa::podeEmprestar(&obra));
+    CHECK_FALSE(p.Pessoa::podeEmprestar(nullptr));
+    obra.setDisponivel(false);
+    CHECK_FALSE(p.Pessoa::podeEmprestar(&obra));
+
+    std::vector<Emprestimo*> &emprestimos = const_cast<std::vector<Emprestimo*>&>(p.getEmprestimos());
+    p.setEmprestimos(emprestimos);
+    emprestimos.push_back(nullptr);
+
+    {
+        capturaCout cp;
+        CHECK(p.historicoEmprestimos().size() == 1);
+        CHECK(cp.str().empty());
+    }
+
+    emprestimos.clear();
+    Pessoa *temporaria = new Pessoa("Temporaria", "11122233396");
+    delete temporaria;
+}

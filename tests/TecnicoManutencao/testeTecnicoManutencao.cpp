@@ -114,3 +114,32 @@ TEST_CASE("Destrutor de TecnicoManutencao") {
 
     CHECK(true);
 }
+
+TEST_CASE("TecnicoManutencao - caminhos inválidos e vetores") {
+    TecnicoManutencao t1("José", "01234567890");
+    TecnicoManutencao t2("Maria", "11122233396");
+    Livro l1("Livro um", "Autor", 30, "Didático", 1);
+    Livro l2("Livro dois", "Autor", 31, "Didático", 1);
+
+    Manutencao *m1 = new Manutencao(&l1, &t1, "Capa", Data(10, 11, 2026));
+    std::vector<Manutencao*> manutencoes = {nullptr, m1};
+    t1.setManutencoes(manutencoes);
+    CHECK(t1.getManutencoes().size() == 1);
+    t1.setManutencoes(t1.getManutencoes());
+    CHECK(t1.getManutencoes().size() == 1);
+
+    Manutencao deOutroTecnico(&l2, &t2, "Páginas", Data(10, 11, 2026));
+    Manutencao naoCadastrada(&l2, &t1, "Lombada", Data(10, 11, 2026));
+
+    t1.registrarReparo(nullptr, "Reparo");
+    t1.concluirManutencao(nullptr);
+    t1.registrarReparo(&deOutroTecnico, "Reparo");
+    t1.concluirManutencao(&deOutroTecnico);
+    t1.registrarReparo(&naoCadastrada, "Reparo");
+    t1.concluirManutencao(&naoCadastrada);
+    t1.registrarReparo(m1, "Ainda pendente");
+    t1.concluirManutencao(m1);
+
+    CHECK(m1->getEstado() == EstadoManutencao::PENDENTE);
+    CHECK(m1->getReparo().empty());
+}

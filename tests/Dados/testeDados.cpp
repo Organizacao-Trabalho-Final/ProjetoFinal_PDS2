@@ -29,6 +29,10 @@ struct TesteDados {
     static void salvarEmprestimos(Dados& d, std::ofstream& out, const std::vector<Emprestimo*>& v) {
         d.salvarEmprestimos(out, v);
     }
+
+    static bool carregarInterno(Dados& d) {
+        return d.carregarDadosInterno();
+    }
 };
 
 struct TesteDados2{
@@ -42,6 +46,21 @@ struct TesteCatalogo {
         return c.getProximoId();
     }
 };
+
+class PessoaDesconhecidaDados : public Pessoa {
+    public:
+        PessoaDesconhecidaDados(const std::string &n, const std::string &c) : Pessoa(n, c) {}
+};
+
+static void escreverArquivosDados(const std::string &obras, const std::string &usuarios) {
+    std::ofstream outObras("obras.txt");
+    outObras << obras;
+    outObras.close();
+
+    std::ofstream outUsuarios("usuario.txt");
+    outUsuarios << usuarios;
+    outUsuarios.close();
+}
 
 TEST_CASE("Dados - getUsuario"){
 
@@ -1275,4 +1294,429 @@ TEST_CASE("Dados - obra com emprestimo ativo fica indisponivel") {
 
     std::remove("obras.txt");
     std::remove("usuario.txt");
+}
+
+TEST_CASE("Dados - salvar manutenções e ignorar ponteiros nulos") {
+    Catalogo *catalogo = new Catalogo();
+    Usuarios *usuarios = new Usuarios();
+    Dados dados(usuarios, catalogo);
+
+    Livro *obra = new Livro("Cálculo", "Stewart", 71, "Didático", 1);
+    REQUIRE(catalogo->cadastrarObra(obra));
+
+    TecnicoManutencao *tecnico = new TecnicoManutencao("Carlos", "52998224725");
+    REQUIRE(usuarios->adicionarUsuario(tecnico, 1));
+    tecnico->adicionarManutencao(new Manutencao(obra, tecnico, "Capa rasgada", Data(10, 11, 2026)));
+
+    std::vector<Obra*> &obras = const_cast<std::vector<Obra*>&>(catalogo->listarObras());
+    obras.push_back(nullptr);
+    std::vector<std::pair<Pessoa*, int> > &registros =
+        const_cast<std::vector<std::pair<Pessoa*, int> >&>(usuarios->getUsuarios());
+    registros.push_back(std::make_pair(static_cast<Pessoa*>(nullptr), 0));
+
+    dados.salvarDados();
+
+    std::ifstream in("usuario.txt");
+    std::stringstream buffer;
+    buffer << in.rdbuf();
+    CHECK(buffer.str().find("TecnicoManutencao;1;Carlos;52998224725;0;1;71;52998224725;Capa rasgada;;10;11;2026;0;") != std::string::npos);
+    in.close();
+    
+    std::remove("obras.txt");
+    std::remove("usuario.txt");;
+}
+
+TEST_CASE("Dados - rejeita manutenção inconsistente ao salvar") {
+    Catalogo *catalogo = new Catalogo();
+    Usuarios *usuarios = new Usuarios();
+    Dados dados(usuarios, catalogo);
+
+    Livro *obra = new Livro("Cálculo", "Stewart", 72, "Didático", 1);
+    REQUIRE(catalogo->cadastrarObra(obra));
+    TecnicoManutencao *tecnico = new TecnicoManutencao("Carlos", "52998224725");
+    REQUIRE(usuarios->adicionarUsuario(tecnico, 1));
+    tecnico->adicionarManutencao(new Manutencao(obra, tecnico, "Capa", Data(10, 11, 2026)));
+
+    std::vector<Manutencao*> &manutencoes =
+        const_cast<std::vector<Manutencao*>&>(tecnico->getManutencoes());
+    manutencoes.push_back(nullptr);
+
+    std::stringstream cap;
+    std::streambuf *original = std::cerr.rdbuf(cap.rdbuf());
+    dados.salvarDados();
+    std::cerr.rdbuf(original);
+
+    CHECK(cap.str() == "Manutenção inconsistente. Não foi possível salvar os dados.\n");
+    manutencoes.pop_back();
+    
+    std::remove("obras.txt");
+    std::remove("usuario.txt");;
+}
+
+TEST_CASE("Dados - salvar tipo de usuário desconhecido") {
+    Catalogo *catalogo = new Catalogo();
+    Usuarios *usuarios = new Usuarios();
+    Dados dados(usuarios, catalogo);
+    REQUIRE(usuarios->adicionarUsuario(new PessoaDesconhecidaDados("Teste", "52998224725"), 1));
+
+    std::stringstream cap;
+    std::streambuf *original = std::cerr.rdbuf(cap.rdbuf());
+    dados.salvarDados();
+    std::cerr.rdbuf(original);
+
+    CHECK(cap.str() == "Tipo de usuário desconhecido. Não foi possível salvar os dados.\n");
+    
+    std::remove("obras.txt");
+    std::remove("usuario.txt");;
+}
+
+TEST_CASE("Dados - caminhos básicos de abertura e cabeçalho") {
+    
+    std::remove("obras.txt");
+    std::remove("usuario.txt");;
+    {
+        Dados dados(new Usuarios(), new Catalogo());
+        CHECK(dados.carregarDados());
+    }
+
+    escreverArquivosDados("ProximoId;0\n", "");
+    {
+        Dados dados(new Usuarios(), new Catalogo());
+        CHECK_FALSE(dados.carregarDados());
+    }
+
+    escreverArquivosDados("ProximoId;1\n", "");
+    std::remove("usuario.txt");
+    {
+        Dados dados(new Usuarios(), new Catalogo());
+        CHECK_FALSE(dados.carregarDados());
+    }
+
+    std::remove("obras.txt");
+    escreverArquivosDados("", "");
+    std::remove("obras.txt");
+    {
+        Dados dados(new Usuarios(), new Catalogo());
+        CHECK_FALSE(dados.carregarDados());
+    }
+    
+    std::remove("obras.txt");
+    std::remove("usuario.txt");;
+}
+
+TEST_CASE("Dados - rejeita tipos e identificadores inválidos de obras") {
+    const std::string usuarioVazio = "";
+    const std::vector<std::string> arquivos = {
+        "Artigo;Artigo inválido;Autor;0;1;0;Física;2024\n",
+        "Artigo;Primeiro;Autor;1;1;0;Física;2024\nArtigo;Duplicado;Autor;1;1;0;Física;2024\n",
+        "Livro;Livro inválido;Autor;0;1;0;Didático;1\n",
+        "Livro;Primeiro;Autor;1;1;0;Didático;1\nLivro;Duplicado;Autor;1;1;0;Didático;1\n",
+        "ObraDesconhecida;Título;Autor;1;1;0;Tipo;1\n",
+        "Livro;Último;Autor;2147483647;1;0;Didático;1\n"
+    };
+
+    for (const std::string &obras : arquivos) {
+        escreverArquivosDados(obras, usuarioVazio);
+        Dados dados(new Usuarios(), new Catalogo());
+        CHECK_FALSE(dados.carregarDados());
+        
+    std::remove("obras.txt");
+    std::remove("usuario.txt");;
+    }
+}
+
+TEST_CASE("Dados - corrige próximo ID após carregar obras") {
+    escreverArquivosDados("ProximoId;1\nLivro;Livro;Autor;10;1;0;Didático;1\n", "");
+    Dados dados(new Usuarios(), new Catalogo());
+    REQUIRE(dados.carregarDados());
+    CHECK(TesteCatalogo::getProximoId(*dados.getCatalogo()) == 11);
+    
+    std::remove("obras.txt");
+    std::remove("usuario.txt");;
+}
+
+TEST_CASE("Dados - rejeita tipos e registros inválidos de usuários") {
+    const std::vector<std::string> usuariosInvalidos = {
+        "OutroTipo;1;Ana;52998224725;\n",
+        "Professor;1;Ana;52998224725",
+        "TecnicoManutencao;1;Carlos;52998224725;"
+    };
+
+    for (const std::string &usuarios : usuariosInvalidos) {
+        escreverArquivosDados("ProximoId;1\n", usuarios);
+        Dados dados(new Usuarios(), new Catalogo());
+        CHECK_FALSE(dados.carregarDados());
+        
+    std::remove("obras.txt");
+    std::remove("usuario.txt");;
+    }
+}
+
+TEST_CASE("Dados - rejeita usuários duplicados de cada categoria") {
+    const std::vector<std::string> usuariosInvalidos = {
+        "Estudante;1;Ana;52998224725;Engenharia;2026021111;0;\nEstudante;1;Bia;11122233396;Engenharia;2026022222;0;\n",
+        "Professor;1;Ana;52998224725;Computação;0;\nProfessor;1;Bia;11122233396;Computação;0;\n",
+        "Bibliotecario;1;Ana;52998224725;0;\nBibliotecario;1;Bia;11122233396;0;\n",
+        "TecnicoManutencao;1;Ana;52998224725;0;0;\nTecnicoManutencao;1;Bia;11122233396;0;0;\n"
+    };
+
+    for (const std::string &usuarios : usuariosInvalidos) {
+        escreverArquivosDados("ProximoId;1\n", usuarios);
+        Dados dados(new Usuarios(), new Catalogo());
+        CHECK_FALSE(dados.carregarDados());
+        
+    std::remove("obras.txt");
+    std::remove("usuario.txt");;
+    }
+}
+
+TEST_CASE("Dados - rejeita manutenção inválida após uma manutenção válida") {
+    const std::string obras = "ProximoId;12\nLivro;Livro;Autor;11;1;0;Didático;1\n";
+    const std::string cpf = "52998224725";
+    const std::string manutencaoValida = "11;" + cpf + ";Capa rasgada;;10;11;2026;0;";
+    const std::string manutencaoEstadoInvalido = "11;" + cpf + ";Dano;;10;11;2026;9;";
+    const std::string manutencaoCpfInvalido = "11;11122233396;Dano;;10;11;2026;0;";
+    const std::string manutencaoObraInvalida = "999;" + cpf + ";Dano;;10;11;2026;0;";
+
+    const std::vector<std::string> usuariosInvalidos = {
+        "TecnicoManutencao;1;Carlos;" + cpf + ";0;2;" + manutencaoValida + manutencaoEstadoInvalido + "\n",
+        "TecnicoManutencao;1;Carlos;" + cpf + ";0;2;" + manutencaoValida + manutencaoCpfInvalido + "\n",
+        "TecnicoManutencao;1;Carlos;" + cpf + ";0;2;" + manutencaoValida + manutencaoObraInvalida + "\n"
+    };
+
+    for (const std::string &usuarios : usuariosInvalidos) {
+        escreverArquivosDados(obras, usuarios);
+        Dados dados(new Usuarios(), new Catalogo());
+        CHECK_FALSE(dados.carregarDados());
+        
+    std::remove("obras.txt");
+    std::remove("usuario.txt");;
+    }
+}
+
+TEST_CASE("Dados - valida consistência dos empréstimos carregados") {
+    const std::string obraDisponivel = "ProximoId;2\nLivro;Livro;Autor;1;1;0;Didático;1\n";
+    const std::string obraDanificada = "ProximoId;2\nLivro;Livro;Autor;1;0;1;Didático;1\n";
+    const std::string cpf1 = "52998224725";
+    const std::string cpf2 = "11122233396";
+    const std::string emprestimoAtivo = "1;10;11;2026;10;12;2026;1;0;";
+    const std::string emprestimoInativo = "1;10;11;2026;10;12;2026;0;0;";
+
+    escreverArquivosDados(obraDisponivel, "Professor;1;Ana;" + cpf1 + ";Computação;1;" + emprestimoInativo + "\n");
+    {
+        Dados dados(new Usuarios(), new Catalogo());
+        CHECK(dados.carregarDados());
+    }
+    
+    std::remove("obras.txt");
+    std::remove("usuario.txt");;
+
+    escreverArquivosDados(obraDanificada, "Professor;1;Ana;" + cpf1 + ";Computação;1;" + emprestimoAtivo + "\n");
+    {
+        Dados dados(new Usuarios(), new Catalogo());
+        CHECK_FALSE(dados.carregarDados());
+    }
+    
+    std::remove("obras.txt");
+    std::remove("usuario.txt");;
+
+    escreverArquivosDados(obraDisponivel,
+        "Professor;1;Ana;" + cpf1 + ";Computação;1;" + emprestimoAtivo + "\n"
+        "Estudante;2;Bia;" + cpf2 + ";Engenharia;2026021111;1;" + emprestimoAtivo + "\n");
+    {
+        Dados dados(new Usuarios(), new Catalogo());
+        CHECK_FALSE(dados.carregarDados());
+    }
+    
+    std::remove("obras.txt");
+    std::remove("usuario.txt");;
+}
+
+TEST_CASE("Dados - valida conflitos entre empréstimos e manutenções") {
+    const std::string obras = "ProximoId;2\nLivro;Livro;Autor;1;1;0;Didático;1\n";
+    const std::string cpf1 = "52998224725";
+    const std::string cpf2 = "11122233396";
+    const std::string emprestimo = "1;10;11;2026;10;12;2026;1;0;";
+    const std::string manutencao = "1;" + cpf2 + ";Capa rasgada;;10;11;2026;0;";
+
+    escreverArquivosDados(obras,
+        "Professor;1;Ana;" + cpf1 + ";Computação;1;" + emprestimo + "\n"
+        "TecnicoManutencao;2;Carlos;" + cpf2 + ";0;1;" + manutencao + "\n");
+    {
+        Dados dados(new Usuarios(), new Catalogo());
+        CHECK_FALSE(dados.carregarDados());
+    }
+    
+    std::remove("obras.txt");
+    std::remove("usuario.txt");;
+
+    const std::string manutencaoCpf1 = "1;" + cpf1 + ";Capa rasgada;;10;11;2026;0;";
+    const std::string manutencaoCpf2 = "1;" + cpf2 + ";Capa rasgada;;10;11;2026;0;";
+    escreverArquivosDados(obras,
+        "TecnicoManutencao;1;Carlos;" + cpf1 + ";0;1;" + manutencaoCpf1 + "\n"
+        "TecnicoManutencao;2;Paulo;" + cpf2 + ";0;1;" + manutencaoCpf2 + "\n");
+    {
+        Dados dados(new Usuarios(), new Catalogo());
+        CHECK_FALSE(dados.carregarDados());
+    }
+    
+    std::remove("obras.txt");
+    std::remove("usuario.txt");;
+}
+
+TEST_CASE("Dados - remove obra com dados nulos ou ponteiros não inicializados") {
+    {
+        Dados dados(nullptr, new Catalogo());
+        CHECK_FALSE(dados.removerObra(1));
+    }
+    {
+        Dados dados(new Usuarios(), nullptr);
+        CHECK_FALSE(dados.removerObra(1));
+    }
+    {
+        Catalogo *catalogo = new Catalogo();
+        Usuarios *usuarios = new Usuarios();
+        Dados dados(usuarios, catalogo);
+        REQUIRE(catalogo->cadastrarObra(new Livro("Livro", "Autor", 1, "Didático", 1)));
+
+        std::vector<std::pair<Pessoa*, int> > &registros =
+            const_cast<std::vector<std::pair<Pessoa*, int> >&>(usuarios->getUsuarios());
+        registros.push_back(std::make_pair(static_cast<Pessoa*>(nullptr), 0));
+        CHECK(dados.removerObra(1));
+    }
+    
+    std::remove("obras.txt");
+    std::remove("usuario.txt");;
+}
+
+TEST_CASE("Dados - rejeita ponteiros nulos e associações inconsistentes em memória") {
+    SUBCASE("Usuário nulo") {
+        Usuarios *usuarios = new Usuarios();
+        std::vector<std::pair<Pessoa*, int> > &registros =
+            const_cast<std::vector<std::pair<Pessoa*, int> >&>(usuarios->getUsuarios());
+        registros.push_back(std::make_pair(static_cast<Pessoa*>(nullptr), 0));
+        Dados dados(usuarios, new Catalogo());
+
+        escreverArquivosDados("", "");
+        CHECK_FALSE(TesteDados::carregarInterno(dados));
+        
+    std::remove("obras.txt");
+    std::remove("usuario.txt");;
+    }
+
+    SUBCASE("Empréstimo nulo") {
+        Usuarios *usuarios = new Usuarios();
+        Professor *prof = new Professor("Ana", "52998224725", "Computação");
+        REQUIRE(usuarios->adicionarUsuario(prof, 1));
+        std::vector<Emprestimo*> &emprestimos =
+            const_cast<std::vector<Emprestimo*>&>(prof->getEmprestimos());
+        emprestimos.push_back(nullptr);
+        Dados dados(usuarios, new Catalogo());
+
+        escreverArquivosDados("", "");
+        CHECK_FALSE(TesteDados::carregarInterno(dados));
+        
+    std::remove("obras.txt");
+    std::remove("usuario.txt");;
+    }
+
+    SUBCASE("Manutenção associada a outro técnico") {
+        TecnicoManutencao outro("Paulo", "11122233396");
+        Catalogo *catalogo = new Catalogo();
+        Usuarios *usuarios = new Usuarios();
+        Livro *obra = new Livro("Livro", "Autor", 1, "Didático", 1);
+        REQUIRE(catalogo->cadastrarObra(obra));
+        TecnicoManutencao *tecnico = new TecnicoManutencao("Carlos", "52998224725");
+        REQUIRE(usuarios->adicionarUsuario(tecnico, 1));
+
+        std::vector<Manutencao*> &manutencoes =
+            const_cast<std::vector<Manutencao*>&>(tecnico->getManutencoes());
+        manutencoes.push_back(new Manutencao(obra, &outro, "Capa", Data(10, 11, 2026)));
+        Dados dados(usuarios, catalogo);
+
+        escreverArquivosDados("", "");
+        CHECK_FALSE(TesteDados::carregarInterno(dados));
+        
+    std::remove("obras.txt");
+    std::remove("usuario.txt");;
+    }
+}
+
+TEST_CASE("Dados - rejeita renovação inválida e limpa empréstimos parciais") {
+    Catalogo *catalogo = new Catalogo();
+    Usuarios *usuarios = new Usuarios();
+    Dados dados(usuarios, catalogo);
+    REQUIRE(catalogo->cadastrarObra(new Livro("Livro", "Autor", 1, "Didático", 1)));
+    Professor pessoa("Ana", "52998224725", "Computação");
+
+    SUBCASE("Renovação solicitada em empréstimo inativo") {
+        escreverArquivosDados("", "");
+        std::ofstream out("emprestimos.txt");
+        out << "1;1;10;11;2026;10;12;2026;0;1;";
+        out.close();
+
+        std::ifstream in("emprestimos.txt");
+        REQUIRE(in.is_open());
+        TesteDados2::carregarEmprestimos(dados, in, &pessoa);
+        CHECK(in.fail());
+        CHECK(pessoa.getEmprestimos().empty());
+        in.close();
+        std::remove("emprestimos.txt");
+        
+    std::remove("obras.txt");
+    std::remove("usuario.txt");;
+    }
+
+    SUBCASE("Falha depois de carregar um empréstimo válido") {
+        escreverArquivosDados("", "");
+        std::ofstream out("emprestimos.txt");
+        out << "2;1;10;11;2026;10;12;2026;1;0;999;10;11;2026;10;12;2026;1;0;";
+        out.close();
+
+        std::ifstream in("emprestimos.txt");
+        REQUIRE(in.is_open());
+        TesteDados2::carregarEmprestimos(dados, in, &pessoa);
+        CHECK(in.fail());
+        CHECK(pessoa.getEmprestimos().empty());
+        in.close();
+        std::remove("emprestimos.txt");
+        
+    std::remove("obras.txt");
+    std::remove("usuario.txt");;
+    }
+}
+
+TEST_CASE("Dados - cobre falha de leitura após reconhecer o tipo de usuário") {
+    escreverArquivosDados("ProximoId;1\n", "Professor;1;Ana;52998224725;Computação;");
+    Dados dados(new Usuarios(), new Catalogo());
+    CHECK_FALSE(dados.carregarDados());
+    
+    std::remove("obras.txt");
+    std::remove("usuario.txt");;
+}
+
+TEST_CASE("Dados - preserva o próximo ID e ignora manutenção concluída") {
+    SUBCASE("Atualiza próximo ID a partir da maior obra") {
+        escreverArquivosDados("ProximoId;1\nLivro;Livro;Autor;10;1;0;Didático;1\n", "");
+        Dados dados(new Usuarios(), new Catalogo());
+        REQUIRE(dados.carregarDados());
+        CHECK(TesteCatalogo::getProximoId(*dados.getCatalogo()) == 11);
+        
+    std::remove("obras.txt");
+    std::remove("usuario.txt");;
+    }
+
+    SUBCASE("Manutenção concluída não bloqueia a obra") {
+        const std::string obras = "ProximoId;2\nLivro;Livro;Autor;1;1;0;Didático;1\n";
+        const std::string usuarios =
+            "TecnicoManutencao;1;Carlos;52998224725;0;1;1;52998224725;Capa rasgada;Capa restaurada;10;11;2026;2;\n";
+        escreverArquivosDados(obras, usuarios);
+        Dados dados(new Usuarios(), new Catalogo());
+        REQUIRE(dados.carregarDados());
+        CHECK(dados.getCatalogo()->buscarPorId(1)->isDisponivel());
+        CHECK_FALSE(dados.getCatalogo()->buscarPorId(1)->isDanificado());
+        
+    std::remove("obras.txt");
+    std::remove("usuario.txt");;
+    }
 }

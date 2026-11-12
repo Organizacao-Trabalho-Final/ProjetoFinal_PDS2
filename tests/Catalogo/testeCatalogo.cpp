@@ -20,6 +20,14 @@ struct TesteCatalogo{
     static void definirProximoId(Catalogo &c, int id) {
         c.setProximoId(id);
     }
+
+    static bool remover(Catalogo &c, int id) {
+        return c.removerObra(id);
+    }
+
+    static void forcarProximoId(Catalogo &c, int id) {
+        c.proximoId = id;
+    }
 };
 
 TEST_CASE("Catalogo - verificarDuplicata"){
@@ -193,4 +201,21 @@ TEST_CASE("Catalogo - protege a geracao de IDs no limite de int") {
 
     REQUIRE(c2.cadastrarObra(obra));
     CHECK(TesteCatalogo::gerar(c2) == 0);
+}
+
+TEST_CASE("Catalogo - remoção e geração de IDs") {
+    int limite = std::numeric_limits<int>::max();
+    Catalogo c;
+    Livro *ultima = new Livro("Ultima obra", "Autor", limite - 1, "Teste", 1);
+    REQUIRE(c.cadastrarObra(ultima));
+    CHECK_FALSE(TesteCatalogo::remover(c, 123));
+
+    TesteCatalogo::forcarProximoId(c, limite - 1);
+    CHECK(TesteCatalogo::gerar(c) == 0);
+
+    Catalogo c2;
+    Livro *obra = new Livro("Obra existente", "Autor", 5, "Teste", 1);
+    REQUIRE(c2.cadastrarObra(obra));
+    TesteCatalogo::forcarProximoId(c2, 5);
+    CHECK(TesteCatalogo::gerar(c2) == 6);
 }

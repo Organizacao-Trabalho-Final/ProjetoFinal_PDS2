@@ -8,6 +8,7 @@
 #include "../../include/Emprestimo.hpp"
 #include "../../include/TecnicoManutencao.hpp"
 #include "../../include/Manutencao.hpp"
+#include "../../include/Bibliotecario.hpp"
 #include <limits>
 
 TEST_CASE("Teste Construtor - Usuarios") {
@@ -192,4 +193,48 @@ TEST_CASE("Usuarios - remover usuário pelo CPF") {
     CHECK(usuarios.removerUsuarioCPF("52998224725"));
     CHECK(usuarios.getUsuarios().empty());
     CHECK(usuarios.buscarUsuarioCPF("52998224725") == nullptr);
+}
+
+TEST_CASE("Usuarios - ocupações restantes") {
+    Usuarios usuarios;
+    Pessoa *bibliotecario = new Bibliotecario("Ana", "52998224725");
+    Pessoa *tecnico = new TecnicoManutencao("Carlos", "11122233396");
+    Pessoa *desconhecido = new ClasseTeste("Pessoa teste", "01234567970");
+
+    REQUIRE(usuarios.adicionarUsuario(bibliotecario, 1));
+    REQUIRE(usuarios.adicionarUsuario(tecnico, 2));
+    REQUIRE(usuarios.adicionarUsuario(desconhecido, 3));
+
+    CHECK(usuarios.getOcupacao("52998224725") == "Bibliotecario");
+    CHECK(usuarios.getOcupacao(0) == "Bibliotecario");
+    CHECK(usuarios.getOcupacao("11122233396") == "TecnicoManutencao");
+    CHECK(usuarios.getOcupacao(1) == "TecnicoManutencao");
+    CHECK(usuarios.getOcupacao("01234567970") == "ERRO");
+    CHECK(usuarios.getOcupacao(2) == "ERRO");
+}
+
+TEST_CASE("Usuarios - ignora registros nulos e buscas sem resultado") {
+    Usuarios usuarios;
+    std::vector<std::pair<Pessoa*, int> > &registros =
+        const_cast<std::vector<std::pair<Pessoa*, int> >&>(usuarios.getUsuarios());
+    registros.push_back(std::make_pair(static_cast<Pessoa*>(nullptr), 0));
+
+    Pessoa *p = new Professor("Paulo", "52998224725", "Computação");
+    REQUIRE(usuarios.adicionarUsuario(p, 1));
+
+    CHECK(usuarios.getOcupacao(0) == "ERRO");
+    CHECK_FALSE(usuarios.removerUsuarioNome("Inexistente"));
+    CHECK_FALSE(usuarios.removerUsuarioCPF("11122233396"));
+    CHECK(usuarios.removerUsuarioNome("Paulo"));
+}
+
+TEST_CASE("Usuarios - impede remover técnico com manutenção pelo CPF") {
+    Usuarios usuarios;
+    Livro obra("Cálculo", "Stewart", 40, "Didático", 1);
+    TecnicoManutencao *tecnico = new TecnicoManutencao("Max", "52998224725");
+    REQUIRE(usuarios.adicionarUsuario(tecnico, 1));
+
+    tecnico->adicionarManutencao(new Manutencao(&obra, tecnico, "Capa rasgada", Data(10, 11, 2026)));
+    CHECK_FALSE(usuarios.removerUsuarioCPF("52998224725"));
+    CHECK(usuarios.buscarUsuarioCPF("52998224725") == tecnico);
 }
