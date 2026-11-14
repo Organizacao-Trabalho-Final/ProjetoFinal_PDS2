@@ -288,7 +288,7 @@
             return true;
         } catch (const std::exception &e) {
             std::cerr << "Erro ao carregar os dados: " << e.what() << std::endl;
-            std::cerr << "\nOs dados atuais foram preservados." << std::endl;
+            std::cerr << "Os dados atuais foram preservados." << std::endl;
             return false;
         }
     }
